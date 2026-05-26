@@ -966,16 +966,19 @@
       </div>
       <div class="resources-grid">
 
-        <div class="video-card reveal">
-          <div class="video-thumb">
-            <div class="vt-bg" style="background:linear-gradient(135deg,#071E22,#0A2F35)"></div>
-            <div class="play-btn">▶</div>
-            <div class="vt-duration">12:34</div>
+        <div class="video-card reveal" onclick="window.open('https://youtube.com/shorts/7B2PKq5Vrug','_blank')" style="cursor:pointer;">
+          <div class="video-thumb" style="position:relative;overflow:hidden;height:150px;">
+            <img src="https://img.youtube.com/vi/7B2PKq5Vrug/hqdefault.jpg"
+                 alt="Discipline & Mindset" style="width:100%;height:100%;object-fit:cover;display:block;"/>
+            <div style="position:absolute;inset:0;background:rgba(5,16,26,0.45);display:flex;align-items:center;justify-content:center;">
+              <div class="play-btn">▶</div>
+            </div>
+            <div class="vt-duration">Short</div>
           </div>
           <div class="vc-body">
             <span class="vc-tag tag-teal">Beginner</span>
             <div class="vc-title">Discipline &amp; Mindset Explained — The Foundation of Every Trade</div>
-            <div class="vc-meta"><span>📺 YouTube</span><span>Free</span></div>
+            <div class="vc-meta"><span>📺 YouTube Short</span><span>Free</span></div>
           </div>
         </div>
 
@@ -1189,43 +1192,118 @@
        JAVASCRIPT
   ══════════════════════════════════════ -->
   <script>
-    // ── Ticker data ──────────────────────────────────────────────────
-    const tickers = [
-      { name:'BTC/USDT', price:'$77,000', change:'+2.4%', up:true },
-      { name:'ETH/USDT', price:'$3,512',  change:'+1.8%', up:true },
-      { name:'PSX KSE-100', price:'76,480', change:'+0.9%', up:true },
-      { name:'GOLD',     price:'$2,318',  change:'-0.3%', up:false },
-      { name:'NASDAQ',   price:'18,240',  change:'+0.6%', up:true },
-      { name:'BNB/USDT', price:'$598',    change:'+3.1%', up:true },
-      { name:'XRP/USDT', price:'$0.62',   change:'-1.2%', up:false },
-      { name:'OIL (WTI)',price:'$78.4',   change:'+0.4%', up:true },
-      { name:'SILVER',   price:'$27.8',   change:'-0.8%', up:false },
-      { name:'SOL/USDT', price:'$178',    change:'+5.2%', up:true },
-    ];
+    // ── Live Ticker ──────────────────────────────────────────────────
     const track = document.getElementById('ticker');
-    // Duplicate for seamless loop
-    [...tickers, ...tickers].forEach(t => {
-      track.innerHTML += `<div class="tick-item">
-        <div class="tick-dot ${t.up?'up':'dn'}"></div>
-        <span class="tick-name">${t.name}</span>
-        <span class="tick-price">${t.price}</span>
-        <span class="tick-change ${t.up?'up':'dn'}">${t.change}</span>
-      </div>`;
-    });
 
-    // Simulate live price updates
-    setInterval(() => {
-      const items = document.querySelectorAll('.tick-price');
-      if(items.length) {
-        const rand = Math.floor(Math.random() * (items.length/2));
-        const el = items[rand];
-        const base = parseFloat(el.textContent.replace(/[$,]/g,''));
-        const nudge = (Math.random()-0.48)*base*0.001;
-        const sym = el.textContent.includes('$') ? '$' : '';
-        const val = (base+nudge).toFixed(base>100?0:2);
-        el.textContent = sym + Number(val).toLocaleString();
+    // Fallback values shown immediately so ticker is never blank
+    const tickerFallback = [
+      {name:'BTC/USDT',  price:'$104,500', chg:'0.85'},
+      {name:'ETH/USDT',  price:'$2,520',   chg:'1.20'},
+      {name:'BNB/USDT',  price:'$645',     chg:'0.50'},
+      {name:'SOL/USDT',  price:'$175',     chg:'1.10'},
+      {name:'XRP/USDT',  price:'$2.32',    chg:'0.30'},
+      {name:'GOLD',      price:'$3,320',   chg:'0.40'},
+      {name:'SILVER',    price:'$33.50',   chg:'0.60'},
+      {name:'OIL (WTI)', price:'$61.50',   chg:'-0.30'},
+      {name:'NASDAQ',    price:'18,900',   chg:'0.55'},
+      {name:'KSE-100',   price:'117,000',  chg:'0.20'},
+    ];
+
+    function buildTicker(data) {
+      track.innerHTML = '';
+      [...data, ...data].forEach(t => {
+        const up = parseFloat(t.chg) >= 0;
+        track.innerHTML += `<div class="tick-item">
+          <div class="tick-dot ${up?'up':'dn'}"></div>
+          <span class="tick-name">${t.name}</span>
+          <span class="tick-price">${t.price}</span>
+          <span class="tick-change ${up?'up':'dn'}">${up?'+':''}${parseFloat(t.chg).toFixed(2)}%</span>
+        </div>`;
+      });
+    }
+
+    // Show fallback immediately — ticker never blank
+    buildTicker(tickerFallback);
+
+    async function fetchTickerPrices() {
+      const results = [];
+
+      // ── Crypto: CoinGecko (CORS-friendly, works from file:// and GitHub Pages)
+      try {
+        const cgUrl = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,ripple&vs_currencies=usd&include_24hr_change=true';
+        const r = await fetch(cgUrl, {signal: AbortSignal.timeout(8000)});
+        const d = await r.json();
+        const cgAssets = [
+          {id:'bitcoin',     name:'BTC/USDT'},
+          {id:'ethereum',    name:'ETH/USDT'},
+          {id:'binancecoin', name:'BNB/USDT'},
+          {id:'solana',      name:'SOL/USDT'},
+          {id:'ripple',      name:'XRP/USDT'},
+        ];
+        cgAssets.forEach(a => {
+          if (!d[a.id]) return;
+          const price = d[a.id].usd;
+          const chg   = (d[a.id].usd_24h_change || 0).toFixed(2);
+          const dp    = price < 1 ? 4 : price < 100 ? 2 : 0;
+          results.push({
+            name:  a.name,
+            price: '$' + price.toLocaleString(undefined, {minimumFractionDigits:dp, maximumFractionDigits:dp}),
+            chg
+          });
+        });
+      } catch(e) {
+        // Fallback: Binance individual calls
+        const bnSymbols = [{s:'BTCUSDT',n:'BTC/USDT'},{s:'ETHUSDT',n:'ETH/USDT'},{s:'SOLUSDT',n:'SOL/USDT'},{s:'XRPUSDT',n:'XRP/USDT'}];
+        for (const sym of bnSymbols) {
+          try {
+            const r2 = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${sym.s}`, {signal: AbortSignal.timeout(5000)});
+            const d2 = await r2.json();
+            const price = parseFloat(d2.lastPrice);
+            const dp = price < 1 ? 4 : price < 100 ? 2 : 0;
+            results.push({
+              name:  sym.n,
+              price: '$' + price.toLocaleString(undefined, {minimumFractionDigits:dp, maximumFractionDigits:dp}),
+              chg:   parseFloat(d2.priceChangePercent).toFixed(2)
+            });
+          } catch(e2) {}
+        }
       }
-    }, 2500);
+
+      // ── Commodities + Indices: Yahoo Finance
+      const yahooAssets = [
+        {symbol:'GC=F',     name:'GOLD'},
+        {symbol:'SI=F',     name:'SILVER'},
+        {symbol:'CL=F',     name:'OIL (WTI)'},
+        {symbol:'%5EIXIC',  name:'NASDAQ'},
+        {symbol:'%5EKSE',   name:'KSE-100'},
+      ];
+      for (const asset of yahooAssets) {
+        try {
+          const r = await fetch(
+            `https://query1.finance.yahoo.com/v8/finance/chart/${asset.symbol}?interval=1d&range=1d`,
+            {signal: AbortSignal.timeout(8000)}
+          );
+          const d    = await r.json();
+          const meta = d?.chart?.result?.[0]?.meta;
+          if (meta?.regularMarketPrice) {
+            const price = meta.regularMarketPrice;
+            const prev  = meta.chartPreviousClose || price;
+            const chg   = ((price - prev) / prev * 100).toFixed(2);
+            const dp    = price < 50 ? 2 : 0;
+            results.push({
+              name:  asset.name,
+              price: (asset.name === 'KSE-100' ? '' : '$') + price.toLocaleString(undefined, {maximumFractionDigits:dp}),
+              chg
+            });
+          }
+        } catch(e) {}
+      }
+
+      if (results.length > 0) buildTicker(results);
+    }
+
+    fetchTickerPrices();
+    setInterval(fetchTickerPrices, 60000);
 
     // ── Animated Candlestick Chart ────────────────────────────────────
     const candleData = [
