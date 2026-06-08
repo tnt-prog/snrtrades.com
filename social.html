@@ -10,17 +10,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --bg:        #070F1A;
-      --bg-2:      #0C1721;
-      --bg-3:      #111E2A;
-      --teal:      #2DD4BF;
-      --teal-dark: #0D9488;
-      --border:    rgba(255,255,255,0.08);
-      --text:      #F0F4F8;
-      --text-muted:#94A3B8;
-      --text-dim:  #4A5568;
-      --green:     #22C55E;
-      --red:       #EF4444;
+      --bg:          #070F1A;
+      --bg-2:        #0A1628;
+      --bg-3:        #0D1E34;
+      --teal:        #2DD4BF;
+      --teal-dark:   #0D9488;
+      --border:      rgba(45,212,191,0.18);
+      --border-dim:  rgba(255,255,255,0.06);
+      --border-teal: rgba(45,212,191,0.25);
+      --text:        #F0F4F8;
+      --text-muted:  #94A3B8;
+      --text-dim:    #4A5568;
+      --green:       #22C55E;
+      --red:         #EF4444;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -35,7 +37,7 @@
     .page {
       max-width: 520px;
       margin: 0 auto;
-      padding: 0 16px 60px;
+      padding: 150px 16px 60px;
     }
 
     /* ── Header ── */
@@ -236,31 +238,149 @@
     @media(max-width:400px) {
       .reels-grid { grid-template-columns: repeat(2,1fr); }
     }
+
+    /* ── Ticker ── */
+    .ticker-bar {
+      background: var(--bg-2);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 0; overflow: hidden;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    }
+    .ticker-track {
+      display: flex; gap: 0;
+      animation: ticker-scroll 35s linear infinite;
+      white-space: nowrap; width: max-content;
+    }
+    .ticker-track:hover { animation-play-state: paused; }
+    @keyframes ticker-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .tick-item {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 0 28px; font-size: 12px; font-weight: 600;
+      border-right: 1px solid var(--border-dim);
+    }
+    .tick-name { color: var(--text-muted); }
+    .tick-price { color: var(--text); font-weight: 700; }
+    .tick-change { font-size: 11px; font-weight: 700; }
+    .tick-change.up { color: var(--green); }
+    .tick-change.dn { color: var(--red); }
+    .tick-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .tick-dot.up { background: var(--green); }
+    .tick-dot.dn { background: var(--red); }
+
+    /* ── Nav ── */
+    .nav {
+      position: fixed; top: 37px; left: 0; right: 0; z-index: 100;
+      padding: 0 24px; transition: all 0.3s;
+    }
+    .nav.scrolled {
+      background: rgba(7,15,26,0.94);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 4px 32px rgba(0,0,0,0.5);
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; flex-direction: column;
+      padding: 10px 0 8px;
+    }
+    .nav-row-1 { display: flex; align-items: center; gap: 40px; }
+    .nav-row-1 .nav-hamburger { margin-left: auto; }
+    .nav-row-2 {
+      display: flex; justify-content: flex-end; align-items: center;
+      gap: 10px; padding-top: 8px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-img { height: 44px; width: auto; border-radius: 6px; box-shadow: 0 0 0 1px rgba(45,212,191,0.3); }
+    .logo-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 26px; font-weight: 800; letter-spacing: 0.3px; color: var(--text);
+    }
+    .logo-text span { color: var(--teal); }
+    .nav-links { display: flex; gap: 30px; list-style: none; }
+    .nav-links a {
+      font-size: 13px; font-weight: 600;
+      color: var(--text-muted); text-decoration: none; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--teal); }
+    .nav-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 10px; font-weight: 700; text-decoration: none;
+      transition: all 0.2s; cursor: pointer; border: none;
+      padding: 9px 18px; font-size: 13px;
+    }
+    .nav-btn-outline {
+      background: transparent; border: 1px solid rgba(45,212,191,0.4); color: var(--teal);
+    }
+    .nav-btn-outline:hover { background: rgba(45,212,191,0.08); }
+    .nav-btn-primary {
+      background: var(--teal); color: #070F1A;
+    }
+    .nav-btn-primary:hover { background: var(--teal-dark); }
+    .nav-hamburger { display: none; background: none; border: none; color: var(--text); font-size: 22px; cursor: pointer; }
+    .mobile-menu {
+      display: none; position: fixed; top: 130px; left: 0; right: 0; bottom: 0;
+      background: var(--bg-2); z-index: 99;
+      padding: 32px 24px; flex-direction: column; gap: 24px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-size: 18px; font-weight: 600; color: var(--text);
+      text-decoration: none; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    @media (max-width: 900px) {
+      .nav-links, .nav-row-2 { display: none; }
+      .nav-hamburger { display: block; }
+    }
   </style>
 </head>
 <body>
-<div class="page">
 
-  <!-- Back to portal -->
-  <a href="index.html" class="back-link">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    Back to portal
-  </a>
-
-  <!-- Header -->
-  <div class="header">
-    <div class="logo-wrap">
-      <img src="logo.png" alt="Trends & Trade" onerror="this.style.display='none';document.getElementById('logoFallback').style.display='flex'"/>
-      <div class="logo-fallback" id="logoFallback" style="display:none;">T&T</div>
-    </div>
-    <div class="header-name">Trends <span>&</span> Trade</div>
-    <p class="header-bio">S&R Intelligent Trading System — Professional trading education across Stocks, Crypto, Gold &amp; more.</p>
-    <div class="stats-row">
-      <div class="stat-pill"><strong>200+</strong> Students</div>
-      <div class="stat-pill"><strong>7</strong> Markets</div>
-      <div class="stat-pill"><strong>4</strong> Regions</div>
-    </div>
+  <!-- Ticker -->
+  <div class="ticker-bar">
+    <div class="ticker-track" id="ticker"><!-- filled by JS --></div>
   </div>
+
+  <!-- Nav -->
+  <nav class="nav" id="mainNav">
+    <div class="nav-inner">
+      <div class="nav-row-1">
+        <a href="index.html" class="nav-logo">
+          <img src="logo.png" class="logo-img" alt="Trends &amp; Trade" onerror="this.style.display='none'"/>
+          <div class="logo-text">Trends <span>&amp;</span> Trade</div>
+        </a>
+        <ul class="nav-links">
+          <li><a href="index.html#about">About</a></li>
+          <li><a href="index.html#resources">Free Resources</a></li>
+          <li><a href="index.html#courses">Courses</a></li>
+          <li><a href="index.html#pricing">Pricing</a></li>
+          <li><a href="index.html#community">Community</a></li>
+          <li><a href="team.html">Our Team</a></li>
+          <li><a href="social.html" style="color:var(--teal);">Media</a></li>
+        </ul>
+        <button class="nav-hamburger" onclick="toggleMenu()">☰</button>
+      </div>
+      <div class="nav-row-2">
+        <a href="index.html#courses" class="nav-btn nav-btn-outline">View Courses</a>
+        <a href="index.html#email" class="nav-btn nav-btn-primary">Get Free Analysis</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html#about" onclick="toggleMenu()">About</a>
+    <a href="index.html#resources" onclick="toggleMenu()">Free Resources</a>
+    <a href="index.html#courses" onclick="toggleMenu()">Courses</a>
+    <a href="index.html#pricing" onclick="toggleMenu()">Pricing</a>
+    <a href="index.html#community" onclick="toggleMenu()">Community</a>
+    <a href="team.html" onclick="toggleMenu()">Our Team</a>
+    <a href="social.html" onclick="toggleMenu()" style="color:var(--teal);">Media</a>
+    <a href="index.html#email" class="nav-btn nav-btn-primary" style="margin-top:16px;" onclick="toggleMenu()">Get Free Analysis</a>
+  </div>
+
+<div class="page">
 
   <!-- Social buttons -->
   <div class="social-row">
@@ -459,6 +579,47 @@
 
   // Initial render
   renderGrid('all');
+
+  // Nav scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 10);
+  });
+  function toggleMenu() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
+
+  // Ticker
+  const tickerTrack = document.getElementById('ticker');
+  const tickerFallback = [
+    {name:'BTC/USDT',price:'$104,500',chg:'0.85'},{name:'ETH/USDT',price:'$2,520',chg:'1.20'},
+    {name:'BNB/USDT',price:'$645',chg:'0.50'},{name:'SOL/USDT',price:'$175',chg:'1.10'},
+    {name:'XRP/USDT',price:'$2.32',chg:'0.30'},{name:'GOLD',price:'$3,320',chg:'0.40'},
+    {name:'SILVER',price:'$33.50',chg:'0.60'},{name:'OIL (WTI)',price:'$61.50',chg:'-0.30'},
+    {name:'NASDAQ',price:'18,900',chg:'0.55'},{name:'KSE-100',price:'117,000',chg:'0.20'},
+  ];
+  function buildTicker(data) {
+    tickerTrack.innerHTML = '';
+    [...data,...data].forEach(t => {
+      const up = parseFloat(t.chg) >= 0;
+      tickerTrack.innerHTML += `<div class="tick-item"><div class="tick-dot ${up?'up':'dn'}"></div><span class="tick-name">${t.name}</span><span class="tick-price">${t.price}</span><span class="tick-change ${up?'up':'dn'}">${up?'+':''}${parseFloat(t.chg).toFixed(2)}%</span></div>`;
+    });
+  }
+  buildTicker(tickerFallback);
+  async function fetchTicker() {
+    try {
+      const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,ripple&vs_currencies=usd&include_24hr_change=true',{signal:AbortSignal.timeout(8000)});
+      const d = await r.json();
+      const out = [];
+      [{id:'bitcoin',name:'BTC/USDT'},{id:'ethereum',name:'ETH/USDT'},{id:'binancecoin',name:'BNB/USDT'},{id:'solana',name:'SOL/USDT'},{id:'ripple',name:'XRP/USDT'}].forEach(a => {
+        if (!d[a.id]) return;
+        const p = d[a.id].usd, dp = p<1?4:p<100?2:0;
+        out.push({name:a.name,price:'$'+p.toLocaleString(undefined,{minimumFractionDigits:dp,maximumFractionDigits:dp}),chg:(d[a.id].usd_24h_change||0).toFixed(2)});
+      });
+      if (out.length) buildTicker(out);
+    } catch(e) {}
+  }
+  fetchTicker();
+  setInterval(fetchTicker, 60000);
 </script>
 </body>
 </html>
