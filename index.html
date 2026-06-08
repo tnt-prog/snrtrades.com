@@ -325,8 +325,16 @@
     }
     .nav-inner {
       max-width: 1100px; margin: 0 auto;
-      display: flex; align-items: center; justify-content: space-between;
-      height: 64px;
+      display: flex; flex-direction: column;
+      padding: 10px 0 8px;
+    }
+    .nav-row-1 {
+      display: flex; align-items: center; gap: 40px;
+    }
+    .nav-row-1 .nav-hamburger { margin-left: auto; }
+    .nav-row-2 {
+      display: flex; justify-content: flex-end; align-items: center;
+      gap: 10px; padding-top: 8px;
     }
     .nav-logo {
       display: flex; align-items: center; gap: 10px;
@@ -346,7 +354,7 @@
     .nav-cta { display: flex; gap: 10px; align-items: center; }
     .nav-hamburger { display: none; background: none; border: none; color: var(--text); font-size: 22px; }
     .mobile-menu {
-      display: none; position: fixed; top: 101px; left: 0; right: 0; bottom: 0;
+      display: none; position: fixed; top: 130px; left: 0; right: 0; bottom: 0;
       background: var(--bg-2); z-index: 99;
       padding: 32px 24px; flex-direction: column; gap: 24px;
     }
@@ -360,7 +368,7 @@
        HERO
     ══════════════════════════════════════ */
     .hero {
-      min-height: 100vh; padding: 140px 24px 80px;
+      min-height: 100vh; padding: 170px 24px 80px;
       display: flex; align-items: center;
       position: relative; overflow: hidden;
     }
@@ -880,7 +888,7 @@
       .stats-inner { grid-template-columns: repeat(2,1fr); gap: 20px; }
       .stat-item { border-right: none; border-bottom: 1px solid var(--border-dim); padding: 14px; }
       .footer-top { grid-template-columns: 1fr 1fr; }
-      .nav-links, .nav-cta .btn-outline { display: none; }
+      .nav-links, .nav-row-2 { display: none; }
       .nav-hamburger { display: block; }
     }
     @media (max-width: 500px) {
@@ -903,21 +911,26 @@
   <!-- ══ NAV ══ -->
   <nav class="nav" id="mainNav">
     <div class="nav-inner">
-      <a href="#" class="nav-logo">
-        <img src="logo.png" class="logo-img" alt="Trends &amp; Trade"/>
-        <div class="logo-text">Trends <span>&amp;</span> Trade</div>
-      </a>
-      <ul class="nav-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#resources">Free Resources</a></li>
-        <li><a href="#courses">Courses</a></li>
-        <li><a href="#pricing">Pricing</a></li><li><a href="#community">Community</a></li>
-      </ul>
-      <div class="nav-cta">
+      <div class="nav-row-1">
+        <a href="#" class="nav-logo">
+          <img src="logo.png" class="logo-img" alt="Trends &amp; Trade"/>
+          <div class="logo-text">Trends <span>&amp;</span> Trade</div>
+        </a>
+        <ul class="nav-links">
+          <li><a href="#about">About</a></li>
+          <li><a href="#resources">Free Resources</a></li>
+          <li><a href="#courses">Courses</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#community">Community</a></li>
+          <li><a href="team.html">Our Team</a></li>
+          <li><a href="social.html">Media</a></li>
+        </ul>
+        <button class="nav-hamburger" onclick="toggleMenu()">☰</button>
+      </div>
+      <div class="nav-row-2 nav-cta">
         <a href="#courses" class="btn btn-outline" style="padding:9px 18px;font-size:13px;">View Courses</a>
         <a href="#email" class="btn btn-primary" style="padding:9px 18px;font-size:13px;">Get Free Analysis</a>
       </div>
-      <button class="nav-hamburger" onclick="toggleMenu()">☰</button>
     </div>
   </nav>
 
@@ -927,6 +940,8 @@
     <a href="#courses" onclick="toggleMenu()">Courses</a>
     <a href="#pricing" onclick="toggleMenu()">Pricing</a>
     <a href="#community" onclick="toggleMenu()">Community</a>
+    <a href="team.html" onclick="toggleMenu()">Our Team</a>
+    <a href="social.html" onclick="toggleMenu()">Media</a>
     <a href="#email" class="btn btn-primary" style="margin-top:16px;justify-content:center;" onclick="toggleMenu()">Get Free Analysis</a>
   </div>
 
@@ -1058,7 +1073,7 @@
       <div class="about-grid">
         <div class="reveal">
           <div class="about-avatar">
-            <img src="Trainer.jpg" alt="Ali Safwan — Trends & Trade"
+            <img src="AliSafwan.jpg" alt="Ali Safwan — Trends & Trade"
                  onerror="this.style.display='none'; this.parentElement.innerHTML='👨‍💼'"/>
           </div>
           <div class="cred-list">
@@ -1073,7 +1088,7 @@
           <h2 class="section-title">Professional Mindset<br/><span class="highlight">Meets Trading Mastery</span></h2>
           <div class="divider left"></div>
           <p style="font-size:15px;color:var(--text-muted);line-height:1.8;margin-bottom:14px;">
-            Trading is not gambling — it&#39;s precision, an art, a knowledge, a discipline.
+            Every trade has a reason. Every entry has a rule. That&#39;s the S&amp;R way.
             As a Professional trader and coach, I approach markets with the same systematic, data-driven thinking
             I apply to complex infrastructure: identify patterns, follow rules, manage risk.
           </p>
@@ -1413,7 +1428,7 @@
         </div>
         <div class="footer-col">
           <h4>Connect</h4>
-          <ul><li><a href="#">WhatsApp Group</a></li><li><a href="#">Telegram</a></li><li><a href="https://www.youtube.com/channel/UCXdqqgNKynhajdiUR_nMkUQ" target="_blank">YouTube</a></li><li><a href="https://www.instagram.com/snrtrades" target="_blank">Instagram</a></li><li><a href="social.html">Our Reels</a></li><li><a href="https://www.tiktok.com/@trendsandtradeuae" target="_blank">TikTok</a></li><li><a href="#about">About</a></li></ul>
+          <ul><li><a href="#">WhatsApp Group</a></li><li><a href="#">Telegram</a></li><li><a href="https://www.youtube.com/channel/UCXdqqgNKynhajdiUR_nMkUQ" target="_blank">YouTube</a></li><li><a href="https://www.instagram.com/snrtrades" target="_blank">Instagram</a></li><li><a href="social.html">Media</a></li><li><a href="https://www.tiktok.com/@trendsandtradeuae" target="_blank">TikTok</a></li><li><a href="#about">About</a></li><li><a href="team.html">Our Team</a></li><li><a href="social.html">Media</a></li></ul>
         </div>
       </div>
       <div class="footer-bottom">
