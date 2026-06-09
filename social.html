@@ -235,6 +235,13 @@
     }
     .footer a { color: var(--teal); text-decoration: none; }
 
+    @media(max-width:600px) {
+      /* YouTube: single column, stacked card layout */
+      #ytGrid { grid-template-columns: 1fr !important; }
+      .yt-card { flex-direction: column; gap: 10px; padding: 10px; }
+      .yt-thumb { width: 100%; height: auto; aspect-ratio: 16/9; flex-shrink: unset; }
+      .yt-title { font-size: 13px; }
+    }
     @media(max-width:400px) {
       .reels-grid { grid-template-columns: repeat(2, 1fr); }
     }
