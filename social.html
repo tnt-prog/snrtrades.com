@@ -583,6 +583,73 @@
 </div>
 
 <script>
+  // ── Shared UI constants
+  const PLAY_BTN = `<div class="play-circle"><svg width="12" height="12" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div>`;
+
+  // ── Tab switching
+  function showPlatform(platform, btn) {
+    const sections = ['youtube','instagram'];
+    sections.forEach(p => {
+      const el = document.getElementById('section-' + p);
+      if (el) el.classList.toggle('hidden', platform !== 'all' && platform !== p);
+    });
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  }
+
+  // ── Relative time
+  function timeAgo(date) {
+    const diff = Math.floor((Date.now() - date) / 1000);
+    if (diff < 60) return 'Just now';
+    if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+    if (diff < 2592000) return Math.floor(diff/86400) + 'd ago';
+    if (diff < 31536000) return Math.floor(diff/2592000) + 'mo ago';
+    return Math.floor(diff/31536000) + 'y ago';
+  }
+
+  // ── YouTube via RSS2JSON
+  const YT_RSS = 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.youtube.com%2Ffeeds%2Fvideos.xml%3Fchannel_id%3DUCXdqqgNKynhajdiUR_nMkUQ';
+  async function loadYouTube() {
+    const grid = document.getElementById('ytGrid');
+    // Skeleton
+    grid.innerHTML = [1,2,3,4].map(()=>`<div class="yt-skeleton"><div class="skel-thumb"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line short"></div></div></div>`).join('');
+    try {
+      const r = await fetch(YT_RSS, {signal: AbortSignal.timeout(8000)});
+      const d = await r.json();
+      const items = (d.items || []).slice(0, 8);
+      if (!items.length) throw new Error('no items');
+      grid.innerHTML = '';
+      items.forEach(item => {
+        const videoId = item.link.split('v=')[1]?.split('&')[0] || '';
+        const thumb = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : '';
+        const date = item.pubDate ? new Date(item.pubDate) : null;
+        const el = document.createElement('a');
+        el.className = 'yt-card';
+        el.href = item.link;
+        el.target = '_blank';
+        el.rel = 'noopener';
+        el.innerHTML = `
+          <div class="yt-thumb">
+            ${thumb ? `<img src="${thumb}" alt="${item.title}" loading="lazy"/>` : ''}
+            <div class="yt-play"><svg width="36" height="36" viewBox="0 0 60 60"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.55)"/><polygon points="24,18 44,30 24,42" fill="white"/></svg></div>
+          </div>
+          <div class="yt-info">
+            <div class="yt-title">${item.title}</div>
+            <div class="yt-meta">
+              <span class="yt-badge"><svg width="10" height="8" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><polygon points="8,3.5 14,7 8,10.5" fill="white"/></svg>YouTube</span>
+              ${date ? `<span class="yt-date">${timeAgo(date)}</span>` : ''}
+            </div>
+          </div>`;
+        grid.appendChild(el);
+      });
+    } catch(e) {
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--text-dim);font-size:13px;">
+        Could not load videos. <a href="https://www.youtube.com/channel/UCXdqqgNKynhajdiUR_nMkUQ" target="_blank" style="color:var(--teal);">View on YouTube →</a>
+      </div>`;
+    }
+  }
+
   // ── Instagram: fetch from Behold public feed (with hardcoded fallback)
   const IG_FEED = 'https://feeds.behold.so/8kmjxx4i0FtHoqBCY9kD';
   const IG_ICON = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" style="opacity:.85"><rect x="2" y="2" width="20" height="20" rx="6"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1.2" fill="white" stroke="none"/></svg>`;
