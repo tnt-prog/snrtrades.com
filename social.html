@@ -715,30 +715,25 @@
     });
   }
 
-  async function loadInstagram() {
-    // Try live Behold API first (works on server; blocked locally by CORS)
-    try {
-      const res = await fetch(IG_FEED);
-      if (!res.ok) throw new Error('bad status');
-      const data = await res.json();
-      const posts = (data.posts || []).map(p => ({
-        permalink: p.permalink,
-        thumb: p.sizes?.small?.mediaUrl || p.thumbnailUrl || '',
-        caption: p.prunedCaption || p.caption || '',
-        likes: p.likeCount ?? 0,
-        comments: p.commentsCount ?? 0
-      }));
-      if (posts.length) {
-        if (data.profilePictureUrl) {
-          const av = document.getElementById('igAvatar');
-          if (av) av.src = data.profilePictureUrl;
-        }
-        renderIgPosts(posts);
-        return;
-      }
-    } catch(e) { /* fall through to hardcoded data */ }
-    // Fallback: use cached post data
+  function loadInstagram() {
+    // Always render cached posts immediately so nothing hangs
     renderIgPosts(IG_FALLBACK);
+    // Then try to upgrade with live Behold data (works when hosted on a server)
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
+    fetch(IG_FEED, { signal: controller.signal })
+      .then(r => { clearTimeout(timeout); return r.ok ? r.json() : Promise.reject(); })
+      .then(data => {
+        const posts = (data.posts || []).map(p => ({
+          permalink: p.permalink,
+          thumb: p.sizes?.small?.mediaUrl || p.thumbnailUrl || '',
+          caption: p.prunedCaption || p.caption || '',
+          likes: p.likeCount ?? 0,
+          comments: p.commentsCount ?? 0
+        }));
+        if (posts.length) renderIgPosts(posts);
+      })
+      .catch(() => { clearTimeout(timeout); /* keep fallback posts */ });
   }
 
   // ── Init
