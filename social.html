@@ -512,7 +512,6 @@
       <svg width="14" height="10" viewBox="0 0 20 14" fill="none" style="margin-right:4px;vertical-align:middle"><rect width="20" height="14" rx="3" fill="#FF0000"/><polygon points="8,3.5 14,7 8,10.5" fill="white"/></svg>YouTube
     </button>
     <button class="tab" onclick="showPlatform('instagram',this)">Instagram</button>
-    <button class="tab" onclick="showPlatform('tiktok',this)">TikTok</button>
   </div>
 
   <!-- YouTube section -->
@@ -531,11 +530,7 @@
     <div class="reels-grid" id="igGrid"><div class="ig-loading">Loading posts…</div></div>
   </div>
 
-  <!-- TikTok section -->
-  <div class="platform-section" id="section-tiktok">
-    <div class="section-label">Latest from TikTok</div>
-    <div class="reels-grid" id="reelsGrid"></div>
-  </div>
+
 
   <!-- Quick links -->
   <div class="section-label">Explore</div>
@@ -588,111 +583,6 @@
 </div>
 
 <script>
-  // ── TikTok video data — add more entries as you post
-  // TikTok feed: reads from Admin panel (localStorage) with hardcoded fallback
-  const TT_DEFAULTS = [
-    { url:'https://www.tiktok.com/@trendsandtradeuae/video/7647181014560787728', id:'7647181014560787728', title:'Trading Reel' },
-    { url:'https://www.tiktok.com/@trendsandtradeuae/video/7647162831225261329', id:'7647162831225261329', title:'Trading Reel' },
-    { url:'https://www.tiktok.com/@trendsandtradeuae/video/7647170927456800017', id:'7647170927456800017', title:'Trading Reel' },
-    { url:'https://www.tiktok.com/@trendsandtradeuae/video/7647175176173489424', id:'7647175176173489424', title:'Trading Reel' },
-  ];
-  let TIKTOKS;
-  try {
-    const saved = localStorage.getItem('snr_tiktok_feeds');
-    TIKTOKS = saved ? JSON.parse(saved) : TT_DEFAULTS;
-    if (!Array.isArray(TIKTOKS) || !TIKTOKS.length) TIKTOKS = TT_DEFAULTS;
-  } catch(e) { TIKTOKS = TT_DEFAULTS; }
-
-  const TT_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="white" opacity="0.9"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.79a8.18 8.18 0 004.78 1.52V6.88a4.85 4.85 0 01-1.01-.19z"/></svg>`;
-  const PLAY_BTN = `<div class="play-circle"><svg width="14" height="14" viewBox="0 0 16 16" fill="white"><path d="M5 3l8 5-8 5V3z"/></svg></div>`;
-
-  // ── Platform tab switching
-  function showPlatform(platform, btn) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-    const sections = ['youtube','instagram','tiktok'];
-    sections.forEach(s => {
-      const el = document.getElementById('section-' + s);
-      el.classList.toggle('hidden', platform !== 'all' && platform !== s);
-    });
-  }
-
-  // ── YouTube: fetch latest videos via RSS2JSON
-  async function loadYouTube() {
-    const channelId = 'UCXdqqgNKynhajdiUR_nMkUQ';
-    const rssUrl = encodeURIComponent(`https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`);
-    const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`;
-    const grid = document.getElementById('ytGrid');
-    try {
-      const r = await fetch(apiUrl, {signal: AbortSignal.timeout(8000)});
-      const d = await r.json();
-      if (!d.items || d.items.length === 0) throw new Error('No items');
-      grid.innerHTML = '';
-      d.items.slice(0, 6).forEach(item => {
-        const videoId = item.link.split('v=')[1]?.split('&')[0] || '';
-        const thumb = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : '';
-        const date = item.pubDate ? timeAgo(new Date(item.pubDate)) : '';
-        grid.innerHTML += `
-          <a class="yt-card" href="${item.link}" target="_blank" rel="noopener">
-            <div class="yt-thumb">
-              ${thumb ? `<img src="${thumb}" alt="${item.title}" loading="lazy"/>` : '<div style="width:100%;height:100%;background:#1a1a2e;"></div>'}
-              <div class="yt-play"><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="12" fill="rgba(0,0,0,0.5)"/><path d="M10 8l6 4-6 4V8z"/></svg></div>
-            </div>
-            <div class="yt-info">
-              <div class="yt-title">${item.title}</div>
-              <div class="yt-meta">
-                <span class="yt-badge"><svg width="10" height="7" viewBox="0 0 20 14"><rect width="20" height="14" rx="3" fill="#FF0000"/><polygon points="8,3.5 14,7 8,10.5" fill="white"/></svg> YouTube</span>
-                <span class="yt-date">${date}</span>
-              </div>
-            </div>
-          </a>`;
-      });
-    } catch(e) {
-      grid.innerHTML = `<div style="text-align:center;padding:24px;color:var(--text-dim);font-size:13px;">
-        Could not load videos. <a href="https://www.youtube.com/channel/UCXdqqgNKynhajdiUR_nMkUQ" target="_blank" style="color:var(--teal);">View on YouTube →</a>
-      </div>`;
-    }
-  }
-
-  function timeAgo(date) {
-    const diff = Math.floor((Date.now() - date) / 1000);
-    if (diff < 60) return 'Just now';
-    if (diff < 3600) return Math.floor(diff/60) + 'm ago';
-    if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
-    if (diff < 2592000) return Math.floor(diff/86400) + 'd ago';
-    if (diff < 31536000) return Math.floor(diff/2592000) + 'mo ago';
-    return Math.floor(diff/31536000) + 'y ago';
-  }
-
-  // ── TikTok: render grid with oEmbed thumbnails
-  function renderTikToks() {
-    const grid = document.getElementById('reelsGrid');
-    grid.innerHTML = '';
-    TIKTOKS.forEach(reel => {
-      const card = document.createElement('div');
-      card.className = 'reel-card';
-      card.onclick = () => window.open(reel.url, '_blank');
-      card.innerHTML = `<div class="reel-placeholder" style="position:absolute;inset:0;aspect-ratio:unset;border:none;border-radius:0;"><div class="pulse"></div><span>Loading...</span></div>`;
-      grid.appendChild(card);
-      fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent(reel.url)}`)
-        .then(r => r.json())
-        .then(data => {
-          if (data.thumbnail_url) {
-            card.innerHTML = `<img src="${data.thumbnail_url}" alt="${data.title||reel.title}" loading="lazy"/>
-              <div class="reel-overlay">
-                <div class="reel-platform">${TT_ICON}</div>
-                <div class="reel-bottom">${PLAY_BTN}</div>
-              </div>`;
-          } else { setTTFallback(card, reel); }
-        }).catch(() => setTTFallback(card, reel));
-    });
-  }
-
-  function setTTFallback(card, reel) {
-    card.innerHTML = `<div style="position:absolute;inset:0;background:linear-gradient(160deg,#010101,#1a1a2e);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;">${TT_ICON}<div style="font-size:10px;color:rgba(255,255,255,0.6);text-align:center;padding:0 8px;">${reel.title}</div></div>
-      <div class="reel-overlay"><div class="reel-platform">${TT_ICON}</div><div class="reel-bottom">${PLAY_BTN}</div></div>`;
-  }
-
   // ── Instagram: fetch from Behold public feed (with hardcoded fallback)
   const IG_FEED = 'https://feeds.behold.so/8kmjxx4i0FtHoqBCY9kD';
   const IG_ICON = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" style="opacity:.85"><rect x="2" y="2" width="20" height="20" rx="6"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1.2" fill="white" stroke="none"/></svg>`;
@@ -745,7 +635,6 @@
 
   // ── Init
   loadYouTube();
-  renderTikToks();
   loadInstagram();
 
   // Nav scroll
