@@ -35,9 +35,9 @@
 
     /* ── Page wrapper ── */
     .page {
-      max-width: 520px;
+      max-width: 960px;
       margin: 0 auto;
-      padding: 150px 16px 60px;
+      padding: 150px 24px 60px;
     }
 
     /* ── Header ── */
@@ -134,7 +134,7 @@
     /* ── Reels grid ── */
     .reels-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 6px;
       margin-bottom: 28px;
     }
@@ -236,7 +236,7 @@
     .footer a { color: var(--teal); text-decoration: none; }
 
     @media(max-width:400px) {
-      .reels-grid { grid-template-columns: repeat(2,1fr); }
+      .reels-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
     /* ── Ticker ── */
@@ -283,15 +283,16 @@
     }
     .nav-inner {
       max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: flex-start;
+      gap: 40px; padding: 10px 0 8px;
+    }
+    .nav-col {
       display: flex; flex-direction: column;
-      padding: 10px 0 8px;
+      align-items: flex-end; gap: 8px;
     }
-    .nav-row-1 { display: flex; align-items: center; gap: 40px; }
-    .nav-row-1 .nav-hamburger { margin-left: auto; }
-    .nav-row-2 {
-      display: flex; justify-content: flex-end; align-items: center;
-      gap: 10px; padding-top: 8px;
-    }
+    .nav-row-1 { display: flex; align-items: center; gap: 30px; list-style: none; }
+    .nav-row-2 { display: flex; align-items: center; gap: 10px; }
+    .nav-inner > .nav-hamburger { margin-left: auto; display: none; }
     .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
     .logo-img { height: 44px; width: auto; border-radius: 6px; box-shadow: 0 0 0 1px rgba(45,212,191,0.3); }
     .logo-text {
@@ -331,9 +332,92 @@
       text-decoration: none; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
     }
     @media (max-width: 900px) {
-      .nav-links, .nav-row-2 { display: none; }
-      .nav-hamburger { display: block; }
+      .nav-col { display: none; }
+      .nav-hamburger { display: block !important; }
     }
+
+    /* ── YouTube cards ── */
+    .yt-card {
+      display: flex; gap: 14px; align-items: flex-start;
+      background: var(--bg-2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px; margin-bottom: 10px;
+      cursor: pointer; transition: border-color 0.2s, background 0.2s;
+      text-decoration: none;
+    }
+    .yt-card:hover { border-color: rgba(255,0,0,0.4); background: rgba(255,0,0,0.04); }
+    .yt-thumb {
+      position: relative; flex-shrink: 0;
+      width: 200px; height: 113px; border-radius: 8px; overflow: hidden;
+      background: #111;
+    }
+    .yt-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .yt-play {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.3);
+    }
+    .yt-play svg { filter: drop-shadow(0 0 4px rgba(0,0,0,0.6)); }
+    .yt-info { flex: 1; min-width: 0; }
+    .yt-title {
+      font-size: 14px; font-weight: 600; color: var(--text);
+      line-height: 1.4; margin-bottom: 8px;
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .yt-meta { display: flex; align-items: center; gap: 6px; }
+    .yt-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; font-weight: 700; color: #FF0000;
+      background: rgba(255,0,0,0.1); border-radius: 4px; padding: 2px 6px;
+    }
+    .yt-date { font-size: 11px; color: var(--text-dim); }
+
+    /* ── Instagram profile card ── */
+    .ig-card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 24px 20px;
+      text-align: center; margin-bottom: 16px;
+    }
+    .ig-avatar {
+      width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 12px;
+      background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      padding: 2px;
+    }
+    .ig-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+    .ig-avatar-inner {
+      width: 100%; height: 100%; border-radius: 50%; overflow: hidden;
+      background: var(--bg-2);
+    }
+    .ig-name { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .ig-handle { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+    .ig-bio { font-size: 12px; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; }
+    .ig-follow-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 10px 24px; border-radius: 10px; font-size: 13px; font-weight: 700;
+      text-decoration: none; transition: all 0.2s;
+      background: linear-gradient(135deg, #f09433, #dc2743, #bc1888);
+      color: white;
+    }
+    .ig-follow-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    .ig-note { font-size: 11px; color: var(--text-dim); margin-top: 12px; }
+
+    /* ── Platform section visibility ── */
+    .platform-section { display: block; }
+    .platform-section.hidden { display: none; }
+
+    /* ── Loading skeleton ── */
+    .yt-skeleton {
+      background: var(--bg-2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 10px; margin-bottom: 10px;
+      display: flex; gap: 12px;
+    }
+    .skel-thumb { width: 200px; height: 113px; border-radius: 8px; background: var(--bg-3); animation: shimmer 1.5s ease-in-out infinite; }
+    .skel-lines { flex: 1; display: flex; flex-direction: column; gap: 8px; padding-top: 4px; }
+    .skel-line { height: 10px; border-radius: 4px; background: var(--bg-3); animation: shimmer 1.5s ease-in-out infinite; }
+    .skel-line.short { width: 60%; }
+    @keyframes shimmer { 0%,100%{opacity:0.4} 50%{opacity:0.9} }
+
   </style>
 </head>
 <body>
@@ -346,12 +430,12 @@
   <!-- Nav -->
   <nav class="nav" id="mainNav">
     <div class="nav-inner">
-      <div class="nav-row-1">
-        <a href="index.html" class="nav-logo">
-          <img src="logo.png" class="logo-img" alt="Trends &amp; Trade" onerror="this.style.display='none'"/>
-          <div class="logo-text">Trends <span>&amp;</span> Trade</div>
-        </a>
-        <ul class="nav-links">
+      <a href="index.html" class="nav-logo">
+        <img src="logo.png" class="logo-img" alt="Trends &amp; Trade" onerror="this.style.display='none'"/>
+        <div class="logo-text">Trends <span>&amp;</span> Trade</div>
+      </a>
+      <div class="nav-col">
+        <ul class="nav-row-1 nav-links">
           <li><a href="index.html#about">About</a></li>
           <li><a href="index.html#resources">Free Resources</a></li>
           <li><a href="index.html#courses">Courses</a></li>
@@ -360,12 +444,12 @@
           <li><a href="team.html">Our Team</a></li>
           <li><a href="social.html" style="color:var(--teal);">Media</a></li>
         </ul>
-        <button class="nav-hamburger" onclick="toggleMenu()">☰</button>
+        <div class="nav-row-2">
+          <a href="index.html#courses" class="nav-btn nav-btn-outline">View Courses</a>
+          <a href="index.html#email" class="nav-btn nav-btn-primary">Get Free Analysis</a>
+        </div>
       </div>
-      <div class="nav-row-2">
-        <a href="index.html#courses" class="nav-btn nav-btn-outline">View Courses</a>
-        <a href="index.html#email" class="nav-btn nav-btn-primary">Get Free Analysis</a>
-      </div>
+      <button class="nav-hamburger" onclick="toggleMenu()">☰</button>
     </div>
   </nav>
 
@@ -405,19 +489,46 @@
       </svg>
       @trendsandtradeuae
     </a>
+    <a class="social-btn" href="https://www.youtube.com/channel/UCXdqqgNKynhajdiUR_nMkUQ" target="_blank" rel="noopener" style="color:#FF0000;">
+      <svg width="20" height="14" viewBox="0 0 20 14" fill="none">
+        <rect width="20" height="14" rx="3" fill="#FF0000"/>
+        <polygon points="8,4 14,7 8,10" fill="white"/>
+      </svg>
+      SNR Trades
+    </a>
   </div>
 
-  <!-- Tabs -->
+  <!-- Platform tabs -->
   <div class="tabs">
-    <button class="tab active" onclick="filterReels('all',this)">All Reels</button>
-    <button class="tab" onclick="filterReels('tiktok',this)">TikTok</button>
-    <button class="tab" onclick="filterReels('instagram',this)">Instagram</button>
+    <button class="tab active" onclick="showPlatform('all',this)">All</button>
+    <button class="tab" onclick="showPlatform('youtube',this)">
+      <svg width="14" height="10" viewBox="0 0 20 14" fill="none" style="margin-right:4px;vertical-align:middle"><rect width="20" height="14" rx="3" fill="#FF0000"/><polygon points="8,3.5 14,7 8,10.5" fill="white"/></svg>YouTube
+    </button>
+    <button class="tab" onclick="showPlatform('instagram',this)">Instagram</button>
+    <button class="tab" onclick="showPlatform('tiktok',this)">TikTok</button>
   </div>
 
-  <div class="section-label">Latest videos</div>
+  <!-- YouTube section -->
+  <div class="platform-section" id="section-youtube">
+    <div class="section-label">Latest from YouTube</div>
+    <div id="ytGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
+      <div class="yt-skeleton"><div class="skel-thumb"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line short"></div></div></div>
+      <div class="yt-skeleton"><div class="skel-thumb"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line short"></div></div></div>
+      <div class="yt-skeleton"><div class="skel-thumb"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line short"></div></div></div>
+    </div>
+  </div>
 
-  <!-- Reels grid — populated by JS -->
-  <div class="reels-grid" id="reelsGrid"></div>
+  <!-- Instagram section -->
+  <div class="platform-section" id="section-instagram">
+    <div class="section-label">Latest from Instagram</div>
+    <div class="reels-grid" id="igGrid"><div class="ig-loading">Loading posts…</div></div>
+  </div>
+
+  <!-- TikTok section -->
+  <div class="platform-section" id="section-tiktok">
+    <div class="section-label">Latest from TikTok</div>
+    <div class="reels-grid" id="reelsGrid"></div>
+  </div>
 
   <!-- Quick links -->
   <div class="section-label">Explore</div>
@@ -470,115 +581,170 @@
 </div>
 
 <script>
-  // ── Reel data — add more entries here as you post new videos
-  const REELS = [
-    {
-      platform: 'tiktok',
-      url: 'https://www.tiktok.com/@trendsandtradeuae/video/7647181014560787728',
-      id: '7647181014560787728',
-      title: 'Trading Reel'
-    },
-    {
-      platform: 'tiktok',
-      url: 'https://www.tiktok.com/@trendsandtradeuae/video/7647162831225261329',
-      id: '7647162831225261329',
-      title: 'Trading Reel'
-    },
-    {
-      platform: 'tiktok',
-      url: 'https://www.tiktok.com/@trendsandtradeuae/video/7647170927456800017',
-      id: '7647170927456800017',
-      title: 'Trading Reel'
-    },
-    {
-      platform: 'tiktok',
-      url: 'https://www.tiktok.com/@trendsandtradeuae/video/7647175176173489424',
-      id: '7647175176173489424',
-      title: 'Trading Reel'
-    },
-    // ── Add Instagram reels here:
-    // { platform:'instagram', url:'https://www.instagram.com/reel/XXXX/', id:'XXXX', title:'Reel title' },
+  // ── TikTok video data — add more entries as you post
+  // TikTok feed: reads from Admin panel (localStorage) with hardcoded fallback
+  const TT_DEFAULTS = [
+    { url:'https://www.tiktok.com/@trendsandtradeuae/video/7647181014560787728', id:'7647181014560787728', title:'Trading Reel' },
+    { url:'https://www.tiktok.com/@trendsandtradeuae/video/7647162831225261329', id:'7647162831225261329', title:'Trading Reel' },
+    { url:'https://www.tiktok.com/@trendsandtradeuae/video/7647170927456800017', id:'7647170927456800017', title:'Trading Reel' },
+    { url:'https://www.tiktok.com/@trendsandtradeuae/video/7647175176173489424', id:'7647175176173489424', title:'Trading Reel' },
   ];
+  let TIKTOKS;
+  try {
+    const saved = localStorage.getItem('snr_tiktok_feeds');
+    TIKTOKS = saved ? JSON.parse(saved) : TT_DEFAULTS;
+    if (!Array.isArray(TIKTOKS) || !TIKTOKS.length) TIKTOKS = TT_DEFAULTS;
+  } catch(e) { TIKTOKS = TT_DEFAULTS; }
 
-  let currentFilter = 'all';
-
-  // Platform icon SVGs
-  const ICONS = {
-    tiktok: `<svg width="14" height="14" viewBox="0 0 24 24" fill="white" opacity="0.9"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.79a8.18 8.18 0 004.78 1.52V6.88a4.85 4.85 0 01-1.01-.19z"/></svg>`,
-    instagram: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" opacity="0.9"><rect x="2" y="2" width="20" height="20" rx="6"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1.2" fill="white" stroke="none"/></svg>`
-  };
-
+  const TT_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="white" opacity="0.9"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.79a8.18 8.18 0 004.78 1.52V6.88a4.85 4.85 0 01-1.01-.19z"/></svg>`;
   const PLAY_BTN = `<div class="play-circle"><svg width="14" height="14" viewBox="0 0 16 16" fill="white"><path d="M5 3l8 5-8 5V3z"/></svg></div>`;
 
-  function renderGrid(filter) {
-    const grid = document.getElementById('reelsGrid');
-    const filtered = filter === 'all' ? REELS : REELS.filter(r => r.platform === filter);
-    grid.innerHTML = '';
-
-    filtered.forEach(reel => {
-      const card = document.createElement('div');
-      card.className = 'reel-card';
-      card.dataset.platform = reel.platform;
-      card.onclick = () => window.open(reel.url, '_blank');
-
-      // Start with placeholder
-      card.innerHTML = `
-        <div class="reel-placeholder" style="position:absolute;inset:0;aspect-ratio:unset;border:none;border-radius:0;">
-          <div class="pulse"></div>
-          <span>Loading...</span>
-        </div>`;
-      grid.appendChild(card);
-
-      // Fetch thumbnail via oEmbed
-      const oembedUrl = reel.platform === 'tiktok'
-        ? `https://www.tiktok.com/oembed?url=${encodeURIComponent(reel.url)}`
-        : `https://www.instagram.com/oembed/?url=${encodeURIComponent(reel.url)}`;
-
-      fetch(oembedUrl)
-        .then(r => r.json())
-        .then(data => {
-          const thumb = data.thumbnail_url;
-          const title = data.title || reel.title;
-          if (thumb) {
-            card.innerHTML = `
-              <img src="${thumb}" alt="${title}" loading="lazy"/>
-              <div class="reel-overlay">
-                <div class="reel-platform">${ICONS[reel.platform]}</div>
-                <div class="reel-bottom">${PLAY_BTN}</div>
-              </div>`;
-          } else {
-            setFallback(card, reel);
-          }
-        })
-        .catch(() => setFallback(card, reel));
+  // ── Platform tab switching
+  function showPlatform(platform, btn) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    const sections = ['youtube','instagram','tiktok'];
+    sections.forEach(s => {
+      const el = document.getElementById('section-' + s);
+      el.classList.toggle('hidden', platform !== 'all' && platform !== s);
     });
   }
 
-  function setFallback(card, reel) {
-    const colors = {
-      tiktok: 'linear-gradient(160deg,#010101,#1a1a2e)',
-      instagram: 'linear-gradient(160deg,#833ab4,#fd1d1d,#f09433)'
-    };
-    card.innerHTML = `
-      <div style="position:absolute;inset:0;background:${colors[reel.platform]};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;">
-        ${ICONS[reel.platform]}
-        <div style="font-size:10px;color:rgba(255,255,255,0.6);text-align:center;padding:0 8px;">${reel.title}</div>
-      </div>
-      <div class="reel-overlay">
-        <div class="reel-platform">${ICONS[reel.platform]}</div>
-        <div class="reel-bottom">${PLAY_BTN}</div>
+  // ── YouTube: fetch latest videos via RSS2JSON
+  async function loadYouTube() {
+    const channelId = 'UCXdqqgNKynhajdiUR_nMkUQ';
+    const rssUrl = encodeURIComponent(`https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`);
+    const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`;
+    const grid = document.getElementById('ytGrid');
+    try {
+      const r = await fetch(apiUrl, {signal: AbortSignal.timeout(8000)});
+      const d = await r.json();
+      if (!d.items || d.items.length === 0) throw new Error('No items');
+      grid.innerHTML = '';
+      d.items.slice(0, 6).forEach(item => {
+        const videoId = item.link.split('v=')[1]?.split('&')[0] || '';
+        const thumb = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : '';
+        const date = item.pubDate ? timeAgo(new Date(item.pubDate)) : '';
+        grid.innerHTML += `
+          <a class="yt-card" href="${item.link}" target="_blank" rel="noopener">
+            <div class="yt-thumb">
+              ${thumb ? `<img src="${thumb}" alt="${item.title}" loading="lazy"/>` : '<div style="width:100%;height:100%;background:#1a1a2e;"></div>'}
+              <div class="yt-play"><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="12" fill="rgba(0,0,0,0.5)"/><path d="M10 8l6 4-6 4V8z"/></svg></div>
+            </div>
+            <div class="yt-info">
+              <div class="yt-title">${item.title}</div>
+              <div class="yt-meta">
+                <span class="yt-badge"><svg width="10" height="7" viewBox="0 0 20 14"><rect width="20" height="14" rx="3" fill="#FF0000"/><polygon points="8,3.5 14,7 8,10.5" fill="white"/></svg> YouTube</span>
+                <span class="yt-date">${date}</span>
+              </div>
+            </div>
+          </a>`;
+      });
+    } catch(e) {
+      grid.innerHTML = `<div style="text-align:center;padding:24px;color:var(--text-dim);font-size:13px;">
+        Could not load videos. <a href="https://www.youtube.com/channel/UCXdqqgNKynhajdiUR_nMkUQ" target="_blank" style="color:var(--teal);">View on YouTube →</a>
       </div>`;
+    }
   }
 
-  function filterReels(filter, btn) {
-    currentFilter = filter;
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-    renderGrid(filter);
+  function timeAgo(date) {
+    const diff = Math.floor((Date.now() - date) / 1000);
+    if (diff < 60) return 'Just now';
+    if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+    if (diff < 2592000) return Math.floor(diff/86400) + 'd ago';
+    if (diff < 31536000) return Math.floor(diff/2592000) + 'mo ago';
+    return Math.floor(diff/31536000) + 'y ago';
   }
 
-  // Initial render
-  renderGrid('all');
+  // ── TikTok: render grid with oEmbed thumbnails
+  function renderTikToks() {
+    const grid = document.getElementById('reelsGrid');
+    grid.innerHTML = '';
+    TIKTOKS.forEach(reel => {
+      const card = document.createElement('div');
+      card.className = 'reel-card';
+      card.onclick = () => window.open(reel.url, '_blank');
+      card.innerHTML = `<div class="reel-placeholder" style="position:absolute;inset:0;aspect-ratio:unset;border:none;border-radius:0;"><div class="pulse"></div><span>Loading...</span></div>`;
+      grid.appendChild(card);
+      fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent(reel.url)}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.thumbnail_url) {
+            card.innerHTML = `<img src="${data.thumbnail_url}" alt="${data.title||reel.title}" loading="lazy"/>
+              <div class="reel-overlay">
+                <div class="reel-platform">${TT_ICON}</div>
+                <div class="reel-bottom">${PLAY_BTN}</div>
+              </div>`;
+          } else { setTTFallback(card, reel); }
+        }).catch(() => setTTFallback(card, reel));
+    });
+  }
+
+  function setTTFallback(card, reel) {
+    card.innerHTML = `<div style="position:absolute;inset:0;background:linear-gradient(160deg,#010101,#1a1a2e);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;">${TT_ICON}<div style="font-size:10px;color:rgba(255,255,255,0.6);text-align:center;padding:0 8px;">${reel.title}</div></div>
+      <div class="reel-overlay"><div class="reel-platform">${TT_ICON}</div><div class="reel-bottom">${PLAY_BTN}</div></div>`;
+  }
+
+  // ── Instagram: fetch from Behold public feed (with hardcoded fallback)
+  const IG_FEED = 'https://feeds.behold.so/8kmjxx4i0FtHoqBCY9kD';
+  const IG_ICON = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" style="opacity:.85"><rect x="2" y="2" width="20" height="20" rx="6"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1.2" fill="white" stroke="none"/></svg>`;
+  const IG_FALLBACK = [
+    { permalink:"https://www.instagram.com/reel/DZInUyKI1aX/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxODE1MDkxODg1OTQ5MTUwMSIsImgiOiJzNWFreXAifQ.jpg?class=originalSmall", caption:"Growth In Trading, Potential Future", likes:4, comments:0 },
+    { permalink:"https://www.instagram.com/reel/DZIm8WAougv/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxODA4MzU3MjIzODQwNzgzMSIsImgiOiJoamd0NHIifQ.jpg?class=originalSmall", caption:"Misconceptions about trading", likes:5, comments:0 },
+    { permalink:"https://www.instagram.com/reel/DZImz3DIfL4/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxODA0NTQxNTY5MTU2ODUzMSIsImgiOiJxdmxwNTkifQ.jpg?class=originalSmall", caption:"Patience vs Impulse: The Real Key to Smart Trading", likes:4, comments:0 },
+    { permalink:"https://www.instagram.com/reel/DZImvDuIhWJ/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxODM1Mjk5MjIxMTI0NjAzMCIsImgiOiIxOTJhemxsIn0.jpg?class=originalSmall", caption:"Risk and Reward Discipline", likes:4, comments:0 },
+    { permalink:"https://www.instagram.com/reel/DZImZCmo_-o/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxNzg3OTYxMjY4MjU5OTM5MyIsImgiOiJ1OWE3bmcifQ.jpg?class=originalSmall", caption:"Time and effort is required to learn Trading", likes:4, comments:0 },
+    { permalink:"https://www.instagram.com/reel/DZIgpNYIH9F/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxNzk0NjA4MDUyNjE5Njg5OCIsImgiOiIxNHV4MzBhIn0.jpg?class=originalSmall", caption:"The Truth Behind Flashy Trading Lifestyles", likes:9, comments:0 }
+  ];
+
+  function renderIgPosts(posts) {
+    const grid = document.getElementById('igGrid');
+    grid.innerHTML = '';
+    posts.forEach(post => {
+      const card = document.createElement('div');
+      card.className = 'reel-card';
+      card.onclick = () => window.open(post.permalink, '_blank');
+      card.innerHTML = `
+        <img src="${post.thumb}" alt="${post.caption.slice(0,60)}" loading="lazy"/>
+        <div class="reel-overlay">
+          <div class="reel-platform">${IG_ICON}</div>
+          <div class="reel-bottom">${PLAY_BTN}</div>
+        </div>`;
+      grid.appendChild(card);
+    });
+  }
+
+  async function loadInstagram() {
+    // Try live Behold API first (works on server; blocked locally by CORS)
+    try {
+      const res = await fetch(IG_FEED);
+      if (!res.ok) throw new Error('bad status');
+      const data = await res.json();
+      const posts = (data.posts || []).map(p => ({
+        permalink: p.permalink,
+        thumb: p.sizes?.small?.mediaUrl || p.thumbnailUrl || '',
+        caption: p.prunedCaption || p.caption || '',
+        likes: p.likeCount ?? 0,
+        comments: p.commentsCount ?? 0
+      }));
+      if (posts.length) {
+        if (data.profilePictureUrl) {
+          const av = document.getElementById('igAvatar');
+          if (av) av.src = data.profilePictureUrl;
+        }
+        renderIgPosts(posts);
+        return;
+      }
+    } catch(e) { /* fall through to hardcoded data */ }
+    // Fallback: use cached post data
+    renderIgPosts(IG_FALLBACK);
+  }
+
+  // ── Init
+  loadYouTube();
+  renderTikToks();
+  loadInstagram();
 
   // Nav scroll
   window.addEventListener('scroll', () => {
