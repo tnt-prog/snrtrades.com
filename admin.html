@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SNR Trades — Admin</title>
+  <style>
+    :root {
+      --teal: #2DD4BF; --teal-dark: #1faa96;
+      --bg: #070F1A; --bg-2: #0A1628; --bg-3: #111e35;
+      --border: rgba(45,212,191,0.18); --border-dim: rgba(255,255,255,0.06);
+      --text: #F0F6FF; --text-muted: rgba(240,246,255,0.55); --text-dim: rgba(240,246,255,0.3);
+      --red: #EF4444; --green: #22C55E;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+      padding: 40px 20px;
+    }
+
+    /* ── Login ── */
+    #loginScreen {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 20px; margin-top: 80px;
+    }
+    .login-logo {
+      font-size: 22px; font-weight: 800; letter-spacing: 0.3px; color: var(--text);
+      margin-bottom: 8px;
+    }
+    .login-logo span { color: var(--teal); }
+    .login-card {
+      background: var(--bg-2); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px 28px; width: 320px;
+      display: flex; flex-direction: column; gap: 16px; align-items: stretch;
+    }
+    .login-title { font-size: 16px; font-weight: 700; text-align: center; color: var(--text); }
+    .login-sub { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: -8px; }
+    .field-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .input {
+      background: var(--bg-3); border: 1px solid var(--border);
+      border-radius: 10px; padding: 11px 14px;
+      font-size: 14px; color: var(--text); outline: none; width: 100%;
+      transition: border-color 0.2s;
+    }
+    .input:focus { border-color: var(--teal); }
+    .input::placeholder { color: var(--text-dim); }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+      border-radius: 10px; font-weight: 700; font-size: 13px;
+      text-decoration: none; transition: all 0.2s; cursor: pointer; border: none;
+      padding: 11px 18px;
+    }
+    .btn-primary { background: var(--teal); color: #070F1A; }
+    .btn-primary:hover { background: var(--teal-dark); }
+    .btn-outline {
+      background: transparent; border: 1px solid rgba(45,212,191,0.35);
+      color: var(--teal);
+    }
+    .btn-outline:hover { background: rgba(45,212,191,0.08); }
+    .btn-danger {
+      background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3);
+      color: var(--red); padding: 6px 10px; font-size: 12px;
+    }
+    .btn-danger:hover { background: rgba(239,68,68,0.22); }
+    .btn-icon {
+      background: rgba(255,255,255,0.05); border: 1px solid var(--border-dim);
+      color: var(--text-muted); padding: 5px 8px; font-size: 13px; border-radius: 7px;
+    }
+    .btn-icon:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+    .login-error {
+      font-size: 12px; color: var(--red); text-align: center;
+      display: none; background: rgba(239,68,68,0.08);
+      border-radius: 8px; padding: 8px 12px;
+    }
+
+    /* ── Admin panel ── */
+    #adminPanel { display: none; width: 100%; max-width: 680px; }
+    .admin-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 28px; flex-wrap: wrap; gap: 12px;
+    }
+    .admin-title { font-size: 20px; font-weight: 800; }
+    .admin-title span { color: var(--teal); }
+    .admin-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+
+    /* ── Add URL card ── */
+    .add-card {
+      background: var(--bg-2); border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px 20px 16px;
+      margin-bottom: 20px;
+    }
+    .add-card-title {
+      font-size: 13px; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px;
+    }
+    .add-row { display: flex; gap: 10px; align-items: stretch; }
+    .add-row .input { flex: 1; }
+    .url-hint { font-size: 11px; color: var(--text-dim); margin-top: 8px; }
+    .url-hint code {
+      font-family: monospace; background: rgba(255,255,255,0.05);
+      padding: 1px 5px; border-radius: 4px; color: var(--text-muted);
+    }
+
+    /* ── Feed list ── */
+    .feed-list-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .feed-count {
+      font-size: 13px; font-weight: 600; color: var(--text-muted);
+    }
+    .feed-count strong { color: var(--teal); }
+    .feed-empty {
+      background: var(--bg-2); border: 1px dashed rgba(45,212,191,0.2);
+      border-radius: 12px; padding: 32px; text-align: center;
+      color: var(--text-dim); font-size: 13px;
+    }
+    .feed-row {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--bg-2); border: 1px solid var(--border-dim);
+      border-radius: 12px; padding: 12px 14px;
+      margin-bottom: 8px; transition: border-color 0.2s;
+    }
+    .feed-row:hover { border-color: var(--border); }
+    .feed-row-num {
+      width: 22px; text-align: center; flex-shrink: 0;
+      font-size: 12px; font-weight: 700; color: var(--text-dim);
+    }
+    .feed-thumb {
+      width: 36px; height: 64px; border-radius: 6px; overflow: hidden;
+      background: var(--bg-3); flex-shrink: 0; position: relative;
+    }
+    .feed-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .feed-thumb-placeholder {
+      width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+    }
+    .feed-info { flex: 1; min-width: 0; }
+    .feed-title-input {
+      background: transparent; border: none; outline: none;
+      font-size: 13px; font-weight: 600; color: var(--text); width: 100%;
+      padding: 0; margin-bottom: 4px;
+    }
+    .feed-title-input:focus {
+      background: rgba(255,255,255,0.04); border-radius: 4px;
+      padding: 1px 4px; margin: -1px -4px;
+    }
+    .feed-url-display {
+      font-size: 11px; color: var(--text-dim);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      max-width: 340px;
+    }
+    .feed-actions { display: flex; gap: 4px; flex-shrink: 0; align-items: center; }
+
+    /* ── Save bar ── */
+    .save-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--bg-2); border-top: 1px solid var(--border);
+      padding: 14px 24px; display: flex; align-items: center;
+      justify-content: center; gap: 14px; z-index: 99;
+    }
+    .save-status {
+      font-size: 12px; color: var(--text-muted); min-width: 180px; text-align: center;
+    }
+    .save-status.saved { color: var(--green); }
+    .save-status.unsaved { color: rgba(255,200,0,0.8); }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed; top: 20px; right: 20px;
+      background: var(--bg-3); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 16px;
+      font-size: 13px; color: var(--text);
+      opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999;
+    }
+    #toast.show { opacity: 1; }
+    #toast.success { border-color: rgba(34,197,94,0.4); color: var(--green); }
+    #toast.error { border-color: rgba(239,68,68,0.4); color: var(--red); }
+
+    .pb60 { padding-bottom: 70px; }
+  </style>
+</head>
+<body>
+
+  <!-- Login screen -->
+  <div id="loginScreen">
+    <div class="login-logo">SNR <span>Trades</span></div>
+    <div class="login-card">
+      <div class="login-title">Admin Panel</div>
+      <div class="login-sub">Manage your TikTok feed</div>
+      <div>
+        <div class="field-label" style="margin-bottom:6px">Password</div>
+        <input type="password" class="input" id="passwordInput" placeholder="Enter password" autocomplete="current-password"/>
+      </div>
+      <button class="btn btn-primary" onclick="doLogin()">Login</button>
+      <div class="login-error" id="loginError">Incorrect password. Try again.</div>
+    </div>
+  </div>
+
+  <!-- Admin panel -->
+  <div id="adminPanel" class="pb60">
+    <div class="admin-header">
+      <div>
+        <div class="admin-title">TikTok <span>Feed Manager</span></div>
+        <div class="admin-subtitle">Changes save to this browser and appear on the Media page instantly</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <a href="social.html" class="btn btn-outline" target="_blank">View Media Page ↗</a>
+        <button class="btn btn-outline" onclick="doLogout()" style="font-size:12px;padding:9px 14px">Logout</button>
+      </div>
+    </div>
+
+    <!-- Add new -->
+    <div class="add-card">
+      <div class="add-card-title">Add TikTok Video</div>
+      <div class="add-row">
+        <input type="text" class="input" id="newUrl" placeholder="Paste TikTok URL…" onkeydown="if(event.key==='Enter')addVideo()"/>
+        <button class="btn btn-primary" onclick="addVideo()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add
+        </button>
+      </div>
+      <div class="url-hint">Paste the full TikTok URL, e.g. <code>https://www.tiktok.com/@trendsandtradeuae/video/7647181014560787728</code></div>
+    </div>
+
+    <!-- Feed list -->
+    <div class="feed-list-header">
+      <div class="feed-count" id="feedCount">0 videos</div>
+      <button class="btn btn-outline" onclick="clearAll()" style="font-size:11px;padding:6px 12px;color:var(--red);border-color:rgba(239,68,68,0.3)">Clear All</button>
+    </div>
+    <div id="feedList"></div>
+  </div>
+
+  <!-- Save bar -->
+  <div class="save-bar">
+    <div class="save-status" id="saveStatus">No changes</div>
+    <button class="btn btn-primary" onclick="saveFeeds()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      Save to Media Page
+    </button>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    // ── CONFIG — change password here ──
+    const ADMIN_PASSWORD = 'snr2024';
+    const STORAGE_KEY = 'snr_tiktok_feeds';
+    const TT_ICON = `<svg width="12" height="14" viewBox="0 0 16 18" fill="white"><path d="M15.2 3.8a4.5 4.5 0 01-4.5-4.5h-3v12.3a1.8 1.8 0 11-2.5-1.7V6.7a5.3 5.3 0 104.7 5.3V7.5a7.5 7.5 0 004.3 1.3V5.5a4.5 4.5 0 01-1-.2z"/></svg>`;
+
+    let feeds = [];
+    let dirty = false;
+
+    // ── Auth ──
+    function doLogin() {
+      const pw = document.getElementById('passwordInput').value;
+      if (pw === ADMIN_PASSWORD) {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'block';
+        loadFromStorage();
+      } else {
+        document.getElementById('loginError').style.display = 'block';
+        document.getElementById('passwordInput').value = '';
+      }
+    }
+    document.getElementById('passwordInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') doLogin();
+    });
+    function doLogout() {
+      document.getElementById('adminPanel').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('passwordInput').value = '';
+    }
+
+    // ── Storage ──
+    function loadFromStorage() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        feeds = saved ? JSON.parse(saved) : getDefaults();
+      } catch(e) { feeds = getDefaults(); }
+      dirty = false;
+      renderList();
+      updateStatus();
+    }
+
+    function getDefaults() {
+      return [
+        { url:'https://www.tiktok.com/@trendsandtradeuae/video/7647181014560787728', id:'7647181014560787728', title:'Trading Reel' },
+        { url:'https://www.tiktok.com/@trendsandtradeuae/video/7647162831225261329', id:'7647162831225261329', title:'Trading Reel' },
+        { url:'https://www.tiktok.com/@trendsandtradeuae/video/7647170927456800017', id:'7647170927456800017', title:'Trading Reel' },
+        { url:'https://www.tiktok.com/@trendsandtradeuae/video/7647175176173489424', id:'7647175176173489424', title:'Trading Reel' }
+      ];
+    }
+
+    function saveFeeds() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(feeds));
+      dirty = false;
+      updateStatus();
+      showToast('Saved! Media page updated.', 'success');
+    }
+
+    function clearAll() {
+      if (!confirm('Remove all TikTok videos from the feed?')) return;
+      feeds = [];
+      dirty = true;
+      renderList();
+      updateStatus();
+    }
+
+    // ── Extract video ID from TikTok URL ──
+    function extractId(url) {
+      const m = url.match(/\/video\/(\d+)/);
+      return m ? m[1] : null;
+    }
+
+    // ── Add ──
+    function addVideo() {
+      const input = document.getElementById('newUrl');
+      const url = input.value.trim();
+      if (!url) return;
+      const id = extractId(url);
+      if (!id) {
+        showToast('Could not find a video ID in that URL. Make sure it's a TikTok video link.', 'error');
+        return;
+      }
+      if (feeds.find(f => f.id === id)) {
+        showToast('That video is already in the feed.', 'error');
+        return;
+      }
+      feeds.push({ url, id, title: 'Trading Reel' });
+      input.value = '';
+      dirty = true;
+      renderList();
+      updateStatus();
+      // Auto-save
+      saveFeeds();
+    }
+
+    // ── Delete ──
+    function deleteVideo(idx) {
+      feeds.splice(idx, 1);
+      dirty = true;
+      renderList();
+      updateStatus();
+      saveFeeds();
+    }
+
+    // ── Move up/down ──
+    function moveVideo(idx, dir) {
+      const newIdx = idx + dir;
+      if (newIdx < 0 || newIdx >= feeds.length) return;
+      [feeds[idx], feeds[newIdx]] = [feeds[newIdx], feeds[idx]];
+      dirty = true;
+      renderList();
+      updateStatus();
+      saveFeeds();
+    }
+
+    // ── Update title ──
+    function updateTitle(idx, val) {
+      feeds[idx].title = val;
+      dirty = true;
+      updateStatus();
+    }
+
+    // ── Render list ──
+    function renderList() {
+      const list = document.getElementById('feedList');
+      const count = document.getElementById('feedCount');
+      count.innerHTML = `<strong>${feeds.length}</strong> video${feeds.length !== 1 ? 's' : ''} in feed`;
+
+      if (!feeds.length) {
+        list.innerHTML = '<div class="feed-empty">No TikTok videos added yet.<br/>Paste a URL above to get started.</div>';
+        return;
+      }
+
+      list.innerHTML = feeds.map((f, i) => `
+        <div class="feed-row" id="row-${i}">
+          <div class="feed-row-num">${i + 1}</div>
+          <div class="feed-thumb" id="thumb-${i}">
+            <div class="feed-thumb-placeholder">${TT_ICON}</div>
+          </div>
+          <div class="feed-info">
+            <input type="text" class="feed-title-input" value="${escHtml(f.title)}"
+              onchange="updateTitle(${i}, this.value)" title="Click to rename"/>
+            <div class="feed-url-display">${escHtml(f.url)}</div>
+          </div>
+          <div class="feed-actions">
+            <button class="btn btn-icon" onclick="moveVideo(${i}, -1)" title="Move up" ${i===0?'disabled style="opacity:.35"':''}>↑</button>
+            <button class="btn btn-icon" onclick="moveVideo(${i}, 1)"  title="Move down" ${i===feeds.length-1?'disabled style="opacity:.35"':''}>↓</button>
+            <button class="btn btn-danger" onclick="deleteVideo(${i})" title="Remove">✕</button>
+          </div>
+        </div>
+      `).join('');
+
+      // Lazy-load thumbnails via oEmbed
+      feeds.forEach((f, i) => {
+        fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent(f.url)}`)
+          .then(r => r.json())
+          .then(data => {
+            const el = document.getElementById(`thumb-${i}`);
+            if (el && data.thumbnail_url) {
+              el.innerHTML = `<img src="${data.thumbnail_url}" alt="${escHtml(f.title)}"/>`;
+            }
+          }).catch(() => {});
+      });
+    }
+
+    function updateStatus() {
+      const el = document.getElementById('saveStatus');
+      if (dirty) {
+        el.textContent = 'Unsaved changes';
+        el.className = 'save-status unsaved';
+      } else {
+        el.textContent = 'All changes saved ✓';
+        el.className = 'save-status saved';
+      }
+    }
+
+    function escHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ── Toast ──
+    let toastTimer;
+    function showToast(msg, type='') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'show ' + type;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { t.className = ''; }, 3000);
+    }
+
+    // Auto-login if already authenticated this session
+    if (sessionStorage.getItem('snr_admin') === '1') {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+      loadFromStorage();
+    }
+    document.getElementById('loginScreen') && (function(){
+      const orig = doLogin;
+      window.doLogin = function() {
+        const pw = document.getElementById('passwordInput').value;
+        if (pw === ADMIN_PASSWORD) sessionStorage.setItem('snr_admin','1');
+        orig();
+      };
+    })();
+  </script>
+</body>
+</html>
