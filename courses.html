@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trends & Trade — Free Courses</title>
+  <meta name="description" content="Free trading courses by SNR Trades — learn chart analysis, S&R strategy, and market fundamentals."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #070F1A; --bg-2: #0A1628; --bg-3: #0D1E34;
+      --teal: #2DD4BF; --teal-dark: #0D9488;
+      --border: rgba(45,212,191,0.18); --border-dim: rgba(255,255,255,0.06);
+      --text: #F0F4F8; --text-muted: #94A3B8; --text-dim: #4A5568;
+      --green: #22C55E; --red: #EF4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+
+    /* ── Ticker ── */
+    .ticker-bar {
+      background: var(--bg-2); border-bottom: 1px solid var(--border);
+      padding: 8px 0; overflow: hidden; position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    }
+    .ticker-track { display: flex; gap: 0; white-space: nowrap; animation: tickerScroll 40s linear infinite; }
+    .ticker-track:hover { animation-play-state: paused; }
+    @keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .tick-item { display: inline-flex; align-items: center; gap: 8px; padding: 0 24px; font-size: 11px; font-weight: 600; border-right: 1px solid var(--border-dim); white-space: nowrap; }
+    .tick-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .tick-dot.up { background: var(--green); } .tick-dot.dn { background: var(--red); }
+    .tick-name { color: var(--text-muted); }
+    .tick-price { color: var(--text); }
+    .tick-change.up { color: var(--green); } .tick-change.dn { color: var(--red); }
+
+    /* ── Nav ── */
+    .nav {
+      position: fixed; top: 33px; left: 0; right: 0; z-index: 100;
+      background: rgba(7,15,26,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid transparent; transition: border-color 0.3s;
+    }
+    .nav.scrolled { border-bottom-color: var(--border); }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: flex-start;
+      gap: 40px; padding: 10px 24px 8px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; flex-shrink: 0; }
+    .logo-img { width: 40px; height: 40px; object-fit: contain; }
+    .logo-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px; font-weight: 800; letter-spacing: 0.3px; color: var(--text);
+    }
+    .logo-text span { color: var(--teal); }
+    .nav-col { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+    .nav-row-1 { display: flex; align-items: center; gap: 30px; list-style: none; }
+    .nav-row-2 { display: flex; align-items: center; gap: 10px; }
+    .nav-links a { font-size: 13px; font-weight: 600; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--teal); }
+    .nav-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 10px; font-weight: 700; text-decoration: none;
+      transition: all 0.2s; cursor: pointer; border: none;
+      padding: 9px 18px; font-size: 13px;
+    }
+    .nav-btn-outline { background: transparent; border: 1px solid rgba(45,212,191,0.4); color: var(--teal); }
+    .nav-btn-outline:hover { background: rgba(45,212,191,0.08); }
+    .nav-btn-primary { background: var(--teal); color: #070F1A; }
+    .nav-btn-primary:hover { background: var(--teal-dark); }
+    .nav-hamburger { display: none; background: none; border: none; color: var(--text); font-size: 22px; cursor: pointer; margin-left: auto; }
+    .mobile-menu {
+      display: none; position: fixed; top: 110px; left: 0; right: 0; bottom: 0;
+      background: var(--bg-2); z-index: 99;
+      padding: 32px 24px; flex-direction: column; gap: 24px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-size: 18px; font-weight: 600; color: var(--text); text-decoration: none; padding: 12px 0; border-bottom: 1px solid var(--border-dim); }
+    @media (max-width: 900px) {
+      .nav-col { display: none; }
+      .nav-hamburger { display: block !important; }
+    }
+
+    /* ── Page wrapper ── */
+    .page { max-width: 960px; margin: 0 auto; padding: 140px 24px 80px; }
+
+    /* ── Page header ── */
+    .page-hero {
+      text-align: center; margin-bottom: 40px;
+    }
+    .page-hero-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(45,212,191,0.08); border: 1px solid rgba(45,212,191,0.2);
+      border-radius: 20px; padding: 5px 14px;
+      font-size: 11px; font-weight: 700; color: var(--teal);
+      text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 14px;
+    }
+    .page-hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 36px; font-weight: 800; color: var(--text);
+      line-height: 1.2; margin-bottom: 12px;
+    }
+    .page-hero h1 span { color: var(--teal); }
+    .page-hero p { font-size: 15px; color: var(--text-muted); max-width: 520px; margin: 0 auto; line-height: 1.7; }
+
+    /* ── Featured player ── */
+    .player-wrap {
+      position: relative; width: 100%; padding-top: 56.25%;
+      border-radius: 16px; overflow: hidden;
+      border: 1px solid var(--border);
+      background: #000; margin-bottom: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .player-wrap iframe {
+      position: absolute; inset: 0; width: 100%; height: 100%; border: none;
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px; font-weight: 800;
+      color: var(--text); margin-bottom: 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-label::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* ── Video grid ── */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px; margin-bottom: 40px;
+    }
+    .video-card {
+      display: flex; flex-direction: column;
+      background: var(--bg-2); border: 1px solid var(--border-dim);
+      border-radius: 14px; overflow: hidden; cursor: pointer;
+      text-decoration: none; transition: border-color 0.2s, transform 0.2s, background 0.2s;
+    }
+    .video-card:hover { border-color: rgba(255,0,0,0.35); background: rgba(255,0,0,0.03); transform: translateY(-2px); }
+    .video-thumb {
+      position: relative; width: 100%; aspect-ratio: 16/9;
+      background: #111; overflow: hidden; flex-shrink: 0;
+    }
+    .video-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .video-play {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.25);
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .video-card:hover .video-play { opacity: 1; }
+    .play-btn {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: rgba(255,0,0,0.85);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .video-info { padding: 14px; flex: 1; }
+    .video-num {
+      font-size: 10px; font-weight: 700; color: var(--teal);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;
+    }
+    .video-title {
+      font-size: 14px; font-weight: 600; color: var(--text);
+      line-height: 1.4; margin-bottom: 8px;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .video-meta { font-size: 11px; color: var(--text-dim); }
+
+    /* ── Skeleton ── */
+    .skel-card { background: var(--bg-2); border: 1px solid var(--border-dim); border-radius: 14px; overflow: hidden; }
+    .skel-thumb { width: 100%; aspect-ratio: 16/9; background: var(--bg-3); animation: shimmer 1.5s ease-in-out infinite; }
+    .skel-body { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+    .skel-line { height: 10px; border-radius: 4px; background: var(--bg-3); animation: shimmer 1.5s ease-in-out infinite; }
+    .skel-line.short { width: 55%; }
+    @keyframes shimmer { 0%,100%{opacity:0.35} 50%{opacity:0.8} }
+
+    /* ── CTA banner ── */
+    .cta-banner {
+      background: linear-gradient(135deg, rgba(45,212,191,0.08), rgba(45,212,191,0.02));
+      border: 1px solid rgba(45,212,191,0.22);
+      border-radius: 16px; padding: 28px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px; flex-wrap: wrap;
+    }
+    .cta-text h3 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+    .cta-text p { font-size: 13px; color: var(--text-muted); }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--teal); color: #070F1A;
+      padding: 12px 22px; border-radius: 10px;
+      font-weight: 700; font-size: 13px; text-decoration: none;
+      transition: background 0.2s; white-space: nowrap;
+    }
+    .cta-btn:hover { background: var(--teal-dark); color: white; }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center; padding-top: 28px; margin-top: 40px;
+      border-top: 1px solid var(--border);
+      font-size: 12px; color: var(--text-dim); line-height: 1.8;
+    }
+    .footer a { color: var(--teal); text-decoration: none; }
+
+    /* ── Mobile ── */
+    @media (max-width: 600px) {
+      .page-hero h1 { font-size: 26px; }
+      .video-grid { grid-template-columns: 1fr; }
+      .cta-banner { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ticker -->
+  <div class="ticker-bar">
+    <div class="ticker-track" id="ticker"></div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="nav" id="mainNav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="logo.png" class="logo-img" alt="Trends &amp; Trade" onerror="this.style.display='none'"/>
+        <div class="logo-text">Trends <span>&amp;</span> Trade</div>
+      </a>
+      <div class="nav-col">
+        <ul class="nav-row-1 nav-links">
+          <li><a href="index.html#about">About</a></li>
+          <li><a href="index.html#resources">Free Resources</a></li>
+          <li><a href="index.html#courses">Courses</a></li>
+          <li><a href="index.html#pricing">Pricing</a></li>
+          <li><a href="index.html#community">Community</a></li>
+          <li><a href="team.html">Our Team</a></li>
+          <li><a href="courses.html" style="color:var(--teal);">Free Courses</a></li>
+          <li><a href="social.html">Media</a></li>
+        </ul>
+        <div class="nav-row-2">
+          <a href="index.html#courses" class="nav-btn nav-btn-outline">View Courses</a>
+          <a href="index.html#email" class="nav-btn nav-btn-primary">Get Free Analysis</a>
+        </div>
+      </div>
+      <button class="nav-hamburger" onclick="toggleMenu()">☰</button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html#about" onclick="toggleMenu()">About</a>
+    <a href="index.html#resources" onclick="toggleMenu()">Free Resources</a>
+    <a href="index.html#courses" onclick="toggleMenu()">Courses</a>
+    <a href="index.html#pricing" onclick="toggleMenu()">Pricing</a>
+    <a href="index.html#community" onclick="toggleMenu()">Community</a>
+    <a href="team.html" onclick="toggleMenu()">Our Team</a>
+    <a href="courses.html" onclick="toggleMenu()" style="color:var(--teal);">Free Courses</a>
+    <a href="social.html" onclick="toggleMenu()">Media</a>
+    <a href="index.html#email" class="nav-btn nav-btn-primary" style="margin-top:16px;" onclick="toggleMenu()">Get Free Analysis</a>
+  </div>
+
+  <div class="page">
+
+    <!-- Hero -->
+    <div class="page-hero">
+      <div class="page-hero-tag">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+        100% Free
+      </div>
+      <h1>Learn to Trade<br/><span>the Smart Way</span></h1>
+      <p>Step-by-step video courses on chart analysis, Support &amp; Resistance strategy, risk management, and more — all completely free.</p>
+    </div>
+
+    <!-- Featured player -->
+    <div class="player-wrap">
+      <iframe
+        src="https://www.youtube.com/embed/videoseries?list=PLD25Ba9pZ9lw&rel=0&modestbranding=1"
+        title="SNR Trades — Free Courses Playlist"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <!-- Video list -->
+    <div class="section-label">All Videos</div>
+    <div class="video-grid" id="videoGrid">
+      <!-- skeleton -->
+      <div class="skel-card"><div class="skel-thumb"></div><div class="skel-body"><div class="skel-line short"></div><div class="skel-line"></div><div class="skel-line short"></div></div></div>
+      <div class="skel-card"><div class="skel-thumb"></div><div class="skel-body"><div class="skel-line short"></div><div class="skel-line"></div><div class="skel-line short"></div></div></div>
+      <div class="skel-card"><div class="skel-thumb"></div><div class="skel-body"><div class="skel-line short"></div><div class="skel-line"></div><div class="skel-line short"></div></div></div>
+      <div class="skel-card"><div class="skel-thumb"></div><div class="skel-body"><div class="skel-line short"></div><div class="skel-line"></div><div class="skel-line short"></div></div></div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-banner">
+      <div class="cta-text">
+        <h3>Want personalised guidance?</h3>
+        <p>Join our community or book a free market analysis session.</p>
+      </div>
+      <a href="index.html#email" class="cta-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Get Free Analysis
+      </a>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div style="margin-bottom:6px;">
+        <a href="index.html">Home</a> &nbsp;·&nbsp;
+        <a href="team.html">Our Team</a> &nbsp;·&nbsp;
+        <a href="courses.html">Free Courses</a> &nbsp;·&nbsp;
+        <a href="social.html">Media</a>
+      </div>
+      © 2025 Trends &amp; Trade · SNR Trades · All rights reserved
+    </div>
+
+  </div>
+
+  <script>
+    const PLAYLIST_ID = 'PLD25Ba9pZ9lw';
+    const RSS_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://www.youtube.com/feeds/videos.xml?playlist_id=' + PLAYLIST_ID)}`;
+
+    function timeAgo(date) {
+      const diff = Math.floor((Date.now() - date) / 1000);
+      if (diff < 86400) return 'Today';
+      if (diff < 2592000) return Math.floor(diff/86400) + 'd ago';
+      if (diff < 31536000) return Math.floor(diff/2592000) + 'mo ago';
+      return Math.floor(diff/31536000) + 'y ago';
+    }
+
+    async function loadVideos() {
+      const grid = document.getElementById('videoGrid');
+      try {
+        const r = await fetch(RSS_URL, { signal: AbortSignal.timeout(8000) });
+        const d = await r.json();
+        const items = (d.items || []).slice(0, 12);
+        if (!items.length) throw new Error('empty');
+
+        grid.innerHTML = '';
+        items.forEach((item, i) => {
+          const videoId = item.link?.split('v=')[1]?.split('&')[0] || '';
+          const thumb = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : '';
+          const date = item.pubDate ? new Date(item.pubDate) : null;
+          const a = document.createElement('a');
+          a.className = 'video-card';
+          a.href = item.link || `https://www.youtube.com/watch?v=${videoId}&list=${PLAYLIST_ID}`;
+          a.target = '_blank';
+          a.rel = 'noopener';
+          a.innerHTML = `
+            <div class="video-thumb">
+              ${thumb ? `<img src="${thumb}" alt="${item.title}" loading="lazy"/>` : '<div style="width:100%;height:100%;background:var(--bg-3);"></div>'}
+              <div class="video-play">
+                <div class="play-btn">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+                </div>
+              </div>
+            </div>
+            <div class="video-info">
+              <div class="video-num">Lesson ${i + 1}</div>
+              <div class="video-title">${item.title}</div>
+              <div class="video-meta">${date ? timeAgo(date) : ''}</div>
+            </div>`;
+          grid.appendChild(a);
+        });
+      } catch(e) {
+        grid.innerHTML = `
+          <div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--text-dim);font-size:14px;">
+            <div style="margin-bottom:12px;font-size:32px;">📺</div>
+            Could not load playlist videos.<br/>
+            <a href="https://www.youtube.com/playlist?list=${PLAYLIST_ID}" target="_blank"
+               style="color:var(--teal);font-weight:600;text-decoration:none;margin-top:10px;display:inline-block;">
+              View full playlist on YouTube →
+            </a>
+          </div>`;
+      }
+    }
+
+    loadVideos();
+
+    // Nav scroll
+    window.addEventListener('scroll', () => {
+      document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 10);
+    });
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+
+    // Ticker
+    const tickerFallback = [
+      {name:'BTC/USDT',price:'$104,500',chg:'0.85'},{name:'ETH/USDT',price:'$2,520',chg:'1.20'},
+      {name:'BNB/USDT',price:'$645',chg:'0.50'},{name:'SOL/USDT',price:'$175',chg:'1.10'},
+      {name:'XRP/USDT',price:'$2.32',chg:'0.30'},{name:'GOLD',price:'$3,320',chg:'0.40'},
+      {name:'SILVER',price:'$33.50',chg:'0.60'},{name:'OIL (WTI)',price:'$61.50',chg:'-0.30'},
+      {name:'NASDAQ',price:'18,900',chg:'0.55'},{name:'KSE-100',price:'117,000',chg:'0.20'},
+    ];
+    const tickerTrack = document.getElementById('ticker');
+    function buildTicker(data) {
+      tickerTrack.innerHTML = '';
+      [...data,...data].forEach(t => {
+        const up = parseFloat(t.chg) >= 0;
+        tickerTrack.innerHTML += `<div class="tick-item"><div class="tick-dot ${up?'up':'dn'}"></div><span class="tick-name">${t.name}</span><span class="tick-price">${t.price}</span><span class="tick-change ${up?'up':'dn'}">${up?'+':''}${parseFloat(t.chg).toFixed(2)}%</span></div>`;
+      });
+    }
+    buildTicker(tickerFallback);
+    async function fetchTicker() {
+      try {
+        const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,ripple&vs_currencies=usd&include_24hr_change=true',{signal:AbortSignal.timeout(8000)});
+        const d = await r.json();
+        const out = [];
+        [{id:'bitcoin',name:'BTC/USDT'},{id:'ethereum',name:'ETH/USDT'},{id:'binancecoin',name:'BNB/USDT'},{id:'solana',name:'SOL/USDT'},{id:'ripple',name:'XRP/USDT'}].forEach(a=>{
+          if(!d[a.id])return;
+          const p=d[a.id].usd,dp=p<1?4:p<100?2:0;
+          out.push({name:a.name,price:'$'+p.toLocaleString(undefined,{minimumFractionDigits:dp,maximumFractionDigits:dp}),chg:(d[a.id].usd_24h_change||0).toFixed(2)});
+        });
+        if(out.length)buildTicker(out);
+      } catch(e) {}
+    }
+    fetchTicker();
+    setInterval(fetchTicker, 60000);
+  </script>
+</body>
+</html>
