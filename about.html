@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About — Trends & Trade</title>
+  <meta name="description" content="Learn about Trends & Trade — a professional trading education company helping traders across PSX, NASDAQ, Crypto, Gold and Forex through the S&R Intelligent Trading System."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:#070F1A; --bg-2:#0A1628; --bg-3:#0D1E34;
+      --teal:#2DD4BF; --teal-dark:#0D9488;
+      --border:rgba(45,212,191,0.18); --border-dim:rgba(255,255,255,0.06);
+      --text:#F0F4F8; --text-muted:#94A3B8; --text-dim:#4A5568;
+      --green:#22C55E; --red:#EF4444;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
+
+    /* Ticker */
+    .ticker-bar{background:var(--bg-2);border-bottom:1px solid var(--border);padding:8px 0;overflow:hidden;position:fixed;top:0;left:0;right:0;z-index:200;}
+    .ticker-track{display:flex;gap:0;animation:ticker-scroll 35s linear infinite;white-space:nowrap;width:max-content;}
+    .ticker-track:hover{animation-play-state:paused;}
+    @keyframes ticker-scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+    .tick-item{display:inline-flex;align-items:center;gap:7px;padding:0 28px;font-size:12px;font-weight:600;border-right:1px solid var(--border-dim);}
+    .tick-name{color:var(--text-muted);}.tick-price{color:var(--text);font-weight:700;}
+    .tick-change{font-size:11px;font-weight:700;}.tick-change.up{color:var(--green);}.tick-change.dn{color:var(--red);}
+    .tick-dot{width:6px;height:6px;border-radius:50%;}.tick-dot.up{background:var(--green);}.tick-dot.dn{background:var(--red);}
+
+    /* Nav */
+    .nav{position:fixed;top:37px;left:0;right:0;z-index:100;padding:0 24px;transition:all 0.3s;}
+    .nav.scrolled{background:rgba(7,15,26,0.94);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);box-shadow:0 4px 32px rgba(0,0,0,0.5);}
+    .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:flex-start;gap:40px;padding:10px 0 8px;}
+    .nav-col{display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
+    .nav-row-1{display:flex;align-items:center;gap:30px;list-style:none;}
+    .nav-row-2{display:flex;align-items:center;gap:10px;}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+    .logo-img{height:44px;width:auto;border-radius:6px;box-shadow:0 0 0 1px rgba(45,212,191,0.3);}
+    .logo-text{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:800;color:var(--text);}
+    .logo-text span{color:var(--teal);}
+    .nav-links a{font-size:13px;font-weight:600;color:var(--text-muted);text-decoration:none;transition:color 0.2s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--teal);}
+    .nav-hamburger{display:none;background:none;border:none;color:var(--text);font-size:22px;cursor:pointer;margin-left:auto;}
+    .mobile-menu{display:none;position:fixed;top:130px;left:0;right:0;bottom:0;background:var(--bg-2);z-index:99;padding:32px 24px;flex-direction:column;gap:24px;}
+    .mobile-menu.open{display:flex;}
+    .mobile-menu a{font-size:18px;font-weight:600;color:var(--text);text-decoration:none;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:10px;font-weight:700;font-size:14px;text-decoration:none;transition:all 0.2s;cursor:pointer;border:none;}
+    .btn-primary{background:var(--teal);color:#051012;}.btn-primary:hover{background:var(--teal-dark);color:#fff;}
+    .btn-outline{background:transparent;border:1.5px solid var(--teal);color:var(--teal);}.btn-outline:hover{background:rgba(45,212,191,0.1);}
+    @media(max-width:900px){.nav-col{display:none;}.nav-hamburger{display:block !important;}}
+
+    /* Page layout */
+    .page{max-width:1100px;margin:0 auto;padding:140px 24px 80px;}
+
+    /* Hero */
+    .about-hero{text-align:center;padding:60px 0 56px;border-bottom:1px solid var(--border);}
+    .label{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.2);color:var(--teal);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:22px;}
+    .hero-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(36px,5vw,58px);font-weight:800;line-height:1.15;margin-bottom:20px;}
+    .hero-title span{color:var(--teal);}
+    .hero-sub{font-size:17px;color:var(--text-muted);line-height:1.7;max-width:620px;margin:0 auto 36px;}
+    .stat-row{display:flex;justify-content:center;gap:48px;flex-wrap:wrap;margin-top:40px;}
+    .stat-box{text-align:center;}
+    .stat-num{font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:800;color:var(--teal);}
+    .stat-lbl{font-size:12px;color:var(--text-muted);font-weight:600;margin-top:4px;text-transform:uppercase;letter-spacing:0.06em;}
+
+    /* Sections */
+    .section{padding:64px 0;border-bottom:1px solid var(--border);}
+    .section:last-of-type{border-bottom:none;}
+    .section-label{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);margin-bottom:12px;}
+    .section-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(24px,3vw,34px);font-weight:800;line-height:1.25;margin-bottom:18px;}
+    .section-title span{color:var(--teal);}
+    .divider{width:48px;height:3px;background:var(--teal);border-radius:2px;margin-bottom:22px;}
+    .body-text{font-size:15px;color:var(--text-muted);line-height:1.8;margin-bottom:16px;}
+
+    /* Two-col layout */
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+    @media(max-width:760px){.two-col{grid-template-columns:1fr;gap:36px;}}
+
+    /* Mission card */
+    .mission-card{background:var(--bg-2);border:1px solid var(--border);border-radius:18px;padding:32px;}
+    .mission-card p{font-size:18px;font-style:italic;color:var(--text);line-height:1.7;font-weight:500;}
+    .mission-card cite{display:block;margin-top:16px;font-size:13px;color:var(--teal);font-style:normal;font-weight:700;}
+
+    /* Pillars grid */
+    .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:8px;}
+    @media(max-width:700px){.pillars{grid-template-columns:1fr;}}
+    .pillar{background:var(--bg-2);border:1px solid var(--border-dim);border-radius:16px;padding:26px 22px;transition:border-color 0.2s,transform 0.2s;}
+    .pillar:hover{border-color:var(--teal);transform:translateY(-3px);}
+    .pillar-icon{font-size:32px;margin-bottom:14px;}
+    .pillar-title{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px;}
+    .pillar-text{font-size:13px;color:var(--text-muted);line-height:1.6;}
+
+    /* Markets */
+    .markets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;margin-top:8px;}
+    .market-chip{background:var(--bg-2);border:1px solid var(--border-dim);border-radius:12px;padding:16px 14px;text-align:center;transition:border-color 0.2s,background 0.2s;}
+    .market-chip:hover{border-color:rgba(45,212,191,0.4);background:rgba(45,212,191,0.04);}
+    .market-chip-icon{font-size:24px;margin-bottom:8px;}
+    .market-chip-name{font-size:13px;font-weight:700;color:var(--text);}
+    .market-chip-desc{font-size:11px;color:var(--text-dim);margin-top:3px;}
+
+    /* Why section */
+    .why-list{display:flex;flex-direction:column;gap:14px;margin-top:8px;}
+    .why-item{display:flex;align-items:flex-start;gap:14px;background:var(--bg-2);border:1px solid var(--border-dim);border-radius:12px;padding:18px 20px;}
+    .why-item:hover{border-color:var(--teal);}
+    .why-icon{font-size:22px;flex-shrink:0;margin-top:1px;}
+    .why-title{font-size:14px;font-weight:700;margin-bottom:4px;}
+    .why-text{font-size:13px;color:var(--text-muted);line-height:1.5;}
+
+    /* Team teaser */
+    .team-teaser{background:linear-gradient(135deg,rgba(45,212,191,0.07),rgba(45,212,191,0.02));border:1px solid rgba(45,212,191,0.22);border-radius:20px;padding:40px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+    .team-teaser h3{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px;}
+    .team-teaser p{font-size:14px;color:var(--text-muted);}
+
+    /* CTA banner */
+    .cta-banner{background:linear-gradient(135deg,rgba(45,212,191,0.08),rgba(45,212,191,0.02));border:1px solid rgba(45,212,191,0.22);border-radius:20px;padding:48px 40px;text-align:center;margin-top:64px;}
+    .cta-banner h2{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:800;margin-bottom:12px;}
+    .cta-banner p{font-size:15px;color:var(--text-muted);margin-bottom:28px;}
+    .cta-buttons{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+
+    /* Footer */
+    .footer{text-align:center;padding:28px 0;border-top:1px solid var(--border);margin-top:64px;font-size:12px;color:var(--text-dim);line-height:1.8;}
+    .footer a{color:var(--teal);text-decoration:none;}
+  </style>
+</head>
+<body>
+
+  <div class="ticker-bar">
+    <div class="ticker-track" id="ticker"></div>
+  </div>
+
+  <nav class="nav" id="mainNav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="logo.png" class="logo-img" alt="Trends &amp; Trade" onerror="this.style.display='none'"/>
+        <div class="logo-text">Trends <span>&amp;</span> Trade</div>
+      </a>
+      <div class="nav-col">
+        <ul class="nav-row-1 nav-links">
+          <li><a href="about.html" class="active">About</a></li>
+          <li><a href="index.html#resources">Free Resources</a></li>
+          <li><a href="index.html#courses">Courses</a></li>
+          <li><a href="index.html#pricing">Pricing</a></li>
+          <li><a href="index.html#community">Community</a></li>
+          <li><a href="team.html">Our Team</a></li>
+          <li><a href="social.html">Media</a></li>
+        </ul>
+        <div class="nav-row-2 nav-cta">
+          <a href="courses.html" class="btn btn-outline" style="padding:9px 18px;font-size:13px;">Free Courses</a>
+          <a href="index.html#email" class="btn btn-primary" style="padding:9px 18px;font-size:13px;">Get Free Analysis</a>
+        </div>
+      </div>
+      <button class="nav-hamburger" onclick="toggleMenu()">☰</button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="about.html" onclick="toggleMenu()" style="color:var(--teal);">About</a>
+    <a href="index.html#resources" onclick="toggleMenu()">Free Resources</a>
+    <a href="index.html#courses" onclick="toggleMenu()">Courses</a>
+    <a href="index.html#pricing" onclick="toggleMenu()">Pricing</a>
+    <a href="index.html#community" onclick="toggleMenu()">Community</a>
+    <a href="team.html" onclick="toggleMenu()">Our Team</a>
+    <a href="social.html" onclick="toggleMenu()">Media</a>
+    <a href="index.html#email" class="btn btn-primary" style="margin-top:16px;justify-content:center;" onclick="toggleMenu()">Get Free Analysis</a>
+  </div>
+
+  <div class="page">
+
+    <!-- Hero -->
+    <div class="about-hero">
+      <div class="label">Who We Are</div>
+      <h1 class="hero-title">Built for Traders.<br/><span>Driven by Education.</span></h1>
+      <p class="hero-sub">Trends &amp; Trade is a professional trading education company helping everyday people become disciplined, confident traders across global financial markets.</p>
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="stat-num">4+</div>
+          <div class="stat-lbl">Continents Reached</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">5+</div>
+          <div class="stat-lbl">Years of Trading</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">6</div>
+          <div class="stat-lbl">Markets Covered</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">100%</div>
+          <div class="stat-lbl">Free Core Courses</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Our Story -->
+    <div class="section">
+      <div class="two-col">
+        <div>
+          <div class="section-label">Our Story</div>
+          <h2 class="section-title">From Real Trades<br/><span>to Real Education</span></h2>
+          <div class="divider"></div>
+          <p class="body-text">Trends &amp; Trade was founded with a single belief: that quality trading education should be accessible to everyone. Too many traders lose money not because markets are unfair, but because they never received proper guidance.</p>
+          <p class="body-text">We built this platform around the S&amp;R Intelligent Trading System — a methodology developed through years of live trading across Stocks, Crypto, Gold, and Forex. Every concept we teach is battle-tested in real markets, not assembled from textbooks.</p>
+          <p class="body-text">Today, Trends &amp; Trade serves students across four continents, offering free courses, market analysis, and a community where traders at every level can learn, grow, and trade with confidence.</p>
+        </div>
+        <div class="mission-card">
+          <p>"Our goal is not to give you signals — it's to give you the skills to read any market, on any day, with your own eyes."</p>
+          <cite>— Trends &amp; Trade</cite>
+          <div style="margin-top:28px;display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-muted);">
+              <span style="color:var(--teal);font-size:16px;">✦</span> Founded on real trading experience
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-muted);">
+              <span style="color:var(--teal);font-size:16px;">✦</span> Methodology proven across multiple markets
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-muted);">
+              <span style="color:var(--teal);font-size:16px;">✦</span> Community-first, education-led approach
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-muted);">
+              <span style="color:var(--teal);font-size:16px;">✦</span> Free core content, always
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- What We Do -->
+    <div class="section">
+      <div style="text-align:center;margin-bottom:40px;">
+        <div class="section-label">What We Do</div>
+        <h2 class="section-title">Three Pillars of <span>Our Platform</span></h2>
+      </div>
+      <div class="pillars">
+        <div class="pillar">
+          <div class="pillar-icon">🎓</div>
+          <div class="pillar-title">Structured Education</div>
+          <div class="pillar-text">Step-by-step courses covering everything from candlestick basics to advanced Smart Money Concepts — built for beginners and intermediate traders alike.</div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon">📊</div>
+          <div class="pillar-title">Live Market Analysis</div>
+          <div class="pillar-text">Regular analysis across PSX, NASDAQ, Crypto and Gold markets. We show our reasoning, not just our conclusions, so you can develop your own analytical eye.</div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon">🤝</div>
+          <div class="pillar-title">Trader Community</div>
+          <div class="pillar-text">An active community on WhatsApp and Telegram where traders share ideas, ask questions, and learn together. No gatekeeping — just collective growth.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Markets -->
+    <div class="section">
+      <div class="section-label">Markets We Cover</div>
+      <h2 class="section-title">One System.<br/><span>Every Market.</span></h2>
+      <p class="body-text" style="max-width:580px;">The S&amp;R Intelligent Trading System is designed to work across asset classes. Once you understand the methodology, you can apply it anywhere.</p>
+      <div class="markets-grid">
+        <div class="market-chip"><div class="market-chip-icon">📈</div><div class="market-chip-name">PSX Stocks</div><div class="market-chip-desc">Pakistan Stock Exchange</div></div>
+        <div class="market-chip"><div class="market-chip-icon">💹</div><div class="market-chip-name">NASDAQ</div><div class="market-chip-desc">US Tech Stocks</div></div>
+        <div class="market-chip"><div class="market-chip-icon">₿</div><div class="market-chip-name">Crypto</div><div class="market-chip-desc">BTC, ETH &amp; Altcoins</div></div>
+        <div class="market-chip"><div class="market-chip-icon">🥇</div><div class="market-chip-name">Gold &amp; Silver</div><div class="market-chip-desc">Precious Metals</div></div>
+        <div class="market-chip"><div class="market-chip-icon">🛢️</div><div class="market-chip-name">Oil</div><div class="market-chip-desc">WTI &amp; Brent Crude</div></div>
+        <div class="market-chip"><div class="market-chip-icon">💱</div><div class="market-chip-name">Forex</div><div class="market-chip-desc">Major Currency Pairs</div></div>
+        <div class="market-chip"><div class="market-chip-icon">🏛️</div><div class="market-chip-name">ADX / DFM</div><div class="market-chip-desc">UAE Markets</div></div>
+        <div class="market-chip"><div class="market-chip-icon">🌙</div><div class="market-chip-name">TASI</div><div class="market-chip-desc">Saudi Stock Exchange</div></div>
+      </div>
+    </div>
+
+    <!-- Why Trends & Trade -->
+    <div class="section">
+      <div class="two-col">
+        <div>
+          <div class="section-label">Why Trends &amp; Trade</div>
+          <h2 class="section-title">Education That<br/><span>Actually Works</span></h2>
+          <div class="divider"></div>
+          <p class="body-text">Most trading courses teach theory in isolation. We teach you how to read the market as it is right now — with context, discipline, and a repeatable system.</p>
+          <p class="body-text">Our approach is rooted in Support &amp; Resistance principles combined with Smart Money Concepts, giving students a complete framework to understand why prices move and how to position accordingly.</p>
+        </div>
+        <div class="why-list">
+          <div class="why-item">
+            <div class="why-icon">🔬</div>
+            <div><div class="why-title">Proprietary S&amp;R System</div><div class="why-text">A structured, rule-based methodology built on real trades — not recycled theory from books.</div></div>
+          </div>
+          <div class="why-item">
+            <div class="why-icon">🌍</div>
+            <div><div class="why-title">Global Reach</div><div class="why-text">Students from across Asia, Middle East, Europe and beyond — all learning the same proven approach.</div></div>
+          </div>
+          <div class="why-item">
+            <div class="why-icon">🆓</div>
+            <div><div class="why-title">Free Core Content</div><div class="why-text">Full beginner-to-intermediate courses available completely free on YouTube and this platform.</div></div>
+          </div>
+          <div class="why-item">
+            <div class="why-icon">📱</div>
+            <div><div class="why-title">Multi-Platform Presence</div><div class="why-text">Content across YouTube, Instagram, and TikTok so you can learn in whatever format works best for you.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team teaser -->
+    <div class="section" style="border-bottom:none;">
+      <div class="team-teaser">
+        <div>
+          <h3>Meet the Team Behind Trends &amp; Trade</h3>
+          <p>Experienced traders, educators and creators — all working toward one goal: making you a better trader.</p>
+        </div>
+        <a href="team.html" class="btn btn-primary">Meet Our Team →</a>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-banner">
+      <h2>Ready to Start Trading Smarter?</h2>
+      <p>Join thousands of traders learning the S&amp;R Intelligent Trading System — completely free.</p>
+      <div class="cta-buttons">
+        <a href="courses.html" class="btn btn-primary">Start Free Courses</a>
+        <a href="index.html#email" class="btn btn-outline">Get Free Analysis</a>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div style="margin-bottom:6px;">
+        <a href="index.html">Home</a> &nbsp;·&nbsp;
+        <a href="about.html">About</a> &nbsp;·&nbsp;
+        <a href="team.html">Our Team</a> &nbsp;·&nbsp;
+        <a href="courses.html">Free Courses</a> &nbsp;·&nbsp;
+        <a href="social.html">Media</a>
+      </div>
+      © 2026 Trends &amp; Trade · SNR Trades · All rights reserved<br/>
+      ⚠️ Trading involves significant risk. Educational content only.
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('scroll', () => {
+      document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 10);
+    });
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+
+    const track = document.getElementById('ticker');
+    const tickerFallback = [
+      {name:'BTC/USDT',price:'$104,500',chg:'0.85'},{name:'ETH/USDT',price:'$2,520',chg:'1.20'},
+      {name:'BNB/USDT',price:'$645',chg:'0.50'},{name:'SOL/USDT',price:'$175',chg:'1.10'},
+      {name:'XRP/USDT',price:'$2.32',chg:'0.30'},{name:'GOLD',price:'$3,320',chg:'0.40'},
+      {name:'SILVER',price:'$33.50',chg:'0.60'},{name:'OIL (WTI)',price:'$61.50',chg:'-0.30'},
+      {name:'NASDAQ',price:'18,900',chg:'0.55'},{name:'KSE-100',price:'117,000',chg:'0.20'},
+    ];
+    function buildTicker(data) {
+      track.innerHTML = '';
+      [...data,...data].forEach(t => {
+        const up = parseFloat(t.chg) >= 0;
+        track.innerHTML += `<div class="tick-item"><div class="tick-dot ${up?'up':'dn'}"></div><span class="tick-name">${t.name}</span><span class="tick-price">${t.price}</span><span class="tick-change ${up?'up':'dn'}">${up?'+':''}${parseFloat(t.chg).toFixed(2)}%</span></div>`;
+      });
+    }
+    buildTicker(tickerFallback);
+    async function fetchTicker() {
+      try {
+        const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,ripple&vs_currencies=usd&include_24hr_change=true',{signal:AbortSignal.timeout(8000)});
+        const d = await r.json();
+        const map = [{id:'bitcoin',name:'BTC/USDT'},{id:'ethereum',name:'ETH/USDT'},{id:'binancecoin',name:'BNB/USDT'},{id:'solana',name:'SOL/USDT'},{id:'ripple',name:'XRP/USDT'}];
+        const res = map.map(a => {
+          if(!d[a.id]) return null;
+          const p = d[a.id].usd, c = (d[a.id].usd_24h_change||0).toFixed(2), dp = p<1?4:p<100?2:0;
+          return {name:a.name,price:'$'+p.toLocaleString(undefined,{minimumFractionDigits:dp,maximumFractionDigits:dp}),chg:c};
+        }).filter(Boolean);
+        if(res.length) buildTicker(res);
+      } catch(e){}
+    }
+    fetchTicker();
+    setInterval(fetchTicker, 60000);
+  </script>
+</body>
+</html>
