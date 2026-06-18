@@ -158,10 +158,6 @@
       display: flex; align-items: center; justify-content: center;
     }
     .video-info { padding: 14px; flex: 1; }
-    .video-num {
-      font-size: 10px; font-weight: 700; color: var(--teal);
-      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;
-    }
     .video-title {
       font-size: 14px; font-weight: 600; color: var(--text);
       line-height: 1.4; margin-bottom: 8px;
@@ -228,13 +224,12 @@
       </a>
       <div class="nav-col">
         <ul class="nav-row-1 nav-links">
-          <li><a href="index.html#about">About</a></li>
+          <li><a href="about.html">About</a></li>
           <li><a href="index.html#resources">Free Resources</a></li>
           <li><a href="index.html#courses">Courses</a></li>
           <li><a href="index.html#pricing">Pricing</a></li>
           <li><a href="index.html#community">Community</a></li>
           <li><a href="team.html">Our Team</a></li>
-          <li><a href="courses.html" style="color:var(--teal);">Free Courses</a></li>
           <li><a href="social.html">Media</a></li>
         </ul>
         <div class="nav-row-2">
@@ -247,13 +242,12 @@
   </nav>
 
   <div class="mobile-menu" id="mobileMenu">
-    <a href="index.html#about" onclick="toggleMenu()">About</a>
+    <a href="about.html" onclick="toggleMenu()">About</a>
     <a href="index.html#resources" onclick="toggleMenu()">Free Resources</a>
     <a href="index.html#courses" onclick="toggleMenu()">Courses</a>
     <a href="index.html#pricing" onclick="toggleMenu()">Pricing</a>
     <a href="index.html#community" onclick="toggleMenu()">Community</a>
     <a href="team.html" onclick="toggleMenu()">Our Team</a>
-    <a href="courses.html" onclick="toggleMenu()" style="color:var(--teal);">Free Courses</a>
     <a href="social.html" onclick="toggleMenu()">Media</a>
     <a href="index.html#email" class="nav-btn nav-btn-primary" style="margin-top:16px;" onclick="toggleMenu()">Get Free Analysis</a>
   </div>
@@ -270,14 +264,26 @@
       <p>Step-by-step video courses on chart analysis, Support &amp; Resistance strategy, risk management, and more — all completely free.</p>
     </div>
 
-    <!-- Featured player -->
-    <div class="player-wrap">
-      <iframe
-        src="https://www.youtube.com/embed/videoseries?list=PLD25Ba9pZ9lw&rel=0&modestbranding=1"
-        title="SNR Trades — Free Courses Playlist"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen>
-      </iframe>
+    <!-- Player + Info -->
+    <div class="player-section">
+      <div class="player-wrap">
+        <iframe id="mainPlayer"
+          src="https://www.youtube.com/embed/videoseries?list=PLD25Ba9pZ9lw&rel=0&modestbranding=1"
+          title="SNR Trades — Free Courses Playlist"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+      <div class="player-info">
+        <div class="pi-label">Now Playing</div>
+        <div class="pi-title" id="piTitle">Trends and Trade Free Learning</div>
+        <div class="pi-divider"></div>
+        <div class="pi-desc" id="piDesc">Select a video from the playlist below to see its full description here.</div>
+        <a class="pi-yt-btn" id="piLink" href="https://www.youtube.com/playlist?list=PLD25Ba9pZ9lw" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
+          Watch on YouTube
+        </a>
+      </div>
     </div>
 
     <!-- Video list -->
@@ -327,27 +333,93 @@
       return Math.floor(diff/31536000) + 'y ago';
     }
 
+    function showVideo(v) {
+      const iframe = document.getElementById('mainPlayer');
+      const piTitle = document.getElementById('piTitle');
+      const piDesc  = document.getElementById('piDesc');
+      const piLink  = document.getElementById('piLink');
+      if (iframe)  iframe.src = `https://www.youtube.com/embed/${v.id}?autoplay=1&rel=0&modestbranding=1&list=${PLAYLIST_ID}`;
+      if (piTitle) piTitle.textContent = v.title;
+      if (piDesc)  piDesc.textContent  = v.desc || 'No description available.';
+      if (piLink)  piLink.href = v.link;
+    }
+
     async function loadVideos() {
       const grid = document.getElementById('videoGrid');
       try {
+        // Load titles + thumbnails via RSS2JSON
         const r = await fetch(RSS_URL, { signal: AbortSignal.timeout(8000) });
         const d = await r.json();
         const items = (d.items || []).slice(0, 12);
         if (!items.length) throw new Error('empty');
 
+        // Video descriptions (YouTube RSS blocks browser CORS; stored here for reliability)
+        const descMap = {
+          'ce9MqJV_8ws': `Welcome to The Era of Learning with Trends & Trade — a complete trading education journey designed to help beginners, intermediate learners and serious market students understand trading in a structured and professional way.
+
+In this upcoming learning series, we will cover everything from basic market understanding to advanced trading concepts across Stocks, Crypto, Forex, Commodities, Gold, Silver and Oil.
+
+You will learn step by step about:
+• TradingView functionality & PSX Portal guide
+• Types of trading: Spot, Margin, Futures, Leverage, Long, Short and Arbitrage
+• Candlestick patterns & Support and Resistance
+• Fibonacci retracement, extension and time zones
+• RSI, MACD, EMA, SMA and Volume indicators
+• RSI divergence and hidden divergence
+• Bollinger Bands, Ichimoku Cloud, Volume Profile
+• Dow Theory and market structure
+• Chart patterns, harmonic patterns (ABCD, BAT, CRAB, Butterfly)
+• Smart Money Concepts: Liquidity, Order Blocks, FVG, Imbalance
+• Crypto market analysis: RSI Heatmap, Fear & Greed Index, USDT Dominance
+• Fundamental analysis, company financials, valuation
+• Risk management, position sizing and trading psychology
+
+At Trends & Trade, our goal is simple: Learn. Analyze. Trade. Grow.`,
+
+          '7_BqVH3iOJc': `Welcome to Lecture 1 of our beginner trading course: Introduction to Trading.
+
+In this lecture, we explain the basic language of trading in a simple and practical way. This session is designed for beginners who want to understand what trading is, how financial markets work, why prices move, and why risk management must come before profit.
+
+In this video, you will learn:
+✅ What trading really means
+✅ Trading vs investing
+✅ What stocks and shares are
+✅ How stock markets work
+✅ Why prices move up and down
+✅ How people earn in stocks
+✅ Basic risk management concepts
+✅ How to build a simple trade plan
+✅ Introduction to markets: stocks, forex, commodities, crypto, indices and ETFs
+✅ Difference between fundamental and technical analysis
+✅ What TradingView is and how beginners can use it
+
+Remember: Trading is not guessing. A professional trader follows a plan, manages risk and keeps learning.`
+        };
+
+        // Build video objects
+        const videos = items.map(item => {
+          const id = item.link?.split('v=')[1]?.split('&')[0] || '';
+          return {
+            id,
+            title: item.title || '',
+            thumb: id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : '',
+            link:  item.link || `https://www.youtube.com/watch?v=${id}&list=${PLAYLIST_ID}`,
+            desc:  descMap[id] || '',
+            date:  item.pubDate ? new Date(item.pubDate) : null,
+          };
+        });
+
+        // Show first video info immediately
+        if (videos.length) showVideo(videos[0]);
+
+        // Render clickable grid
         grid.innerHTML = '';
-        items.forEach((item, i) => {
-          const videoId = item.link?.split('v=')[1]?.split('&')[0] || '';
-          const thumb = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : '';
-          const date = item.pubDate ? new Date(item.pubDate) : null;
-          const a = document.createElement('a');
-          a.className = 'video-card';
-          a.href = item.link || `https://www.youtube.com/watch?v=${videoId}&list=${PLAYLIST_ID}`;
-          a.target = '_blank';
-          a.rel = 'noopener';
-          a.innerHTML = `
+        videos.forEach((v, i) => {
+          const card = document.createElement('div');
+          card.className = 'video-card' + (i === 0 ? ' active' : '');
+          card.innerHTML = `
             <div class="video-thumb">
-              ${thumb ? `<img src="${thumb}" alt="${item.title}" loading="lazy"/>` : '<div style="width:100%;height:100%;background:var(--bg-3);"></div>'}
+              ${v.thumb ? `<img src="${v.thumb}" alt="${v.title}" loading="lazy"/>` : '<div style="width:100%;height:100%;background:var(--bg-3);"></div>'}
               <div class="video-play">
                 <div class="play-btn">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
@@ -355,12 +427,17 @@
               </div>
             </div>
             <div class="video-info">
-              <div class="video-num">Lesson ${i + 1}</div>
-              <div class="video-title">${item.title}</div>
-              <div class="video-meta">${date ? timeAgo(date) : ''}</div>
+              <div class="video-title">${v.title}</div>
+              <div class="video-meta">${v.date ? timeAgo(v.date) : ''}</div>
             </div>`;
-          grid.appendChild(a);
+          card.onclick = () => {
+            showVideo(v);
+            grid.querySelectorAll('.video-card').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+          };
+          grid.appendChild(card);
         });
+
       } catch(e) {
         grid.innerHTML = `
           <div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--text-dim);font-size:14px;">
