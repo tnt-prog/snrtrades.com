@@ -184,6 +184,31 @@
       background:rgba(45,212,191,0.6);
     }
 
+    /* Thumbnail focus states */
+    .cat-thumbs-grid.single-view{
+      grid-template-columns:1fr;
+      justify-items:center;
+      max-width:380px;
+      margin-left:auto;margin-right:auto;
+    }
+    .cat-thumb-card.thumb-hidden{ display:none; }
+    .cat-thumb-card.thumb-active{
+      border-color:var(--teal);
+      background:rgba(45,212,191,0.07);
+      box-shadow:0 0 48px rgba(45,212,191,0.18);
+      cursor:default;
+      pointer-events:none;
+    }
+    .cat-thumb-card.thumb-active .cat-thumb-img{ width:476px; height:476px; }
+    .cat-thumb-card.thumb-active .cat-thumb-name{ font-size:16px; color:var(--teal); }
+
+    /* Sidebar header clickable */
+    .sidebar-header{ cursor:pointer; transition:background 0.18s; }
+    .sidebar-header:hover{ background:rgba(45,212,191,0.06); }
+    .sidebar-header:hover .sidebar-header-title::after{
+      content:' ↩'; font-size:11px; color:var(--teal); opacity:0.75; font-weight:400;
+    }
+
     /* Coming Soon panel */
     .coming-soon-wrap{
       display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -279,27 +304,27 @@
     <div class="lib-panel" id="libPanel">
       <div class="panel-welcome">
         <div class="cat-thumbs-grid">
-          <div class="cat-thumb-card" onclick="expandCategory('technical-analysis')">
+          <div class="cat-thumb-card" data-catid="technical-analysis" onclick="expandCategory('technical-analysis')">
             <img src="Technical_Analysis.jpg" alt="Technical Analysis" class="cat-thumb-img"/>
             <div class="cat-thumb-name">Technical Analysis</div>
           </div>
-          <div class="cat-thumb-card" onclick="expandCategory('fundamental-analysis')">
+          <div class="cat-thumb-card" data-catid="fundamental-analysis" onclick="expandCategory('fundamental-analysis')">
             <img src="Fundamental_analysis.jpg" alt="Fundamental Analysis" class="cat-thumb-img"/>
             <div class="cat-thumb-name">Fundamental Analysis</div>
           </div>
-          <div class="cat-thumb-card" onclick="expandCategory('stocks')">
+          <div class="cat-thumb-card" data-catid="stocks" onclick="expandCategory('stocks')">
             <img src="Stocks.jpg" alt="Stocks" class="cat-thumb-img"/>
             <div class="cat-thumb-name">Stocks</div>
           </div>
-          <div class="cat-thumb-card" onclick="expandCategory('commodities')">
+          <div class="cat-thumb-card" data-catid="commodities" onclick="expandCategory('commodities')">
             <img src="Commodities.jpg" alt="Commodities" class="cat-thumb-img"/>
             <div class="cat-thumb-name">Commodities</div>
           </div>
-          <div class="cat-thumb-card" onclick="expandCategory('crypto')">
+          <div class="cat-thumb-card" data-catid="crypto" onclick="expandCategory('crypto')">
             <img src="Crypto.jpg" alt="Crypto" class="cat-thumb-img"/>
             <div class="cat-thumb-name">Crypto</div>
           </div>
-          <div class="cat-thumb-card" onclick="expandCategory('forex')">
+          <div class="cat-thumb-card" data-catid="forex" onclick="expandCategory('forex')">
             <img src="Forex.jpg" alt="Forex" class="cat-thumb-img"/>
             <div class="cat-thumb-name">Forex</div>
           </div>
@@ -681,11 +706,14 @@ const LIBRARY = [
   },
 ];
 
+// ── Welcome panel snapshot (restored when Topics & Articles is clicked) ───────
+let welcomePanelHTML = '';
+
 // ── Build sidebar ─────────────────────────────────────────────────────────────
 function buildSidebar(data) {
   const sb = document.getElementById('libSidebar');
   sb.innerHTML = `
-    <div class="sidebar-header">
+    <div class="sidebar-header" onclick="resetThumbnails()" title="Click to show all categories">
       <div class="sidebar-header-label">Library</div>
       <div class="sidebar-header-title">Topics &amp; Articles</div>
     </div>`;
@@ -697,7 +725,7 @@ function buildSidebar(data) {
     grp.className = 'cat-group'; // all collapsed on load
     grp.dataset.catid = cat.id;
     grp.innerHTML = `
-      <div class="cat-header" onclick="toggleCat(this.parentElement)">
+      <div class="cat-header" onclick="selectCategory(this.parentElement, '${cat.id}')">
         <div class="cat-header-left">
           <span class="cat-icon">${cat.icon}</span>
           <span class="cat-title">${cat.title}</span>
@@ -719,6 +747,26 @@ function toggleCat(grp) {
   grp.classList.toggle('open');
 }
 
+function selectCategory(grp, id) {
+  const isOpen = grp.classList.contains('open');
+  if (isOpen) {
+    // Clicking an already-open category collapses it and resets thumbnails
+    grp.classList.remove('open');
+    resetThumbnails();
+  } else {
+    // Close all other categories, open this one
+    document.querySelectorAll('.cat-group').forEach(g => g.classList.remove('open'));
+    grp.classList.add('open');
+    // Restore welcome panel so thumbnail grid is back in the DOM
+    const panel = document.getElementById('libPanel');
+    if (panel && welcomePanelHTML) panel.innerHTML = welcomePanelHTML;
+    currentTopic = null;
+    document.querySelectorAll('.topic-link').forEach(el => el.classList.remove('active'));
+    // Show the enlarged thumbnail for this category
+    focusThumbnail(id);
+  }
+}
+
 function expandCategory(id) {
   // Close all open categories first
   document.querySelectorAll('.cat-group').forEach(g => g.classList.remove('open'));
@@ -732,6 +780,34 @@ function expandCategory(id) {
     const topOffset = target.offsetTop - sidebar.offsetTop;
     sidebar.scrollTo({ top: topOffset - 56, behavior: 'smooth' });
   }
+  // Focus the clicked thumbnail
+  focusThumbnail(id);
+}
+
+function focusThumbnail(id) {
+  const grid = document.querySelector('.cat-thumbs-grid');
+  if (!grid) return;
+  grid.querySelectorAll('.cat-thumb-card').forEach(card => {
+    if (card.dataset.catid === id) {
+      card.classList.add('thumb-active');
+      card.classList.remove('thumb-hidden');
+    } else {
+      card.classList.add('thumb-hidden');
+      card.classList.remove('thumb-active');
+    }
+  });
+  grid.classList.add('single-view');
+}
+
+function resetThumbnails() {
+  // Restore the original welcome panel (thumbnails may have been replaced by topic content)
+  const panel = document.getElementById('libPanel');
+  if (panel && welcomePanelHTML) panel.innerHTML = welcomePanelHTML;
+  currentTopic = null;
+  // Remove active highlight from sidebar topics
+  document.querySelectorAll('.topic-link').forEach(el => el.classList.remove('active'));
+  // Collapse all sidebar categories
+  document.querySelectorAll('.cat-group').forEach(g => g.classList.remove('open'));
 }
 
 // ── Open topic ────────────────────────────────────────────────────────────────
@@ -967,6 +1043,8 @@ setInterval(fetchTicker, 60000);
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 buildSidebar(LIBRARY);
+// Capture welcome panel HTML after DOM is ready so reset can always restore it
+welcomePanelHTML = document.getElementById('libPanel').innerHTML;
 </script>
 </body>
 </html>
