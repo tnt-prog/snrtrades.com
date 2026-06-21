@@ -158,6 +158,29 @@
       background:rgba(45,212,191,0.6);
     }
 
+    /* Coming Soon panel */
+    .coming-soon-wrap{
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      min-height:340px;text-align:center;padding:48px 32px;
+    }
+    .cs-icon{font-size:52px;margin-bottom:20px;opacity:0.35;}
+    .cs-title{
+      font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800;
+      color:var(--text);margin-bottom:10px;
+    }
+    .cs-text{font-size:14px;color:var(--text-muted);line-height:1.7;margin-bottom:6px;max-width:360px;}
+    .cs-text strong{color:var(--teal);}
+    .cs-sub{font-size:12px;color:var(--text-dim);margin-top:4px;}
+    .cs-badge{
+      display:inline-flex;align-items:center;gap:7px;margin-top:20px;
+      padding:7px 16px;border-radius:20px;
+      background:rgba(45,212,191,0.07);border:1px solid rgba(45,212,191,0.22);
+      font-size:12px;font-weight:700;color:var(--teal);
+    }
+    .download-btn.disabled{
+      opacity:0.3;cursor:not-allowed;pointer-events:none;
+    }
+
     /* Mobile */
     @media(max-width:760px){
       .lib-body{grid-template-columns:1fr;border-radius:14px;}
@@ -470,130 +493,141 @@
 // ── Library data ──────────────────────────────────────────────────────────────
 const LIBRARY = [
   {
-    id: 'foundations', icon: '📗', title: 'Foundations',
+    id: 'stocks', icon: '📈', title: 'Stocks',
+    desc: 'Stock market basics, PSX, global exchanges, IPOs, dividends, and investing concepts.',
     topics: [
-      {
-        id: 'what-is-trading', title: 'What is Trading?', level: 'Beginner',
-        summary: 'Understanding what trading means, how markets work, and why people trade.',
-        content: [
-          { type: 'heading', text: 'What is Trading?' },
-          { type: 'paragraph', text: 'Trading is the act of buying and selling financial assets — such as stocks, cryptocurrencies, currencies, or commodities — with the aim of making a profit from price movements. Unlike long-term investing, trading focuses on shorter time frames, from minutes to weeks.' },
-          { type: 'svg', id: 'svg-what-is-trading', caption: 'Basic trading cycle — Buy low, Sell high' },
-          { type: 'heading', text: 'The Core Concept' },
-          { type: 'paragraph', text: 'Every trade has two sides: a buyer and a seller. The price of any asset is simply the point where both parties agree. Traders profit by correctly predicting which direction price will move next.' },
-          { type: 'list', items: ['Going Long (Buy): You expect price to rise. Profit when it does.', 'Going Short (Sell): You expect price to fall. Profit when it does.', 'Risk: If the market moves against your prediction, you lose.'] },
-          { type: 'callout', text: 'Key principle: Trading is not gambling. Professional traders follow a system, manage risk, and accept that not every trade will be profitable. Consistency and discipline separate professionals from beginners.' }
-        ]
-      },
-      {
-        id: 'market-types', title: 'Market Types', level: 'Beginner',
-        summary: 'An overview of the major financial markets and what makes each unique.',
-        content: [
-          { type: 'heading', text: 'Types of Financial Markets' },
-          { type: 'paragraph', text: 'Financial markets are venues — physical or digital — where buyers and sellers exchange assets. Understanding each market\'s characteristics helps you choose the right one for your trading style.' },
-          { type: 'svg', id: 'svg-market-types', caption: 'The four main categories of financial markets' },
-          { type: 'heading', text: 'Which Market Is Right for You?' },
-          { type: 'list', items: ['Stock Markets: Best for fundamental analysis, longer holding periods, regulated.', 'Crypto Markets: 24/7 trading, high volatility, younger market with strong technicals.', 'Forex: Highest liquidity in the world, major pairs move in tight ranges.', 'Commodities: Driven by global supply/demand, great for macro analysis.'] },
-          { type: 'callout', text: 'The S&R system works across all these markets. Once you understand price action and support/resistance, the same principles apply whether you\'re trading Bitcoin or Gold.' }
-        ]
-      },
-      {
-        id: 'order-types', title: 'Order Types', level: 'Beginner',
-        summary: 'Market orders, limit orders, stop losses and take profits explained clearly.',
-        content: [
-          { type: 'heading', text: 'Understanding Order Types' },
-          { type: 'paragraph', text: 'An order is an instruction you send to the market. The type of order you choose determines when and how your trade is executed. Getting this right is essential for precision trading.' },
-          { type: 'svg', id: 'svg-order-types', caption: 'Market Order vs Limit Order comparison' },
-          { type: 'heading', text: 'Stop Loss and Take Profit' },
-          { type: 'list', items: ['Stop Loss (SL): Automatically closes your trade if price moves against you by a set amount. This caps your maximum loss.', 'Take Profit (TP): Automatically closes your trade when price reaches your target. Locks in your profit.', 'Risk-Reward Ratio: Always set your TP further than your SL. A 1:2 ratio means risking $1 to make $2.'] },
-          { type: 'callout', text: 'Rule: Never enter a trade without a Stop Loss. A trade without a Stop Loss is not a trade — it is a gamble.' }
-        ]
-      }
+      { id: 'what-is-stock-market',       title: 'What is the Stock Market?',                       level: 'Beginner',     summary: 'An introduction to stock markets, how they work, and why they exist.' },
+      { id: 'how-stock-exchanges-work',   title: 'How Stock Exchanges Work',                        level: 'Beginner',     summary: 'Understanding the mechanics of stock exchanges and trading platforms.' },
+      { id: 'primary-vs-secondary',       title: 'Primary vs Secondary Market',                     level: 'Beginner',     summary: 'The difference between where stocks are first issued and where they are traded.' },
+      { id: 'what-is-ipo',                title: 'What is an IPO?',                                 level: 'Beginner',     summary: 'How companies go public and what an IPO means for investors.' },
+      { id: 'shares-equity-ownership',    title: 'Shares, Equity, and Ownership',                   level: 'Beginner',     summary: 'Understanding what owning a share really means.' },
+      { id: 'investor-vs-trader',         title: 'Investor vs Trader',                              level: 'Beginner',     summary: 'Key differences in mindset, strategy, and time horizon.' },
+      { id: 'fa-beginners-stocks',        title: 'Fundamental Analysis for Beginners',              level: 'Beginner',     summary: 'A starter guide to evaluating stocks using financial data.' },
+      { id: 'ta-beginners-stocks',        title: 'Technical Analysis for Beginners',                level: 'Beginner',     summary: 'Using charts and price action to make trading decisions.' },
+      { id: 'what-is-eps',                title: 'What is EPS and Why It Matters?',                 level: 'Beginner',     summary: 'Earnings Per Share explained and why investors watch it closely.' },
+      { id: 'understanding-pe-ratio',     title: 'Understanding P/E Ratio',                         level: 'Beginner',     summary: 'How to interpret the Price-to-Earnings ratio when evaluating stocks.' },
+      { id: 'dividend-yield',             title: 'Dividend Yield Explained',                        level: 'Beginner',     summary: 'What dividends are and how to calculate dividend yield.' },
+      { id: 'market-cap',                 title: 'Market Capitalization',                           level: 'Beginner',     summary: 'Small cap, mid cap, and large cap stocks — what the differences mean.' },
+      { id: 'financial-statements-intro', title: 'Understanding Financial Statements',              level: 'Intermediate', summary: 'Reading the balance sheet, income statement, and cash flow statement.' },
+      { id: 'snr-stocks',                 title: 'Support and Resistance in Stock Trading',         level: 'Intermediate', summary: 'Applying S&R principles to stock chart analysis.' },
+      { id: 'risk-management-stocks',     title: 'Risk Management in Stock Market',                 level: 'Intermediate', summary: 'Protecting capital and managing downside in stock trading.' },
+    ]
+  },
+  {
+    id: 'commodities', icon: '🥇', title: 'Commodities',
+    desc: 'Gold, silver, oil, supply and demand, inflation, and safe-haven assets.',
+    topics: [
+      { id: 'what-are-commodities',       title: 'What are Commodities?',                          level: 'Beginner',     summary: 'An overview of commodity markets and the assets traded within them.' },
+      { id: 'hard-vs-soft',               title: 'Hard vs Soft Commodities',                       level: 'Beginner',     summary: 'The difference between mined and grown commodities.' },
+      { id: 'intro-gold-trading',         title: 'Introduction to Gold Trading',                   level: 'Beginner',     summary: 'How gold is traded, why it matters, and how to get started.' },
+      { id: 'intro-silver-trading',       title: 'Introduction to Silver Trading',                 level: 'Beginner',     summary: 'Silver as an industrial and precious metal — trading the white metal.' },
+      { id: 'intro-oil-trading',          title: 'Introduction to Crude Oil Trading',              level: 'Beginner',     summary: 'How crude oil markets work and what drives price movements.' },
+      { id: 'factors-gold-prices',        title: 'Factors Affecting Gold Prices',                  level: 'Intermediate', summary: 'The key drivers behind gold price movements.' },
+      { id: 'factors-oil-prices',         title: 'Factors Affecting Oil Prices',                   level: 'Intermediate', summary: 'Supply, demand, geopolitics, and OPEC\'s role in oil pricing.' },
+      { id: 'commodity-cycles',           title: 'Commodity Market Cycles',                        level: 'Intermediate', summary: 'Understanding the cyclical nature of commodity markets.' },
+      { id: 'inflation-commodities',      title: 'Inflation and Its Impact on Commodities',        level: 'Intermediate', summary: 'Why commodities often rise during inflationary periods.' },
+      { id: 'safe-haven-assets',          title: 'Safe Haven Assets Explained',                    level: 'Beginner',     summary: 'Assets that hold value during market uncertainty.' },
+      { id: 'supply-demand-commodities',  title: 'Supply and Demand in Commodity Markets',         level: 'Beginner',     summary: 'How supply and demand fundamentals drive commodity prices.' },
+      { id: 'commodity-futures',          title: 'Commodity Futures Explained',                    level: 'Intermediate', summary: 'What futures contracts are and how they work in commodity markets.' },
+      { id: 'spot-vs-futures-commodity',  title: 'Spot vs Futures Commodity Trading',              level: 'Intermediate', summary: 'The difference between spot price and futures contracts.' },
+    ]
+  },
+  {
+    id: 'crypto', icon: '₿', title: 'Crypto',
+    desc: 'Bitcoin, Ethereum, blockchain, wallets, exchanges, leverage, liquidation, and crypto risk.',
+    topics: [
+      { id: 'what-is-crypto',             title: 'What is Cryptocurrency?',                        level: 'Beginner',     summary: 'A beginner-friendly introduction to digital currencies.' },
+      { id: 'bitcoin-explained',          title: 'Bitcoin Explained for Beginners',                level: 'Beginner',     summary: 'The origin, purpose, and mechanics of Bitcoin.' },
+      { id: 'ethereum-smart-contracts',   title: 'Ethereum and Smart Contracts',                   level: 'Beginner',     summary: 'How Ethereum works and what smart contracts enable.' },
+      { id: 'coins-vs-tokens',            title: 'Coins vs Tokens',                                level: 'Beginner',     summary: 'The difference between native coins and project tokens.' },
+      { id: 'what-is-blockchain',         title: 'What is Blockchain?',                            level: 'Beginner',     summary: 'The technology underpinning all cryptocurrencies.' },
+      { id: 'cex-vs-dex',                 title: 'Centralized vs Decentralized Exchanges',         level: 'Beginner',     summary: 'Understanding CEX and DEX trading platforms.' },
+      { id: 'spot-vs-futures-crypto',     title: 'Spot vs Futures Trading in Crypto',              level: 'Intermediate', summary: 'Key differences and which suits your risk profile.' },
+      { id: 'leverage-crypto',            title: 'Leverage in Crypto Trading',                     level: 'Intermediate', summary: 'How leverage amplifies both gains and losses in crypto.' },
+      { id: 'liquidation-crypto',         title: 'Liquidation in Crypto Futures',                  level: 'Intermediate', summary: 'What liquidation means and how to avoid it.' },
+      { id: 'crypto-wallets',             title: 'Crypto Wallets: Hot vs Cold',                    level: 'Beginner',     summary: 'Keeping your crypto safe — online vs offline storage.' },
+      { id: 'stablecoins',                title: 'Stablecoins: USDT, USDC and Their Role',         level: 'Beginner',     summary: 'How stablecoins work and why traders use them.' },
+      { id: 'market-sentiment-crypto',    title: 'Market Sentiment in Crypto',                     level: 'Intermediate', summary: 'How crowd psychology drives crypto price cycles.' },
+      { id: 'fear-greed-index',           title: 'Fear and Greed Index Explained',                 level: 'Beginner',     summary: 'Using sentiment indicators to time market entries.' },
+      { id: 'crypto-risk-management',     title: 'Crypto Risk Management for Beginners',           level: 'Beginner',     summary: 'Protecting your capital in the volatile crypto market.' },
+    ]
+  },
+  {
+    id: 'forex', icon: '💱', title: 'Forex',
+    desc: 'Currency pairs, pips, spread, lot size, margin, leverage, and economic calendar.',
+    topics: [
+      { id: 'what-is-forex',              title: 'What is Forex Trading?',                         level: 'Beginner',     summary: 'An introduction to the world\'s largest financial market.' },
+      { id: 'currency-pairs',             title: 'Major, Minor, and Exotic Pairs',                 level: 'Beginner',     summary: 'Understanding the different categories of currency pairs.' },
+      { id: 'base-quote-currency',        title: 'Base Currency and Quote Currency',               level: 'Beginner',     summary: 'How currency pair pricing works.' },
+      { id: 'what-are-pips',              title: 'What are Pips in Forex?',                        level: 'Beginner',     summary: 'Understanding pip values and how to calculate them.' },
+      { id: 'what-is-spread',             title: 'What is Spread in Forex?',                       level: 'Beginner',     summary: 'How brokers make money and how spread affects your trades.' },
+      { id: 'lot-margin-leverage',        title: 'Lot Size, Margin, and Leverage',                 level: 'Intermediate', summary: 'The three pillars of forex position sizing.' },
+      { id: 'fa-forex',                   title: 'Fundamental Analysis in Forex',                  level: 'Intermediate', summary: 'Using economic data and news to trade currencies.' },
+      { id: 'economic-calendar',          title: 'Economic Calendar and News Trading',             level: 'Intermediate', summary: 'How to use the economic calendar to anticipate market moves.' },
     ]
   },
   {
     id: 'technical-analysis', icon: '📐', title: 'Technical Analysis',
+    desc: 'Charts, candlesticks, indicators, price action, patterns, SMC, volume, and risk management.',
     topics: [
-      {
-        id: 'candlestick-patterns', title: 'Candlestick Patterns', level: 'Beginner',
-        summary: 'How to read candlesticks and understand what they reveal about market sentiment.',
-        content: [
-          { type: 'heading', text: 'Reading Candlestick Charts' },
-          { type: 'paragraph', text: 'A candlestick is a visual representation of price movement over a specific time period. It shows four key prices: the Open, High, Low, and Close (OHLC). Learning to read candles is the foundation of technical analysis.' },
-          { type: 'svg', id: 'svg-candlesticks', caption: 'Anatomy of a bullish and bearish candlestick' },
-          { type: 'heading', text: 'Key Candlestick Signals' },
-          { type: 'list', items: ['Doji: Open and close nearly equal — indecision in the market.', 'Hammer: Small body, long lower wick — buyers stepping in at lows, bullish signal.', 'Shooting Star: Small body, long upper wick — sellers rejecting higher prices, bearish signal.', 'Engulfing: A candle that fully covers the previous candle — strong reversal signal.'] },
-          { type: 'callout', text: 'Context matters: A hammer at a key support level is powerful. The same candle in the middle of a trend is meaningless. Always read candles in context of the bigger picture.' }
-        ]
-      },
-      {
-        id: 'chart-patterns', title: 'Chart Patterns', level: 'Intermediate',
-        summary: 'Recognising reversal and continuation chart patterns to anticipate the next move.',
-        content: [
-          { type: 'heading', text: 'Chart Patterns' },
-          { type: 'paragraph', text: 'Chart patterns are shapes formed by price action on a chart. They represent the collective psychology of all market participants — fear, greed, indecision — and repeat across all markets and timeframes.' },
-          { type: 'svg', id: 'svg-chart-patterns', caption: 'Head & Shoulders — a classic reversal pattern' },
-          { type: 'heading', text: 'Reversal vs Continuation Patterns' },
-          { type: 'list', items: ['Reversal patterns signal a change in trend direction: Head & Shoulders, Double Top, Double Bottom.', 'Continuation patterns signal the trend will resume after a pause: Flags, Pennants, Triangles.', 'Volume confirmation: A genuine breakout from any pattern should be accompanied by increased volume.'] },
-          { type: 'callout', text: 'Pattern trading tip: Wait for the pattern to complete and price to break the key level before entering. Many traders fail by entering too early, inside the pattern.' }
-        ]
-      },
-      {
-        id: 'trend-lines', title: 'Trend Lines', level: 'Beginner',
-        summary: 'Drawing and using trend lines to define the direction and momentum of the market.',
-        content: [
-          { type: 'heading', text: 'Trend Lines' },
-          { type: 'paragraph', text: 'A trend line is a straight line drawn across significant highs or lows on a chart. It visually defines the direction of the market and acts as dynamic support or resistance.' },
-          { type: 'svg', id: 'svg-trend-lines', caption: 'Uptrend connects swing lows; Downtrend connects swing highs' },
-          { type: 'heading', text: 'Rules for Drawing Trend Lines' },
-          { type: 'list', items: ['You need at least two points to draw a trend line — three or more makes it valid.', 'Uptrend line: Connect the swing lows (higher lows) — acts as support.', 'Downtrend line: Connect the swing highs (lower highs) — acts as resistance.', 'The more times price touches and respects a trend line, the more significant it becomes.'] },
-          { type: 'callout', text: 'A trend line break is significant. When price decisively breaks a well-established trend line, it often signals a trend change or at minimum a pause for reassessment.' }
-        ]
-      }
+      { id: 'what-is-ta',                 title: 'What is Technical Analysis?',                    level: 'Beginner',     summary: 'The foundation of chart-based trading and its core principles.' },
+      { id: 'ta-vs-fa',                   title: 'Technical vs Fundamental Analysis',              level: 'Beginner',     summary: 'Comparing the two main schools of market analysis.' },
+      { id: 'price-action',               title: 'Understanding Price Action',                     level: 'Beginner',     summary: 'Reading raw price movement without indicators.' },
+      { id: 'candlestick-charts',         title: 'Candlestick Charts Explained',                   level: 'Beginner',     summary: 'How to read and interpret candlestick charts.' },
+      { id: 'candlestick-patterns',       title: 'Most Important Candlestick Patterns',            level: 'Beginner',     summary: 'The key candlestick formations every trader must know.' },
+      { id: 'support-resistance',         title: 'Support and Resistance',                         level: 'Beginner',     summary: 'Identifying key price levels where the market reacts.' },
+      { id: 'trendlines-channels',        title: 'Trendlines and Channels',                        level: 'Beginner',     summary: 'Drawing and trading dynamic support and resistance.' },
+      { id: 'market-structure',           title: 'Market Structure: HH and LL',                   level: 'Beginner',     summary: 'Reading the sequence of highs and lows to define trend.' },
+      { id: 'dow-theory',                 title: 'Dow Theory for Beginners',                       level: 'Beginner',     summary: 'The original framework for understanding market trends.' },
+      { id: 'breakout-trading',           title: 'Breakout and Breakdown Trading',                 level: 'Intermediate', summary: 'Trading decisive moves beyond key levels.' },
+      { id: 'fake-breakouts',             title: 'Fake Breakouts and Liquidity Traps',             level: 'Intermediate', summary: 'Identifying and avoiding false breakout setups.' },
+      { id: 'volume-analysis',            title: 'Volume Analysis',                                level: 'Intermediate', summary: 'Using volume to confirm price moves and spot reversals.' },
+      { id: 'moving-averages',            title: 'Moving Averages: SMA and EMA',                   level: 'Beginner',     summary: 'How moving averages smooth price and signal trend direction.' },
+      { id: 'rsi-indicator',              title: 'RSI Indicator Explained',                        level: 'Beginner',     summary: 'Using RSI to spot overbought and oversold conditions.' },
+      { id: 'macd-indicator',             title: 'MACD Indicator Explained',                       level: 'Intermediate', summary: 'The MACD indicator in practice — signal line, histogram, divergence.' },
+      { id: 'bollinger-bands',            title: 'Bollinger Bands Explained',                      level: 'Intermediate', summary: 'Using Bollinger Bands to gauge volatility and price extremes.' },
+      { id: 'fibonacci',                  title: 'Fibonacci Retracement and Extension',            level: 'Intermediate', summary: 'Using Fibonacci levels to find high-probability entries and targets.' },
+      { id: 'chart-patterns-shapes',      title: 'Chart Patterns: Triangle, Flag, Wedge',         level: 'Intermediate', summary: 'Recognising and trading the most common continuation and reversal patterns.' },
+      { id: 'head-and-shoulders',         title: 'Head and Shoulders Pattern',                     level: 'Intermediate', summary: 'The classic reversal pattern and how to trade it.' },
+      { id: 'double-top-bottom',          title: 'Double Top and Double Bottom',                   level: 'Intermediate', summary: 'Identifying twin-peak and twin-valley reversal setups.' },
+      { id: 'multi-timeframe',            title: 'Multi-Timeframe Analysis',                       level: 'Intermediate', summary: 'Using higher timeframes to confirm lower timeframe signals.' },
+      { id: 'smc-intro',                  title: 'Smart Money Concepts Introduction',              level: 'Advanced',     summary: 'Understanding how institutional traders move markets.' },
+      { id: 'ob-fvg-bos-choch',           title: 'Order Blocks, FVG, BOS and CHOCH',              level: 'Advanced',     summary: 'Key SMC concepts for identifying institutional footprints.' },
+      { id: 'risk-reward',                title: 'Risk Reward Ratio in Trading',                   level: 'Beginner',     summary: 'Why your risk-to-reward ratio determines long-term profitability.' },
+      { id: 'sl-tp-planning',             title: 'Stop Loss and Take Profit Planning',             level: 'Beginner',     summary: 'Placing logical stop losses and take profit levels on every trade.' },
     ]
   },
   {
-    id: 'support-resistance', icon: '📏', title: 'Support &amp; Resistance',
+    id: 'fundamental-analysis', icon: '📊', title: 'Fundamental Analysis',
+    desc: 'Company valuation, financial statements, EPS, P/E ratio, macroeconomic data, and asset-based analysis.',
     topics: [
-      {
-        id: 'snr-basics', title: 'S&R Basics', level: 'Beginner',
-        summary: 'What support and resistance are, why they form, and how to identify key levels.',
-        content: [
-          { type: 'heading', text: 'Support & Resistance — The Foundation' },
-          { type: 'paragraph', text: 'Support and Resistance are the most fundamental concepts in all of technical analysis. Every professional trader — regardless of their strategy — uses these levels in some form.' },
-          { type: 'svg', id: 'svg-snr-basics', caption: 'Price bouncing between a support and resistance zone' },
-          { type: 'heading', text: 'Why Do These Levels Form?' },
-          { type: 'paragraph', text: 'Price levels are significant because of memory. Traders who missed a big move remember the price it started from. When price returns there, they act — creating clusters of orders that form visible levels on the chart.' },
-          { type: 'list', items: ['Support: A level where buying pressure historically exceeds selling pressure.', 'Resistance: A level where selling pressure historically exceeds buying pressure.', 'Role Reversal: When price breaks resistance, that level often becomes new support — and vice versa.'] },
-          { type: 'callout', text: 'The S&R Intelligent Trading System is built on this foundation. Master this concept and every other strategy becomes clearer.' }
-        ]
-      },
-      {
-        id: 'breakouts', title: 'Breakouts', level: 'Intermediate',
-        summary: 'How to identify, validate and trade breakouts from key support and resistance levels.',
-        content: [
-          { type: 'heading', text: 'Trading Breakouts' },
-          { type: 'paragraph', text: 'A breakout occurs when price moves decisively beyond a defined support or resistance level. Breakouts signal a potential shift in supply and demand and can lead to strong trending moves.' },
-          { type: 'svg', id: 'svg-breakouts', caption: 'Volume surge confirms a genuine breakout above resistance' },
-          { type: 'heading', text: 'Real vs False Breakouts' },
-          { type: 'list', items: ['Real breakout: Price closes beyond the level with increased volume. Strong momentum follow-through.', 'False breakout (fakeout): Price briefly moves beyond the level but quickly reverses. Volume is typically low.', 'Confirmation: Wait for a candle to close beyond the level rather than reacting to the intrabar move.'] },
-          { type: 'callout', text: 'Patience is everything with breakouts. The biggest mistake is chasing price immediately. Wait for volume confirmation and ideally a retest of the broken level before entering.' }
-        ]
-      },
-      {
-        id: 'retests', title: 'Retests', level: 'Intermediate',
-        summary: 'Using the retest of a broken level for a high-probability, low-risk trade entry.',
-        content: [
-          { type: 'heading', text: 'The Retest — Highest Probability Entry' },
-          { type: 'paragraph', text: 'After a breakout, price frequently returns to the broken level to "test" it from the other side. This is called a retest. It is widely considered the cleanest, lowest-risk entry in all of technical trading.' },
-          { type: 'svg', id: 'svg-retests', caption: 'Breakout, retest and continuation — the ideal trade setup' },
-          { type: 'heading', text: 'How to Trade a Retest' },
-          { type: 'list', items: ['Wait for price to break and close above resistance (bullish) or below support (bearish).', 'Do not chase — let price come back to the broken level.', 'Look for a rejection candle (hammer, engulfing) when price touches the level.', 'Enter on confirmation, place Stop Loss below the retested level.'] },
-          { type: 'callout', text: 'The retest entry gives you: a clear level to trade from, a logical Stop Loss placement, and a defined Risk-Reward ratio. This is the S&R system\'s highest-confidence entry.' }
-        ]
-      }
+      { id: 'what-is-fa',                 title: 'What is Fundamental Analysis?',                  level: 'Beginner',     summary: 'The practice of evaluating an asset based on its intrinsic value.' },
+      { id: 'why-fa-matters',             title: 'Why Fundamental Analysis Matters',               level: 'Beginner',     summary: 'How FA helps investors find undervalued opportunities.' },
+      { id: 'company-financials',         title: 'Understanding Company Financial Statements',     level: 'Beginner',     summary: 'The three core financial documents every investor should read.' },
+      { id: 'balance-sheet',              title: 'Balance Sheet Explained',                        level: 'Beginner',     summary: 'Assets, liabilities, and equity — reading a company\'s balance sheet.' },
+      { id: 'income-statement',           title: 'Income Statement Explained',                     level: 'Beginner',     summary: 'Revenue, expenses, and profit on the income statement.' },
+      { id: 'cash-flow-statement',        title: 'Cash Flow Statement Explained',                  level: 'Beginner',     summary: 'How cash moves in and out of a business.' },
+      { id: 'revenue-profit-income',      title: 'Revenue, Profit, and Net Income',                level: 'Beginner',     summary: 'The difference between top-line and bottom-line numbers.' },
+      { id: 'eps-explained',              title: 'EPS: Earnings Per Share Explained',              level: 'Beginner',     summary: 'What EPS reveals about a company\'s profitability per share.' },
+      { id: 'pe-ratio-explained',         title: 'P/E Ratio Explained',                            level: 'Beginner',     summary: 'How to use the Price-to-Earnings ratio to value stocks.' },
+      { id: 'book-value-pb',              title: 'Book Value and Price-to-Book Ratio',             level: 'Intermediate', summary: 'Measuring what a company is worth on paper vs its market price.' },
+      { id: 'dividend-payout',            title: 'Dividend Yield and Payout Ratio',                level: 'Beginner',     summary: 'Evaluating how much a company returns to shareholders.' },
+      { id: 'debt-to-equity',             title: 'Debt-to-Equity Ratio',                           level: 'Intermediate', summary: 'Measuring financial leverage and balance sheet risk.' },
+      { id: 'roe-roa',                    title: 'Return on Equity and Return on Assets',          level: 'Intermediate', summary: 'Efficiency ratios that reveal how well a company uses its resources.' },
+      { id: 'free-cash-flow',             title: 'Free Cash Flow Explained',                       level: 'Intermediate', summary: 'Why FCF is often more telling than reported profit.' },
+      { id: 'market-cap-explained',       title: 'Market Capitalization Explained',                level: 'Beginner',     summary: 'Understanding the total market value of a company.' },
+      { id: 'sector-industry',            title: 'Sector and Industry Analysis',                   level: 'Intermediate', summary: 'Evaluating companies within the context of their sector.' },
+      { id: 'economic-moat',              title: 'Economic Moat and Competitive Advantage',        level: 'Intermediate', summary: 'What makes a business durable and hard to compete with.' },
+      { id: 'growth-vs-value',            title: 'Growth Stocks vs Value Stocks',                  level: 'Intermediate', summary: 'Two contrasting investment philosophies explained.' },
+      { id: 'undervalued-overvalued',     title: 'Undervalued vs Overvalued Stocks',               level: 'Intermediate', summary: 'How to determine if a stock is priced fairly.' },
+      { id: 'interest-rates-markets',     title: 'Interest Rates and Their Impact on Markets',     level: 'Intermediate', summary: 'Why central bank decisions move stocks, bonds, and currencies.' },
+      { id: 'inflation-investments',      title: 'Inflation and Its Impact on Investments',        level: 'Intermediate', summary: 'How rising prices erode or shift investment returns.' },
+      { id: 'gdp-employment-sentiment',   title: 'GDP, Employment Data and Market Sentiment',      level: 'Intermediate', summary: 'Key macroeconomic indicators and how markets respond.' },
+      { id: 'commodity-fa',               title: 'Commodity Fundamental Analysis',                 level: 'Intermediate', summary: 'Applying fundamental analysis to gold, oil, and other commodities.' },
+      { id: 'crypto-fa',                  title: 'Crypto Fundamental Analysis',                    level: 'Intermediate', summary: 'Evaluating cryptocurrencies beyond price charts.' },
+      { id: 'forex-fa',                   title: 'Forex Fundamental Analysis',                     level: 'Intermediate', summary: 'Using macroeconomic data to trade currency pairs.' },
     ]
-  }
+  },
 ];
 
 // ── Build sidebar ─────────────────────────────────────────────────────────────
@@ -650,23 +684,37 @@ function openTopic(id) {
   // Build panel
   const panel = document.getElementById('libPanel');
   const levelClass = topic.level === 'Beginner' ? 'level-beginner' : topic.level === 'Intermediate' ? 'level-intermediate' : 'level-advanced';
+  const hasContent = topic.content && topic.content.length > 0;
 
   let blocksHTML = '';
-  topic.content.forEach(b => {
-    if (b.type === 'heading') {
-      blocksHTML += `<div class="content-h2">${b.text}</div>`;
-    } else if (b.type === 'paragraph') {
-      blocksHTML += `<p class="content-p">${b.text}</p>`;
-    } else if (b.type === 'list') {
-      blocksHTML += `<ul class="content-list">${b.items.map(i => `<li>${i}</li>`).join('')}</ul>`;
-    } else if (b.type === 'callout') {
-      blocksHTML += `<div class="content-callout">${b.text}</div>`;
-    } else if (b.type === 'svg') {
-      const srcSvg = document.getElementById(b.id);
-      const svgClone = srcSvg ? srcSvg.outerHTML.replace(/id="/, 'id="clone-') : '';
-      blocksHTML += `<div class="content-svg-wrap" data-svgid="${b.id}">${svgClone}<div class="content-svg-caption">${b.caption}</div></div>`;
-    }
-  });
+  if (hasContent) {
+    topic.content.forEach(b => {
+      if (b.type === 'heading') {
+        blocksHTML += `<div class="content-h2">${b.text}</div>`;
+      } else if (b.type === 'paragraph') {
+        blocksHTML += `<p class="content-p">${b.text}</p>`;
+      } else if (b.type === 'list') {
+        blocksHTML += `<ul class="content-list">${b.items.map(i => `<li>${i}</li>`).join('')}</ul>`;
+      } else if (b.type === 'callout') {
+        blocksHTML += `<div class="content-callout">${b.text}</div>`;
+      } else if (b.type === 'svg') {
+        const srcSvg = document.getElementById(b.id);
+        const svgClone = srcSvg ? srcSvg.outerHTML.replace(/id="/, 'id="clone-') : '';
+        blocksHTML += `<div class="content-svg-wrap" data-svgid="${b.id}">${svgClone}<div class="content-svg-caption">${b.caption}</div></div>`;
+      }
+    });
+  } else {
+    blocksHTML = `
+      <div class="coming-soon-wrap">
+        <div class="cs-icon">📚</div>
+        <h3 class="cs-title">Content Coming Soon</h3>
+        <p class="cs-text">A full guide on <strong>${topic.title}</strong> is being prepared by our educators.</p>
+        <p class="cs-sub">All articles are published gradually — check back soon.</p>
+        <div class="cs-badge">
+          <span>🔔</span> Subscribe for updates
+        </div>
+      </div>`;
+  }
 
   panel.innerHTML = `
     <div class="topic-content">
@@ -678,9 +726,9 @@ function openTopic(id) {
           </div>
           <div class="topic-title-h">${topic.title}</div>
         </div>
-        <button class="download-btn" onclick="downloadPDF()">
+        <button class="download-btn${hasContent ? '' : ' disabled'}" onclick="downloadPDF()">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download PDF
+          ${hasContent ? 'Download PDF' : 'Coming Soon'}
         </button>
       </div>
       <div class="topic-divider"></div>
@@ -733,6 +781,7 @@ async function svgToPng(svgId) {
 
 async function downloadPDF() {
   if (!currentTopic) return;
+  if (!currentTopic.content || currentTopic.content.length === 0) return;
   const btn = document.querySelector('.download-btn');
   btn.classList.add('loading');
   btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg> Generating...`;
