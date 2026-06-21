@@ -84,6 +84,8 @@
     .topic-link:hover{color:var(--text);background:rgba(255,255,255,0.03);}
     .topic-link.active{color:var(--teal);border-left-color:var(--teal);background:rgba(45,212,191,0.06);font-weight:600;}
     .topic-link-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:0.5;}
+    .topic-link.topic-done .topic-link-dot{background:#F59E0B;opacity:1;box-shadow:0 0 5px rgba(245,158,11,0.5);}
+    .topic-link.topic-done{color:var(--text-muted);}
 
     /* Reading panel */
     .lib-panel{background:var(--bg);overflow-y:auto;max-height:calc(100vh - 180px);}
@@ -775,7 +777,7 @@ function buildSidebar(data) {
       </div>
       <div class="cat-topics">
         ${cat.topics.map(t => `
-          <div class="topic-link" data-id="${t.id}" onclick="openTopic('${t.id}')">
+          <div class="topic-link${t.content && t.content.length ? ' topic-done' : ''}" data-id="${t.id}" onclick="openTopic('${t.id}')">
             <span class="topic-link-dot"></span>${t.title}<span class="topic-seq-tag" style="margin-left:6px;margin-right:0;">${TOPIC_SEQ[t.id]||''}</span>
           </div>`).join('')}
       </div>`;
