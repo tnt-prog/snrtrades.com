@@ -209,6 +209,29 @@
       content:' ↩'; font-size:11px; color:var(--teal); opacity:0.75; font-weight:400;
     }
 
+    /* Topic sequence tag (sidebar) */
+    .topic-seq-tag{
+      font-size:9.5px;font-weight:700;
+      color:var(--text-dim);
+      font-family:'Space Grotesk',sans-serif;
+      letter-spacing:0.04em;
+      flex-shrink:0;
+      margin-right:5px;
+      opacity:0.75;
+    }
+    .topic-link:hover .topic-seq-tag,
+    .topic-link.active .topic-seq-tag{ opacity:1; }
+
+    /* Topic ID badge (panel header) */
+    .topic-id-badge{
+      font-size:10px;font-weight:700;
+      color:var(--text-dim);
+      background:var(--bg-3);
+      padding:2px 9px;border-radius:8px;
+      letter-spacing:0.05em;
+      font-family:'Space Grotesk',sans-serif;
+    }
+
     /* Coming Soon panel */
     .coming-soon-wrap{
       display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -787,6 +810,30 @@ const LIBRARY = [
   },
 ];
 
+// ── Build sequence number map with category-prefixed IDs ──────────────────────
+const DISPLAY_ORDER = ['technical-analysis','fundamental-analysis','stocks','commodities','crypto','forex'];
+const CAT_PREFIX = {
+  'technical-analysis':  'SNR-TA',
+  'fundamental-analysis':'SNR-FA',
+  'stocks':              'SNR-ST',
+  'commodities':         'SNR-COM',
+  'crypto':              'SNR-CR',
+  'forex':               'SNR-FX',
+};
+function buildSeqMap() {
+  const map = {};
+  DISPLAY_ORDER.forEach(catId => {
+    const cat = LIBRARY.find(c => c.id === catId);
+    if (!cat) return;
+    const prefix = CAT_PREFIX[catId] || 'SnR';
+    cat.topics.forEach((t, i) => {
+      map[t.id] = prefix + '-' + String(i + 1).padStart(3, '0');
+    });
+  });
+  return map;
+}
+const TOPIC_SEQ = buildSeqMap();
+
 // ── Welcome panel snapshot (restored when Topics & Articles is clicked) ───────
 let welcomePanelHTML = '';
 
@@ -817,7 +864,7 @@ function buildSidebar(data) {
       <div class="cat-topics">
         ${cat.topics.map(t => `
           <div class="topic-link" data-id="${t.id}" onclick="openTopic('${t.id}')">
-            <span class="topic-link-dot"></span>${t.title}
+            <span class="topic-link-dot"></span>${t.title}<span class="topic-seq-tag" style="margin-left:6px;margin-right:0;">${TOPIC_SEQ[t.id]||''}</span>
           </div>`).join('')}
       </div>`;
     sb.appendChild(grp);
@@ -934,6 +981,7 @@ function openTopic(id) {
     blocksHTML = `
       <div class="coming-soon-wrap">
         <div class="cs-icon">📚</div>
+        <div style="font-size:11px;font-weight:700;font-family:'Space Grotesk',sans-serif;letter-spacing:0.06em;color:var(--teal);opacity:0.7;margin-bottom:8px;">${TOPIC_SEQ[topic.id]||''}</div>
         <h3 class="cs-title">Content Coming Soon</h3>
         <p class="cs-text">A full guide on <strong>${topic.title}</strong> is being prepared by our educators.</p>
         <p class="cs-sub">All articles are published gradually — check back soon.</p>
@@ -951,7 +999,7 @@ function openTopic(id) {
             <span class="level-badge ${levelClass}">${topic.level}</span>
             <span class="cat-badge">${catTitle}</span>
           </div>
-          <div class="topic-title-h">${topic.title}</div>
+          <div class="topic-title-h">${topic.title} <span class="topic-id-badge" style="font-size:11px;vertical-align:middle;position:relative;top:-2px;">${TOPIC_SEQ[topic.id]||''}</span></div>
         </div>
         <button class="download-btn${hasContent ? '' : ' disabled'}" onclick="downloadPDF()">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
