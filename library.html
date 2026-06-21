@@ -1034,8 +1034,9 @@ async function downloadPDF() {
     }),
     footer: { columns: [{ text: 'snrtrades.com  |  Educational content only — not financial advice', style: 'footer', margin: [50, 0, 50, 0] }] },
     content: [
-      { text: catTitle.toUpperCase(), style: 'catLabel', margin: [0, 0, 0, 6] },
-      { text: currentTopic.title, style: 'h1', margin: [0, 0, 0, 4] },
+      { text: catTitle.toUpperCase(), style: 'catLabel', margin: [0, 0, 0, 4] },
+      { text: currentTopic.title, style: 'h1', margin: [0, 0, 0, 6] },
+      { text: TOPIC_SEQ[currentTopic.id] || '', style: 'seqLabel', margin: [0, 0, 0, 6] },
       { canvas: [{ type: 'line', x1: 0, y1: 0, x2: 460, y2: 0, lineWidth: 2, lineColor: '#2DD4BF' }], margin: [0, 0, 0, 18] },
       ...docContent
     ],
@@ -1046,6 +1047,7 @@ async function downloadPDF() {
       callout: { font: 'Roboto', fontSize: 10.5, color: '#065F46', italics: true, lineHeight: 1.6 },
       caption: { font: 'Roboto', fontSize: 9, color: '#64748B', alignment: 'center', italics: true },
       catLabel: { font: 'Roboto', fontSize: 10, bold: true, color: '#2DD4BF', characterSpacing: 1 },
+      seqLabel: { font: 'Roboto', fontSize: 9, bold: true, color: '#94A3B8', characterSpacing: 0.5 },
       headerLeft: { font: 'Roboto', fontSize: 9, color: '#94A3B8' },
       headerRight: { font: 'Roboto', fontSize: 9, color: '#94A3B8', alignment: 'right' },
       footer: { font: 'Roboto', fontSize: 8, color: '#94A3B8', alignment: 'center' }
