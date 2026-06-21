@@ -234,66 +234,92 @@
 
     /* ── Mobile ── */
     @media(max-width:760px){
-      /* Page spacing */
-      .lib-page{ padding:90px 12px 40px; }
+      /* Page */
+      .lib-page{ padding:90px 10px 40px; }
 
       /* Header */
-      .lib-header{ padding:10px 0 20px; }
-      .lib-header-title-row{ gap:10px; flex-wrap:nowrap; }
-      .lib-header-logo{ width:38px; height:38px; border-radius:8px; }
-      .lib-header h1{ font-size:clamp(20px,6vw,30px); }
-      .lib-header p{ font-size:13px; margin-bottom:16px; }
+      .lib-header{ padding:8px 0 18px; }
+      .lib-header-title-row{ gap:10px; }
+      .lib-header-logo{ width:36px; height:36px; border-radius:8px; }
+      .lib-header h1{ font-size:clamp(18px,5.5vw,26px); }
+      .lib-header p{ font-size:13px; margin-bottom:14px; }
       .lib-search{ max-width:100%; }
 
-      /* Body — panel comes FIRST on mobile (thumbnails priority) */
+      /* Body — thumbnails (panel) first, sidebar below */
       .lib-body{
-        grid-template-columns:1fr;
-        border-radius:14px;
-        display:flex;
-        flex-direction:column;
+        display:flex !important;
+        flex-direction:column !important;
+        border-radius:12px;
       }
-      .lib-panel{ order:1; max-height:none; }
+      .lib-panel{ order:1; max-height:none; width:100%; overflow:hidden; }
       .lib-sidebar{
         order:2;
         max-height:none;
         position:static;
         border-right:none;
         border-top:1px solid var(--border);
+        width:100%;
       }
 
-      /* Thumbnail grid — 2 columns on mobile */
+      /* Welcome panel */
+      .panel-welcome{ padding:14px 8px 20px; min-height:unset; overflow:hidden; width:100%; }
+
+      /* Thumbnail grid — 2 columns, no overflow */
       .cat-thumbs-grid{
-        grid-template-columns:repeat(2,1fr);
-        gap:12px;
+        display:grid !important;
+        grid-template-columns:repeat(2,1fr) !important;
+        gap:10px;
+        width:100%;
         max-width:100%;
-        margin-top:16px;
-        padding:0 4px;
+        margin-top:12px;
+        padding:0;
+        box-sizing:border-box;
       }
-      .cat-thumb-card{ padding:16px 10px 14px; border-radius:14px; }
-      .cat-thumb-img{ width:100%; height:120px; object-fit:contain; }
-      .cat-thumb-name{ font-size:12px; }
+      .cat-thumb-card{
+        padding:12px 8px 10px;
+        border-radius:12px;
+        width:100%;
+        min-width:0;
+        box-sizing:border-box;
+        overflow:hidden;
+      }
+      .cat-thumb-img{
+        width:100%;
+        height:auto;
+        aspect-ratio:1/1;
+        object-fit:contain;
+        border-radius:10px;
+      }
+      .cat-thumb-name{ font-size:11px; }
 
       /* Enlarged single thumbnail on mobile */
-      .cat-thumbs-grid.single-view{ max-width:100%; }
-      .cat-thumb-card.thumb-active .cat-thumb-img{ width:240px; height:240px; }
-      .cat-thumb-card.thumb-active .cat-thumb-name{ font-size:14px; }
-
-      /* Welcome panel padding */
-      .panel-welcome{ padding:20px 12px 28px; min-height:unset; }
+      .cat-thumbs-grid.single-view{
+        grid-template-columns:1fr !important;
+        max-width:100%;
+      }
+      .cat-thumb-card.thumb-active{ padding:20px 16px; }
+      .cat-thumb-card.thumb-active .cat-thumb-img{
+        width:100%;
+        height:auto;
+        max-height:280px;
+        aspect-ratio:1/1;
+      }
+      .cat-thumb-card.thumb-active .cat-thumb-name{ font-size:15px; }
 
       /* Topic content */
-      .topic-content{ padding:20px; }
+      .topic-content{ padding:16px 14px; }
       .topic-top{ flex-direction:column; }
       .topic-title-h{ font-size:20px; }
+      .download-btn{ width:100%; justify-content:center; }
     }
 
     /* Extra small screens */
     @media(max-width:400px){
-      .lib-header h1{ font-size:18px; }
-      .lib-header-logo{ width:32px; height:32px; }
-      .cat-thumbs-grid{ gap:10px; }
-      .cat-thumb-img{ height:100px; }
-      .cat-thumb-name{ font-size:11px; }
+      .lib-page{ padding:85px 8px 32px; }
+      .lib-header h1{ font-size:16px; }
+      .lib-header-logo{ width:30px; height:30px; }
+      .cat-thumbs-grid{ gap:8px; }
+      .cat-thumb-name{ font-size:10px; }
     }
 
     /* Footer */
