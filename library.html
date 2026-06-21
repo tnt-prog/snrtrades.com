@@ -117,6 +117,47 @@
     .content-callout{background:rgba(45,212,191,0.06);border-left:3px solid var(--teal);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:13px;color:var(--text-muted);line-height:1.7;}
     .content-callout strong{color:var(--teal);}
 
+    /* Sidebar header */
+    .sidebar-header{
+      padding:16px 18px 12px;
+      border-bottom:1px solid var(--border);
+      background:var(--bg-2);
+      position:sticky;top:0;z-index:2;
+    }
+    .sidebar-header-label{
+      font-size:10px;font-weight:700;letter-spacing:1.5px;
+      text-transform:uppercase;color:var(--teal);
+      display:flex;align-items:center;gap:7px;margin-bottom:4px;
+    }
+    .sidebar-header-label::before{
+      content:'';width:16px;height:2px;
+      background:var(--teal);border-radius:2px;flex-shrink:0;
+    }
+    .sidebar-header-title{
+      font-family:'Space Grotesk',sans-serif;
+      font-size:15px;font-weight:800;color:var(--text);line-height:1.2;
+    }
+
+    /* Custom scrollbars — teal theme */
+    .lib-sidebar,
+    .lib-panel{
+      scrollbar-width:thin;
+      scrollbar-color:rgba(45,212,191,0.35) transparent;
+    }
+    .lib-sidebar::-webkit-scrollbar,
+    .lib-panel::-webkit-scrollbar{ width:5px; }
+    .lib-sidebar::-webkit-scrollbar-track,
+    .lib-panel::-webkit-scrollbar-track{ background:transparent; }
+    .lib-sidebar::-webkit-scrollbar-thumb,
+    .lib-panel::-webkit-scrollbar-thumb{
+      background:rgba(45,212,191,0.3);
+      border-radius:4px;
+    }
+    .lib-sidebar::-webkit-scrollbar-thumb:hover,
+    .lib-panel::-webkit-scrollbar-thumb:hover{
+      background:rgba(45,212,191,0.6);
+    }
+
     /* Mobile */
     @media(max-width:760px){
       .lib-body{grid-template-columns:1fr;border-radius:14px;}
@@ -558,7 +599,11 @@ const LIBRARY = [
 // ── Build sidebar ─────────────────────────────────────────────────────────────
 function buildSidebar(data) {
   const sb = document.getElementById('libSidebar');
-  sb.innerHTML = '';
+  sb.innerHTML = `
+    <div class="sidebar-header">
+      <div class="sidebar-header-label">Library</div>
+      <div class="sidebar-header-title">Topics &amp; Articles</div>
+    </div>`;
   data.forEach((cat, ci) => {
     const grp = document.createElement('div');
     grp.className = 'cat-group' + (ci === 0 ? ' open' : '');
