@@ -209,6 +209,10 @@
       content:' ↩'; font-size:11px; color:var(--teal); opacity:0.75; font-weight:400;
     }
 
+    /* Topic image block */
+    .content-img-wrap{margin:0 0 28px;border-radius:14px;overflow:hidden;background:rgba(255,255,255,0.03);border:1px solid var(--border);}
+    .content-topic-img{width:100%;height:auto;max-height:480px;object-fit:contain;display:block;}
+
     /* Topic sequence tag (sidebar) */
     .topic-seq-tag{
       font-size:9.5px;font-weight:700;
@@ -329,6 +333,8 @@
       }
       .cat-thumb-card.thumb-active .cat-thumb-name{ font-size:15px; }
 
+      /* Topic image on mobile */
+      .content-img-wrap{ margin:0 0 16px; }
       /* Topic content */
       .topic-content{ padding:16px 14px; }
       .topic-top{ flex-direction:column; }
@@ -750,7 +756,56 @@ const LIBRARY = [
     id: 'technical-analysis', icon: '📐', title: 'Technical Analysis',
     desc: 'Charts, candlesticks, indicators, price action, patterns, SMC, volume, and risk management.',
     topics: [
-      { id: 'what-is-ta',                 title: 'What is Technical Analysis?',                    level: 'Beginner',     summary: 'The foundation of chart-based trading and its core principles.' },
+      { id: 'what-is-ta', title: 'What is Technical Analysis?', level: 'Beginner', summary: 'The foundation of chart-based trading and its core principles.',
+        content: [
+          { type: 'image', src: 'images/SNRTA001.jpg', alt: 'What is Technical Analysis' },
+          { type: 'paragraph', text: 'Technical Analysis is a method used by traders and investors to study market price movement through charts, patterns, volume, and indicators. Instead of focusing only on company news or financial statements, technical analysis focuses on how price behaves on the chart.' },
+          { type: 'paragraph', text: 'The main idea behind technical analysis is simple: price reflects market psychology. Every candle, trendline, support level, resistance zone, and volume movement shows how buyers and sellers are reacting in the market.' },
+          { type: 'paragraph', text: 'Technical analysis can be used in different financial markets, including stocks, commodities, crypto, and forex.' },
+          { type: 'heading', text: 'Why Technical Analysis is Important' },
+          { type: 'paragraph', text: 'Technical analysis helps traders understand the current market direction and identify possible trading opportunities. It allows traders to study whether the market is moving upward, downward, or sideways.' },
+          { type: 'paragraph', text: 'By using technical analysis, traders can make more structured decisions instead of entering trades based on emotions, rumors, or random guesses.' },
+          { type: 'paragraph', text: 'It helps in:' },
+          { type: 'list', items: [
+            'Identifying market trends',
+            'Finding support and resistance levels',
+            'Understanding buyer and seller behavior',
+            'Planning entry and exit points',
+            'Managing risk through stop loss and target levels',
+            'Studying price momentum using indicators'
+          ]},
+          { type: 'heading', text: 'Key Elements of Technical Analysis' },
+          { type: 'heading', text: '1. Price Charts' },
+          { type: 'paragraph', text: 'Price charts are the foundation of technical analysis. They show how the price of an asset has moved over time. Traders commonly use line charts, bar charts, and candlestick charts.' },
+          { type: 'paragraph', text: 'Among these, candlestick charts are the most popular because they show the open, high, low, and close price in a clear visual format.' },
+          { type: 'heading', text: '2. Candlestick Patterns' },
+          { type: 'paragraph', text: 'Candlestick patterns help traders understand market sentiment. Some patterns show buying pressure, while others show selling pressure.' },
+          { type: 'paragraph', text: 'For example, bullish candles may suggest strength in the market, while bearish candles may suggest weakness. Patterns like engulfing candles, doji, hammer, and shooting star are commonly used by traders.' },
+          { type: 'heading', text: '3. Support and Resistance' },
+          { type: 'paragraph', text: 'Support is a price level where buyers may enter the market and stop the price from falling further.' },
+          { type: 'paragraph', text: 'Resistance is a price level where sellers may become active and stop the price from rising further.' },
+          { type: 'paragraph', text: 'These levels are important because markets often react around them. Traders use support and resistance to plan entries, exits, stop losses, and profit targets.' },
+          { type: 'heading', text: '4. Trendlines and Market Structure' },
+          { type: 'paragraph', text: 'Trendlines help traders identify the direction of the market. If price is making higher highs and higher lows, the market is usually in an uptrend. If price is making lower highs and lower lows, the market is usually in a downtrend.' },
+          { type: 'paragraph', text: 'Understanding market structure helps traders avoid trading against the main direction of the market.' },
+          { type: 'heading', text: '5. Indicators and Volume' },
+          { type: 'paragraph', text: 'Indicators are tools that help traders analyze price momentum, trend strength, and possible reversal points. Common indicators include RSI, MACD, Moving Averages, Bollinger Bands, and Volume.' },
+          { type: 'paragraph', text: 'Volume is also very important because it shows the strength behind a price move. A breakout with high volume is usually more meaningful than a breakout with weak volume.' },
+          { type: 'heading', text: 'Technical Analysis Does Not Predict with 100% Accuracy' },
+          { type: 'paragraph', text: 'Technical analysis is not a magic formula and it does not guarantee profit. It only helps traders analyze probability.' },
+          { type: 'paragraph', text: 'A professional trader does not use technical analysis to predict the future with certainty. Instead, the goal is to create a trading plan based on probability, confirmation, and risk management.' },
+          { type: 'paragraph', text: 'Even the best technical setup can fail, which is why stop loss and position sizing are very important.' },
+          { type: 'heading', text: 'Technical Analysis vs Fundamental Analysis' },
+          { type: 'paragraph', text: 'Technical analysis studies price charts, trends, volume, and patterns.' },
+          { type: 'paragraph', text: 'Fundamental analysis studies financial statements, company performance, earnings, economic data, interest rates, and business value.' },
+          { type: 'paragraph', text: 'Both methods are useful. Many traders use technical analysis for timing entries and exits, while investors use fundamental analysis to understand the long-term value of an asset.' },
+          { type: 'heading', text: 'Final Thoughts' },
+          { type: 'paragraph', text: 'Technical analysis is one of the most important skills for anyone who wants to understand financial markets. It helps traders read charts, identify trends, understand market behavior, and manage risk properly.' },
+          { type: 'paragraph', text: 'For beginners, the best approach is to start with the basics: candlesticks, support and resistance, trendlines, volume, and risk management. Once these foundations are clear, advanced tools like indicators, chart patterns, and smart money concepts become easier to understand.' },
+          { type: 'paragraph', text: 'In simple words, technical analysis helps traders read the language of the market through price charts.' },
+          { type: 'callout', text: '<strong>Disclaimer:</strong> This content is for educational purposes only and should not be considered financial advice. Trading and investing involve risk, and every learner should do proper research before making any financial decision.' },
+        ]
+      },
       { id: 'ta-vs-fa',                   title: 'Technical vs Fundamental Analysis',              level: 'Beginner',     summary: 'Comparing the two main schools of market analysis.' },
       { id: 'price-action',               title: 'Understanding Price Action',                     level: 'Beginner',     summary: 'Reading raw price movement without indicators.' },
       { id: 'candlestick-charts',         title: 'Candlestick Charts Explained',                   level: 'Beginner',     summary: 'How to read and interpret candlestick charts.' },
@@ -833,6 +888,50 @@ function buildSeqMap() {
   return map;
 }
 const TOPIC_SEQ = buildSeqMap();
+
+// ── Pre-load logo for PDF watermark (fetch avoids canvas CORS taint) ─────────
+let logoPngDataUrl = null;
+(async function preloadLogo() {
+  try {
+    const res = await fetch('images/Librarylogo.jpg');
+    const blob = await res.blob();
+    const objUrl = URL.createObjectURL(blob);
+    await new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => {
+        const c = document.createElement('canvas');
+        c.width = img.naturalWidth; c.height = img.naturalHeight;
+        c.getContext('2d').drawImage(img, 0, 0);
+        URL.revokeObjectURL(objUrl);
+        logoPngDataUrl = c.toDataURL('image/png');
+        resolve();
+      };
+      img.onerror = () => { URL.revokeObjectURL(objUrl); resolve(); };
+      img.src = objUrl;
+    });
+  } catch(e) {}
+})();
+
+// ── Convert image URL to data URL via fetch (avoids canvas CORS taint) ────────
+async function imgToDataUrl(src) {
+  try {
+    const res = await fetch(src);
+    const blob = await res.blob();
+    const objUrl = URL.createObjectURL(blob);
+    return await new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => {
+        const c = document.createElement('canvas');
+        c.width = img.naturalWidth; c.height = img.naturalHeight;
+        c.getContext('2d').drawImage(img, 0, 0);
+        URL.revokeObjectURL(objUrl);
+        resolve(c.toDataURL('image/png'));
+      };
+      img.onerror = () => { URL.revokeObjectURL(objUrl); resolve(null); };
+      img.src = objUrl;
+    });
+  } catch(e) { return null; }
+}
 
 // ── Welcome panel snapshot (restored when Topics & Articles is clicked) ───────
 let welcomePanelHTML = '';
@@ -963,7 +1062,9 @@ function openTopic(id) {
   let blocksHTML = '';
   if (hasContent) {
     topic.content.forEach(b => {
-      if (b.type === 'heading') {
+      if (b.type === 'image') {
+        blocksHTML += `<div class="content-img-wrap"><img src="${b.src}" alt="${b.alt||''}" class="content-topic-img"/></div>`;
+      } else if (b.type === 'heading') {
         blocksHTML += `<div class="content-h2">${b.text}</div>`;
       } else if (b.type === 'paragraph') {
         blocksHTML += `<p class="content-p">${b.text}</p>`;
@@ -1061,19 +1162,25 @@ async function downloadPDF() {
   btn.classList.add('loading');
   btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg> Generating...`;
 
-  // Convert all SVGs in this topic to PNG
+  // Convert all SVGs and images in this topic to PNG
   const svgImages = {};
+  const contentImages = {};
   for (const block of currentTopic.content) {
     if (block.type === 'svg') {
       const png = await svgToPng(block.id);
       if (png) svgImages[block.id] = png;
+    } else if (block.type === 'image') {
+      const png = await imgToDataUrl(block.src);
+      if (png) contentImages[block.src] = png;
     }
   }
 
   // Build pdfmake content
   const docContent = [];
   currentTopic.content.forEach(b => {
-    if (b.type === 'heading') {
+    if (b.type === 'image' && contentImages[b.src]) {
+      docContent.push({ image: contentImages[b.src], width: 460, alignment: 'center', margin: [0, 0, 0, 18], borderRadius: [8,8,8,8] });
+    } else if (b.type === 'heading') {
       docContent.push({ text: b.text, style: 'h2', margin: [0, 16, 0, 6] });
     } else if (b.type === 'paragraph') {
       docContent.push({ text: b.text, style: 'body', margin: [0, 0, 0, 10] });
@@ -1103,7 +1210,9 @@ async function downloadPDF() {
   const docDef = {
     pageSize: 'A4',
     pageMargins: [50, 80, 50, 70],
-    watermark: { text: 'Trends & Trade', color: '#2DD4BF', opacity: 0.055, bold: true, angle: 315, fontSize: 54 },
+    background: logoPngDataUrl ? function(currentPage, pageSize) {
+      return { image: logoPngDataUrl, width: 180, opacity: 0.055, absolutePosition: { x: (pageSize.width - 180) / 2, y: (pageSize.height - 180) / 2 } };
+    } : undefined,
     header: (page, pages) => ({
       columns: [
         { text: 'Trends & Trade — Trading Library', style: 'headerLeft', margin: [50, 28, 0, 0] },
