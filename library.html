@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trading Library — Trends &amp; Trade</title>
+  <meta name="description" content="Free trading education library — candlesticks, S&R, chart patterns and more."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+  <style>
+    :root{--bg:#070F1A;--bg-2:#0A1628;--bg-3:#0D1E34;--teal:#2DD4BF;--teal-dark:#0D9488;--border:rgba(45,212,191,0.18);--border-dim:rgba(255,255,255,0.06);--text:#F0F4F8;--text-muted:#94A3B8;--text-dim:#4A5568;--green:#22C55E;--red:#EF4444;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
+
+    /* Ticker */
+    .ticker-bar{background:var(--bg-2);border-bottom:1px solid var(--border);padding:8px 0;overflow:hidden;position:fixed;top:0;left:0;right:0;z-index:200;}
+    .ticker-track{display:flex;gap:0;animation:ticker-scroll 35s linear infinite;white-space:nowrap;width:max-content;}
+    .ticker-track:hover{animation-play-state:paused;}
+    @keyframes ticker-scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+    .tick-item{display:inline-flex;align-items:center;gap:7px;padding:0 28px;font-size:12px;font-weight:600;border-right:1px solid var(--border-dim);}
+    .tick-name{color:var(--text-muted);}.tick-price{color:var(--text);font-weight:700;}
+    .tick-change{font-size:11px;font-weight:700;}.tick-change.up{color:var(--green);}.tick-change.dn{color:var(--red);}
+    .tick-dot{width:6px;height:6px;border-radius:50%;}.tick-dot.up{background:var(--green);}.tick-dot.dn{background:var(--red);}
+
+    /* Nav */
+    .nav{position:fixed;top:37px;left:0;right:0;z-index:100;padding:0 24px;transition:all 0.3s;}
+    .nav.scrolled{background:rgba(7,15,26,0.94);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+    .nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:flex-start;gap:40px;padding:10px 0 8px;}
+    .nav-col{display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
+    .nav-row-1{display:flex;align-items:center;gap:30px;list-style:none;}
+    .nav-row-2{display:flex;align-items:center;gap:10px;}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+    .logo-img{height:44px;width:auto;border-radius:6px;box-shadow:0 0 0 1px rgba(45,212,191,0.3);}
+    .logo-text{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:800;color:var(--text);}
+    .logo-text span{color:var(--teal);}
+    .nav-links a{font-size:13px;font-weight:600;color:var(--text-muted);text-decoration:none;transition:color 0.2s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--teal);}
+    .nav-hamburger{display:none;background:none;border:none;color:var(--text);font-size:22px;cursor:pointer;margin-left:auto;}
+    .mobile-menu{display:none;position:fixed;top:130px;left:0;right:0;bottom:0;background:var(--bg-2);z-index:99;padding:32px 24px;flex-direction:column;gap:24px;overflow-y:auto;}
+    .mobile-menu.open{display:flex;}
+    .mobile-menu a{font-size:18px;font-weight:600;color:var(--text);text-decoration:none;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:10px;font-weight:700;font-size:14px;text-decoration:none;transition:all 0.2s;cursor:pointer;border:none;}
+    .btn-primary{background:var(--teal);color:#051012;}.btn-primary:hover{background:var(--teal-dark);color:#fff;}
+    .btn-outline{background:transparent;border:1.5px solid var(--teal);color:var(--teal);}.btn-outline:hover{background:rgba(45,212,191,0.1);}
+    @media(max-width:900px){.nav-col{display:none;}.nav-hamburger{display:block !important;}}
+
+    /* Page */
+    .lib-page{max-width:1200px;margin:0 auto;padding:120px 24px 60px;}
+
+    /* Library header */
+    .lib-header{text-align:center;padding:40px 0 36px;}
+    .lib-header .label{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.2);color:var(--teal);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;}
+    .lib-header h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,4vw,44px);font-weight:800;margin-bottom:12px;}
+    .lib-header h1 span{color:var(--teal);}
+    .lib-header p{font-size:15px;color:var(--text-muted);margin-bottom:24px;}
+    .lib-search{display:flex;align-items:center;gap:10px;max-width:440px;margin:0 auto;background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:10px 16px;}
+    .lib-search input{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;}
+    .lib-search input::placeholder{color:var(--text-dim);}
+    .lib-search svg{color:var(--text-dim);flex-shrink:0;}
+
+    /* Body layout */
+    .lib-body{display:grid;grid-template-columns:300px 1fr;gap:0;border:1px solid var(--border);border-radius:18px;overflow:hidden;min-height:600px;}
+
+    /* Sidebar */
+    .lib-sidebar{background:var(--bg-2);border-right:1px solid var(--border);overflow-y:auto;max-height:calc(100vh - 180px);position:sticky;top:120px;}
+    .cat-group{border-bottom:1px solid var(--border-dim);}
+    .cat-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;user-select:none;transition:background 0.15s;}
+    .cat-header:hover{background:rgba(45,212,191,0.05);}
+    .cat-header-left{display:flex;align-items:center;gap:10px;}
+    .cat-icon{font-size:16px;}
+    .cat-title{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--text);}
+    .cat-count{font-size:11px;color:var(--text-dim);background:var(--bg-3);padding:2px 7px;border-radius:10px;}
+    .cat-chevron{color:var(--text-dim);font-size:12px;transition:transform 0.25s;}
+    .cat-group.open .cat-chevron{transform:rotate(180deg);}
+    .cat-topics{display:none;padding:4px 0 8px;}
+    .cat-group.open .cat-topics{display:block;}
+    .topic-link{display:flex;align-items:center;gap:8px;padding:9px 18px 9px 42px;cursor:pointer;font-size:13px;color:var(--text-muted);transition:all 0.15s;border-left:2px solid transparent;}
+    .topic-link:hover{color:var(--text);background:rgba(255,255,255,0.03);}
+    .topic-link.active{color:var(--teal);border-left-color:var(--teal);background:rgba(45,212,191,0.06);font-weight:600;}
+    .topic-link-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:0.5;}
+
+    /* Reading panel */
+    .lib-panel{background:var(--bg);overflow-y:auto;max-height:calc(100vh - 180px);}
+    .panel-welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:400px;text-align:center;padding:40px;}
+    .panel-welcome .w-icon{font-size:56px;margin-bottom:20px;opacity:0.4;}
+    .panel-welcome h3{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;margin-bottom:10px;color:var(--text-muted);}
+    .panel-welcome p{font-size:14px;color:var(--text-dim);}
+
+    /* Topic content */
+    .topic-content{padding:32px 36px;}
+    .topic-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:28px;flex-wrap:wrap;}
+    .topic-meta{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+    .level-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:0.07em;}
+    .level-beginner{background:rgba(34,197,94,0.12);color:#22C55E;border:1px solid rgba(34,197,94,0.25);}
+    .level-intermediate{background:rgba(251,191,36,0.12);color:#FBBF24;border:1px solid rgba(251,191,36,0.25);}
+    .level-advanced{background:rgba(239,68,68,0.12);color:#EF4444;border:1px solid rgba(239,68,68,0.25);}
+    .cat-badge{font-size:10px;font-weight:600;color:var(--text-dim);background:var(--bg-3);padding:3px 10px;border-radius:10px;}
+    .topic-title-h{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:800;line-height:1.2;}
+    .download-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.3);color:var(--teal);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
+    .download-btn:hover{background:rgba(45,212,191,0.18);}
+    .download-btn.loading{opacity:0.6;cursor:wait;}
+    .topic-divider{height:1px;background:var(--border);margin:24px 0;}
+
+    /* Content blocks */
+    .content-h2{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;margin:28px 0 12px;color:var(--text);}
+    .content-h2:first-child{margin-top:0;}
+    .content-p{font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:14px;}
+    .content-svg-wrap{background:#fff;border-radius:14px;overflow:hidden;margin:20px 0;border:1px solid rgba(255,255,255,0.1);}
+    .content-svg-wrap svg{display:block;width:100%;height:auto;}
+    .content-svg-caption{font-size:11px;color:var(--text-dim);text-align:center;padding:8px 12px;background:rgba(255,255,255,0.03);border-top:1px solid var(--border-dim);}
+    .content-list{margin:0 0 16px 0;padding-left:20px;}
+    .content-list li{font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:4px;}
+    .content-callout{background:rgba(45,212,191,0.06);border-left:3px solid var(--teal);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:13px;color:var(--text-muted);line-height:1.7;}
+    .content-callout strong{color:var(--teal);}
+
+    /* Mobile */
+    @media(max-width:760px){
+      .lib-body{grid-template-columns:1fr;border-radius:14px;}
+      .lib-sidebar{max-height:none;position:static;border-right:none;border-bottom:1px solid var(--border);}
+      .lib-panel{max-height:none;}
+      .topic-content{padding:20px;}
+      .topic-top{flex-direction:column;}
+    }
+
+    /* Footer */
+    .lib-footer{text-align:center;padding:28px 0;border-top:1px solid var(--border);margin-top:40px;font-size:12px;color:var(--text-dim);line-height:1.8;}
+    .lib-footer a{color:var(--teal);text-decoration:none;}
+  </style>
+</head>
+<body>
+
+<div class="ticker-bar"><div class="ticker-track" id="ticker"></div></div>
+
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="logo.png" class="logo-img" alt="Trends &amp; Trade" onerror="this.style.display='none'"/>
+      <div class="logo-text">Trends <span>&amp;</span> Trade</div>
+    </a>
+    <div class="nav-col">
+      <ul class="nav-row-1 nav-links">
+        <li><a href="about.html">About</a></li>
+        <li><a href="index.html#resources">Free Resources</a></li>
+        <li><a href="library.html" class="active">Library</a></li>
+        <li><a href="index.html#pricing">Pricing</a></li>
+        <li><a href="index.html#community">Community</a></li>
+        <li><a href="team.html">Our Team</a></li>
+        <li><a href="social.html">Media</a></li>
+      </ul>
+      <div class="nav-row-2 nav-cta">
+        <a href="courses.html" class="btn btn-outline" style="padding:9px 18px;font-size:13px;">Free Courses</a>
+        <a href="index.html#email" class="btn btn-primary" style="padding:9px 18px;font-size:13px;">Get Free Analysis</a>
+      </div>
+    </div>
+    <button class="nav-hamburger" onclick="toggleMenu()">&#9776;</button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="about.html" onclick="toggleMenu()">About</a>
+  <a href="index.html#resources" onclick="toggleMenu()">Free Resources</a>
+  <a href="library.html" onclick="toggleMenu()" style="color:var(--teal);">Library</a>
+  <a href="index.html#pricing" onclick="toggleMenu()">Pricing</a>
+  <a href="index.html#community" onclick="toggleMenu()">Community</a>
+  <a href="team.html" onclick="toggleMenu()">Our Team</a>
+  <a href="social.html" onclick="toggleMenu()">Media</a>
+  <a href="index.html#email" class="btn btn-primary" style="margin-top:16px;justify-content:center;" onclick="toggleMenu()">Get Free Analysis</a>
+</div>
+
+<div class="lib-page">
+  <div class="lib-header">
+    <div class="label">&#128218; Free Resource</div>
+    <h1>Trading <span>Library</span></h1>
+    <p>Select any topic to read or download a free PDF guide.</p>
+    <div class="lib-search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="libSearch" placeholder="Search topics..." oninput="filterTopics(this.value)"/>
+    </div>
+  </div>
+
+  <div class="lib-body">
+    <div class="lib-sidebar" id="libSidebar"><!-- built by JS --></div>
+    <div class="lib-panel" id="libPanel">
+      <div class="panel-welcome">
+        <div class="w-icon">&#128218;</div>
+        <h3>Select a topic to begin</h3>
+        <p>Choose any topic from the left to read it here<br/>and download a free PDF guide.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="lib-footer">
+    <a href="index.html">Home</a> &nbsp;&middot;&nbsp;
+    <a href="about.html">About</a> &nbsp;&middot;&nbsp;
+    <a href="library.html">Library</a> &nbsp;&middot;&nbsp;
+    <a href="courses.html">Free Courses</a> &nbsp;&middot;&nbsp;
+    <a href="social.html">Media</a><br/>
+    &copy; 2026 Trends &amp; Trade &middot; Educational content only
+  </div>
+</div>
+
+<!-- ══ HIDDEN SVG DEFINITIONS ══ -->
+<div id="svgDefs" style="display:none">
+
+  <!-- SVG: What is Trading -->
+  <svg id="svg-what-is-trading" viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+    <rect width="600" height="260" fill="#F8FAFB"/>
+    <polyline points="40,200 100,160 160,180 220,120 280,140 340,80 400,100 460,50 520,70" fill="none" stroke="#2DD4BF" stroke-width="2.5" stroke-linejoin="round"/>
+    <line x1="40" y1="220" x2="540" y2="220" stroke="#CBD5E1" stroke-width="1"/>
+    <line x1="40" y1="40" x2="40" y2="220" stroke="#CBD5E1" stroke-width="1"/>
+    <!-- BUY marker -->
+    <circle cx="220" cy="120" r="7" fill="#22C55E"/>
+    <text x="220" y="108" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#22C55E" font-weight="700">BUY</text>
+    <line x1="220" y1="113" x2="220" y2="120" stroke="#22C55E" stroke-width="1.5"/>
+    <!-- SELL marker -->
+    <circle cx="460" cy="50" r="7" fill="#EF4444"/>
+    <text x="460" y="80" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#EF4444" font-weight="700">SELL</text>
+    <line x1="460" y1="57" x2="460" y2="73" stroke="#EF4444" stroke-width="1.5"/>
+    <!-- Profit arrow -->
+    <line x1="220" y1="120" x2="460" y2="50" stroke="#94A3B8" stroke-width="1" stroke-dasharray="4,3"/>
+    <text x="340" y="95" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Profit</text>
+    <!-- Y labels -->
+    <text x="30" y="45" text-anchor="end" font-family="Inter,sans-serif" font-size="10" fill="#94A3B8">High</text>
+    <text x="30" y="225" text-anchor="end" font-family="Inter,sans-serif" font-size="10" fill="#94A3B8">Low</text>
+    <text x="290" y="248" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#94A3B8">Time &#x2192;</text>
+  </svg>
+
+  <!-- SVG: Market Types -->
+  <svg id="svg-market-types" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
+    <rect width="600" height="240" fill="#F8FAFB"/>
+    <!-- Stocks box -->
+    <rect x="20" y="20" width="130" height="100" rx="12" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1.5"/>
+    <text x="85" y="55" text-anchor="middle" font-family="Inter,sans-serif" font-size="24">&#x1F4C8;</text>
+    <text x="85" y="82" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#1E40AF">Stocks</text>
+    <text x="85" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">PSX &bull; NASDAQ</text>
+    <text x="85" y="112" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">NYSE &bull; ADX</text>
+    <!-- Crypto box -->
+    <rect x="165" y="20" width="130" height="100" rx="12" fill="#FFF7ED" stroke="#FED7AA" stroke-width="1.5"/>
+    <text x="230" y="55" text-anchor="middle" font-family="Inter,sans-serif" font-size="24">&#x20BF;</text>
+    <text x="230" y="82" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#C2410C">Crypto</text>
+    <text x="230" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Bitcoin &bull; Ethereum</text>
+    <text x="230" y="112" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Altcoins</text>
+    <!-- Forex box -->
+    <rect x="310" y="20" width="130" height="100" rx="12" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1.5"/>
+    <text x="375" y="55" text-anchor="middle" font-family="Inter,sans-serif" font-size="24">&#x1F4B1;</text>
+    <text x="375" y="82" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#15803D">Forex</text>
+    <text x="375" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">EUR/USD &bull; GBP/JPY</text>
+    <text x="375" y="112" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Major &bull; Minor pairs</text>
+    <!-- Commodities box -->
+    <rect x="455" y="20" width="130" height="100" rx="12" fill="#FEFCE8" stroke="#FEF08A" stroke-width="1.5"/>
+    <text x="520" y="55" text-anchor="middle" font-family="Inter,sans-serif" font-size="24">&#x1F947;</text>
+    <text x="520" y="82" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#A16207">Commodities</text>
+    <text x="520" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Gold &bull; Silver</text>
+    <text x="520" y="112" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Oil &bull; Natural Gas</text>
+    <!-- Common trait -->
+    <rect x="150" y="148" width="300" height="36" rx="8" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
+    <text x="300" y="172" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#475569">All markets follow the same law: <tspan font-weight="700" fill="#0D9488">Supply &amp; Demand</tspan></text>
+  </svg>
+
+  <!-- SVG: Order Types -->
+  <svg id="svg-order-types" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
+    <rect width="600" height="240" fill="#F8FAFB"/>
+    <!-- Market Order column -->
+    <rect x="20" y="16" width="265" height="210" rx="12" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1.5"/>
+    <text x="152" y="44" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" font-weight="700" fill="#1E40AF">Market Order</text>
+    <line x1="40" y1="54" x2="264" y2="54" stroke="#BFDBFE" stroke-width="1"/>
+    <text x="152" y="78" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#334155">Executes immediately</text>
+    <text x="152" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#334155">at the current market price</text>
+    <text x="152" y="128" text-anchor="middle" font-family="Inter,sans-serif" font-size="28">&#x26A1;</text>
+    <text x="152" y="162" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#22C55E" font-weight="600">&#10003; Fast execution</text>
+    <text x="152" y="180" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#EF4444" font-weight="600">&#10005; No price control</text>
+    <text x="152" y="198" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Use when: entry speed matters</text>
+    <!-- Limit Order column -->
+    <rect x="315" y="16" width="265" height="210" rx="12" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1.5"/>
+    <text x="447" y="44" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" font-weight="700" fill="#15803D">Limit Order</text>
+    <line x1="335" y1="54" x2="559" y2="54" stroke="#BBF7D0" stroke-width="1"/>
+    <text x="447" y="78" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#334155">Executes only at your</text>
+    <text x="447" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#334155">specified price or better</text>
+    <text x="447" y="128" text-anchor="middle" font-family="Inter,sans-serif" font-size="28">&#x1F3AF;</text>
+    <text x="447" y="162" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#22C55E" font-weight="600">&#10003; Precise price control</text>
+    <text x="447" y="180" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#EF4444" font-weight="600">&#10005; May not fill</text>
+    <text x="447" y="198" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Use when: price level matters</text>
+  </svg>
+
+  <!-- SVG: Candlestick Anatomy -->
+  <svg id="svg-candlesticks" viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+    <rect width="600" height="260" fill="#F8FAFB"/>
+    <!-- Bullish candle -->
+    <text x="150" y="26" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#15803D">Bullish Candle</text>
+    <line x1="150" y1="40" x2="150" y2="75" stroke="#15803D" stroke-width="2"/>
+    <rect x="120" y="75" width="60" height="110" rx="2" fill="#22C55E"/>
+    <line x1="150" y1="185" x2="150" y2="220" stroke="#15803D" stroke-width="2"/>
+    <text x="230" y="48" font-family="Inter,sans-serif" font-size="11" fill="#64748B">&#x2190; High (Upper wick)</text>
+    <text x="230" y="82" font-family="Inter,sans-serif" font-size="11" fill="#64748B">&#x2190; Close (top of body)</text>
+    <text x="230" y="180" font-family="Inter,sans-serif" font-size="11" fill="#64748B">&#x2190; Open (bottom of body)</text>
+    <text x="230" y="218" font-family="Inter,sans-serif" font-size="11" fill="#64748B">&#x2190; Low (Lower wick)</text>
+    <text x="150" y="138" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="white" font-weight="700">BODY</text>
+    <!-- Bearish candle -->
+    <text x="430" y="26" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#B91C1C">Bearish Candle</text>
+    <line x1="430" y1="40" x2="430" y2="75" stroke="#B91C1C" stroke-width="2"/>
+    <rect x="400" y="75" width="60" height="110" rx="2" fill="#EF4444"/>
+    <line x1="430" y1="185" x2="430" y2="220" stroke="#B91C1C" stroke-width="2"/>
+    <text x="340" y="48" text-anchor="end" font-family="Inter,sans-serif" font-size="11" fill="#64748B">High &#x2192;</text>
+    <text x="340" y="82" text-anchor="end" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Open &#x2192;</text>
+    <text x="340" y="180" text-anchor="end" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Close &#x2192;</text>
+    <text x="340" y="218" text-anchor="end" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Low &#x2192;</text>
+    <text x="430" y="138" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="white" font-weight="700">BODY</text>
+    <line x1="300" y1="30" x2="300" y2="230" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4,3"/>
+  </svg>
+
+  <!-- SVG: Trend Lines -->
+  <svg id="svg-trend-lines" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
+    <rect width="600" height="240" fill="#F8FAFB"/>
+    <!-- Uptrend (left side) -->
+    <text x="140" y="22" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#15803D">Uptrend</text>
+    <polyline points="30,195 70,160 110,170 150,130 190,140 230,100 270,115" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+    <line x1="30" y1="195" x2="270" y2="95" stroke="#22C55E" stroke-width="2" stroke-dasharray="5,3"/>
+    <text x="250" y="88" font-family="Inter,sans-serif" font-size="10" fill="#22C55E" font-weight="700">Support line</text>
+    <circle cx="30" cy="195" r="4" fill="#22C55E"/>
+    <circle cx="110" cy="170" r="4" fill="#22C55E"/>
+    <circle cx="190" cy="140" r="4" fill="#22C55E"/>
+    <!-- Downtrend (right side) -->
+    <text x="450" y="22" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#B91C1C">Downtrend</text>
+    <polyline points="320,60 360,95 400,80 440,120 480,105 520,145 560,130" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+    <line x1="320" y1="60" x2="560" y2="155" stroke="#EF4444" stroke-width="2" stroke-dasharray="5,3"/>
+    <text x="318" y="152" font-family="Inter,sans-serif" font-size="10" fill="#EF4444" font-weight="700">Resistance line</text>
+    <circle cx="320" cy="60" r="4" fill="#EF4444"/>
+    <circle cx="400" cy="80" r="4" fill="#EF4444"/>
+    <circle cx="480" cy="105" r="4" fill="#EF4444"/>
+    <line x1="295" y1="20" x2="295" y2="220" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4,3"/>
+  </svg>
+
+  <!-- SVG: Support and Resistance -->
+  <svg id="svg-snr-basics" viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+    <rect width="600" height="260" fill="#F8FAFB"/>
+    <!-- Resistance line -->
+    <line x1="40" y1="75" x2="560" y2="75" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="6,3"/>
+    <text x="565" y="79" font-family="Inter,sans-serif" font-size="11" fill="#EF4444" font-weight="700">Resistance</text>
+    <!-- Support line -->
+    <line x1="40" y1="195" x2="560" y2="195" stroke="#22C55E" stroke-width="1.5" stroke-dasharray="6,3"/>
+    <text x="565" y="199" font-family="Inter,sans-serif" font-size="11" fill="#22C55E" font-weight="700">Support</text>
+    <!-- Price bouncing -->
+    <polyline points="40,140 80,75 120,140 160,195 200,130 240,75 280,140 320,195 360,120 400,75 440,140 480,195 520,130 560,140" fill="none" stroke="#2DD4BF" stroke-width="2" stroke-linejoin="round"/>
+    <!-- Bounce arrows down from resistance -->
+    <text x="83" y="63" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" fill="#EF4444">&#x2193;</text>
+    <text x="243" y="63" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" fill="#EF4444">&#x2193;</text>
+    <text x="403" y="63" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" fill="#EF4444">&#x2193;</text>
+    <!-- Bounce arrows up from support -->
+    <text x="163" y="215" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" fill="#22C55E">&#x2191;</text>
+    <text x="323" y="215" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" fill="#22C55E">&#x2191;</text>
+    <text x="483" y="215" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" fill="#22C55E">&#x2191;</text>
+    <text x="300" y="248" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Price oscillates between Support and Resistance until a breakout occurs</text>
+  </svg>
+
+  <!-- SVG: Breakouts -->
+  <svg id="svg-breakouts" viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+    <rect width="600" height="260" fill="#F8FAFB"/>
+    <!-- Resistance line -->
+    <line x1="40" y1="120" x2="560" y2="120" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="6,3"/>
+    <text x="10" y="124" font-family="Inter,sans-serif" font-size="10" fill="#EF4444" font-weight="700">R</text>
+    <!-- Price consolidation then breakout -->
+    <polyline points="40,200 80,180 120,190 160,170 200,180 240,160 280,170 320,120 360,80 400,60 440,40 480,30" fill="none" stroke="#2DD4BF" stroke-width="2.5" stroke-linejoin="round"/>
+    <!-- Volume bars -->
+    <rect x="50" y="230" width="12" height="8" fill="#94A3B8" opacity="0.5"/>
+    <rect x="90" y="228" width="12" height="10" fill="#94A3B8" opacity="0.5"/>
+    <rect x="130" y="229" width="12" height="9" fill="#94A3B8" opacity="0.5"/>
+    <rect x="170" y="227" width="12" height="11" fill="#94A3B8" opacity="0.5"/>
+    <rect x="210" y="228" width="12" height="10" fill="#94A3B8" opacity="0.5"/>
+    <rect x="250" y="226" width="12" height="12" fill="#94A3B8" opacity="0.5"/>
+    <rect x="290" y="215" width="12" height="23" fill="#22C55E" opacity="0.8"/>
+    <rect x="330" y="210" width="12" height="28" fill="#22C55E" opacity="0.8"/>
+    <rect x="370" y="212" width="12" height="26" fill="#22C55E" opacity="0.8"/>
+    <text x="310" y="248" font-family="Inter,sans-serif" font-size="10" fill="#22C55E" font-weight="700">Volume surge on breakout</text>
+    <!-- Breakout label -->
+    <text x="310" y="108" font-family="Inter,sans-serif" font-size="11" fill="#22C55E" font-weight="700">BREAKOUT &#x2191;</text>
+    <text x="40" y="248" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Consolidation</text>
+  </svg>
+
+  <!-- SVG: Retests -->
+  <svg id="svg-retests" viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+    <rect width="600" height="260" fill="#F8FAFB"/>
+    <!-- Old resistance becomes support -->
+    <line x1="40" y1="130" x2="560" y2="130" stroke="#2DD4BF" stroke-width="1.5" stroke-dasharray="5,3"/>
+    <text x="8" y="134" font-family="Inter,sans-serif" font-size="9" fill="#2DD4BF" font-weight="700">R&#x2192;S</text>
+    <!-- Price: consolidation, breakout, retest, continuation -->
+    <polyline points="40,200 90,170 130,180 170,160 210,170 250,130 290,80 330,130 370,135 400,90 440,60 480,40" fill="none" stroke="#2DD4BF" stroke-width="2.5" stroke-linejoin="round"/>
+    <!-- Labels -->
+    <text x="145" y="240" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Consolidation</text>
+    <text x="265" y="118" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#22C55E" font-weight="700">Breakout</text>
+    <text x="350" y="155" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#F59E0B" font-weight="700">Retest</text>
+    <text x="460" y="50" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#22C55E" font-weight="700">Continuation</text>
+    <!-- Retest circle -->
+    <circle cx="340" cy="130" r="18" fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <!-- Entry marker -->
+    <circle cx="390" cy="90" r="6" fill="#22C55E"/>
+    <text x="410" y="88" font-family="Inter,sans-serif" font-size="10" fill="#22C55E" font-weight="700">Entry</text>
+    <text x="300" y="248" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Retest provides a low-risk entry after confirmation</text>
+  </svg>
+
+  <!-- SVG: Chart Patterns -->
+  <svg id="svg-chart-patterns" viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+    <rect width="600" height="260" fill="#F8FAFB"/>
+    <text x="300" y="22" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#334155">Head &amp; Shoulders (Reversal Pattern)</text>
+    <!-- Neckline -->
+    <line x1="60" y1="175" x2="540" y2="175" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="5,3"/>
+    <text x="545" y="179" font-family="Inter,sans-serif" font-size="10" fill="#EF4444">Neckline</text>
+    <!-- Pattern -->
+    <polyline points="40,200 100,175 140,155 180,175 230,80 280,175 320,130 360,175 400,155 440,175 480,200 530,220" fill="none" stroke="#2DD4BF" stroke-width="2.5" stroke-linejoin="round"/>
+    <!-- Labels -->
+    <text x="140" y="148" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Left</text>
+    <text x="140" y="161" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Shoulder</text>
+    <text x="230" y="70" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700" fill="#334155">Head</text>
+    <text x="360" y="123" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Right</text>
+    <text x="360" y="136" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Shoulder</text>
+    <!-- Breakdown arrow -->
+    <text x="490" y="195" font-family="Inter,sans-serif" font-size="18" fill="#EF4444">&#x2193;</text>
+    <text x="490" y="218" font-family="Inter,sans-serif" font-size="10" fill="#EF4444" font-weight="700">Breakdown</text>
+    <text x="300" y="248" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Break below neckline confirms bearish reversal</text>
+  </svg>
+
+</div>
+<!-- ══ END SVG DEFS ══ -->
+
+<script>
+// ── Library data ──────────────────────────────────────────────────────────────
+const LIBRARY = [
+  {
+    id: 'foundations', icon: '📗', title: 'Foundations',
+    topics: [
+      {
+        id: 'what-is-trading', title: 'What is Trading?', level: 'Beginner',
+        summary: 'Understanding what trading means, how markets work, and why people trade.',
+        content: [
+          { type: 'heading', text: 'What is Trading?' },
+          { type: 'paragraph', text: 'Trading is the act of buying and selling financial assets — such as stocks, cryptocurrencies, currencies, or commodities — with the aim of making a profit from price movements. Unlike long-term investing, trading focuses on shorter time frames, from minutes to weeks.' },
+          { type: 'svg', id: 'svg-what-is-trading', caption: 'Basic trading cycle — Buy low, Sell high' },
+          { type: 'heading', text: 'The Core Concept' },
+          { type: 'paragraph', text: 'Every trade has two sides: a buyer and a seller. The price of any asset is simply the point where both parties agree. Traders profit by correctly predicting which direction price will move next.' },
+          { type: 'list', items: ['Going Long (Buy): You expect price to rise. Profit when it does.', 'Going Short (Sell): You expect price to fall. Profit when it does.', 'Risk: If the market moves against your prediction, you lose.'] },
+          { type: 'callout', text: 'Key principle: Trading is not gambling. Professional traders follow a system, manage risk, and accept that not every trade will be profitable. Consistency and discipline separate professionals from beginners.' }
+        ]
+      },
+      {
+        id: 'market-types', title: 'Market Types', level: 'Beginner',
+        summary: 'An overview of the major financial markets and what makes each unique.',
+        content: [
+          { type: 'heading', text: 'Types of Financial Markets' },
+          { type: 'paragraph', text: 'Financial markets are venues — physical or digital — where buyers and sellers exchange assets. Understanding each market\'s characteristics helps you choose the right one for your trading style.' },
+          { type: 'svg', id: 'svg-market-types', caption: 'The four main categories of financial markets' },
+          { type: 'heading', text: 'Which Market Is Right for You?' },
+          { type: 'list', items: ['Stock Markets: Best for fundamental analysis, longer holding periods, regulated.', 'Crypto Markets: 24/7 trading, high volatility, younger market with strong technicals.', 'Forex: Highest liquidity in the world, major pairs move in tight ranges.', 'Commodities: Driven by global supply/demand, great for macro analysis.'] },
+          { type: 'callout', text: 'The S&R system works across all these markets. Once you understand price action and support/resistance, the same principles apply whether you\'re trading Bitcoin or Gold.' }
+        ]
+      },
+      {
+        id: 'order-types', title: 'Order Types', level: 'Beginner',
+        summary: 'Market orders, limit orders, stop losses and take profits explained clearly.',
+        content: [
+          { type: 'heading', text: 'Understanding Order Types' },
+          { type: 'paragraph', text: 'An order is an instruction you send to the market. The type of order you choose determines when and how your trade is executed. Getting this right is essential for precision trading.' },
+          { type: 'svg', id: 'svg-order-types', caption: 'Market Order vs Limit Order comparison' },
+          { type: 'heading', text: 'Stop Loss and Take Profit' },
+          { type: 'list', items: ['Stop Loss (SL): Automatically closes your trade if price moves against you by a set amount. This caps your maximum loss.', 'Take Profit (TP): Automatically closes your trade when price reaches your target. Locks in your profit.', 'Risk-Reward Ratio: Always set your TP further than your SL. A 1:2 ratio means risking $1 to make $2.'] },
+          { type: 'callout', text: 'Rule: Never enter a trade without a Stop Loss. A trade without a Stop Loss is not a trade — it is a gamble.' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'technical-analysis', icon: '📐', title: 'Technical Analysis',
+    topics: [
+      {
+        id: 'candlestick-patterns', title: 'Candlestick Patterns', level: 'Beginner',
+        summary: 'How to read candlesticks and understand what they reveal about market sentiment.',
+        content: [
+          { type: 'heading', text: 'Reading Candlestick Charts' },
+          { type: 'paragraph', text: 'A candlestick is a visual representation of price movement over a specific time period. It shows four key prices: the Open, High, Low, and Close (OHLC). Learning to read candles is the foundation of technical analysis.' },
+          { type: 'svg', id: 'svg-candlesticks', caption: 'Anatomy of a bullish and bearish candlestick' },
+          { type: 'heading', text: 'Key Candlestick Signals' },
+          { type: 'list', items: ['Doji: Open and close nearly equal — indecision in the market.', 'Hammer: Small body, long lower wick — buyers stepping in at lows, bullish signal.', 'Shooting Star: Small body, long upper wick — sellers rejecting higher prices, bearish signal.', 'Engulfing: A candle that fully covers the previous candle — strong reversal signal.'] },
+          { type: 'callout', text: 'Context matters: A hammer at a key support level is powerful. The same candle in the middle of a trend is meaningless. Always read candles in context of the bigger picture.' }
+        ]
+      },
+      {
+        id: 'chart-patterns', title: 'Chart Patterns', level: 'Intermediate',
+        summary: 'Recognising reversal and continuation chart patterns to anticipate the next move.',
+        content: [
+          { type: 'heading', text: 'Chart Patterns' },
+          { type: 'paragraph', text: 'Chart patterns are shapes formed by price action on a chart. They represent the collective psychology of all market participants — fear, greed, indecision — and repeat across all markets and timeframes.' },
+          { type: 'svg', id: 'svg-chart-patterns', caption: 'Head & Shoulders — a classic reversal pattern' },
+          { type: 'heading', text: 'Reversal vs Continuation Patterns' },
+          { type: 'list', items: ['Reversal patterns signal a change in trend direction: Head & Shoulders, Double Top, Double Bottom.', 'Continuation patterns signal the trend will resume after a pause: Flags, Pennants, Triangles.', 'Volume confirmation: A genuine breakout from any pattern should be accompanied by increased volume.'] },
+          { type: 'callout', text: 'Pattern trading tip: Wait for the pattern to complete and price to break the key level before entering. Many traders fail by entering too early, inside the pattern.' }
+        ]
+      },
+      {
+        id: 'trend-lines', title: 'Trend Lines', level: 'Beginner',
+        summary: 'Drawing and using trend lines to define the direction and momentum of the market.',
+        content: [
+          { type: 'heading', text: 'Trend Lines' },
+          { type: 'paragraph', text: 'A trend line is a straight line drawn across significant highs or lows on a chart. It visually defines the direction of the market and acts as dynamic support or resistance.' },
+          { type: 'svg', id: 'svg-trend-lines', caption: 'Uptrend connects swing lows; Downtrend connects swing highs' },
+          { type: 'heading', text: 'Rules for Drawing Trend Lines' },
+          { type: 'list', items: ['You need at least two points to draw a trend line — three or more makes it valid.', 'Uptrend line: Connect the swing lows (higher lows) — acts as support.', 'Downtrend line: Connect the swing highs (lower highs) — acts as resistance.', 'The more times price touches and respects a trend line, the more significant it becomes.'] },
+          { type: 'callout', text: 'A trend line break is significant. When price decisively breaks a well-established trend line, it often signals a trend change or at minimum a pause for reassessment.' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'support-resistance', icon: '📏', title: 'Support &amp; Resistance',
+    topics: [
+      {
+        id: 'snr-basics', title: 'S&R Basics', level: 'Beginner',
+        summary: 'What support and resistance are, why they form, and how to identify key levels.',
+        content: [
+          { type: 'heading', text: 'Support & Resistance — The Foundation' },
+          { type: 'paragraph', text: 'Support and Resistance are the most fundamental concepts in all of technical analysis. Every professional trader — regardless of their strategy — uses these levels in some form.' },
+          { type: 'svg', id: 'svg-snr-basics', caption: 'Price bouncing between a support and resistance zone' },
+          { type: 'heading', text: 'Why Do These Levels Form?' },
+          { type: 'paragraph', text: 'Price levels are significant because of memory. Traders who missed a big move remember the price it started from. When price returns there, they act — creating clusters of orders that form visible levels on the chart.' },
+          { type: 'list', items: ['Support: A level where buying pressure historically exceeds selling pressure.', 'Resistance: A level where selling pressure historically exceeds buying pressure.', 'Role Reversal: When price breaks resistance, that level often becomes new support — and vice versa.'] },
+          { type: 'callout', text: 'The S&R Intelligent Trading System is built on this foundation. Master this concept and every other strategy becomes clearer.' }
+        ]
+      },
+      {
+        id: 'breakouts', title: 'Breakouts', level: 'Intermediate',
+        summary: 'How to identify, validate and trade breakouts from key support and resistance levels.',
+        content: [
+          { type: 'heading', text: 'Trading Breakouts' },
+          { type: 'paragraph', text: 'A breakout occurs when price moves decisively beyond a defined support or resistance level. Breakouts signal a potential shift in supply and demand and can lead to strong trending moves.' },
+          { type: 'svg', id: 'svg-breakouts', caption: 'Volume surge confirms a genuine breakout above resistance' },
+          { type: 'heading', text: 'Real vs False Breakouts' },
+          { type: 'list', items: ['Real breakout: Price closes beyond the level with increased volume. Strong momentum follow-through.', 'False breakout (fakeout): Price briefly moves beyond the level but quickly reverses. Volume is typically low.', 'Confirmation: Wait for a candle to close beyond the level rather than reacting to the intrabar move.'] },
+          { type: 'callout', text: 'Patience is everything with breakouts. The biggest mistake is chasing price immediately. Wait for volume confirmation and ideally a retest of the broken level before entering.' }
+        ]
+      },
+      {
+        id: 'retests', title: 'Retests', level: 'Intermediate',
+        summary: 'Using the retest of a broken level for a high-probability, low-risk trade entry.',
+        content: [
+          { type: 'heading', text: 'The Retest — Highest Probability Entry' },
+          { type: 'paragraph', text: 'After a breakout, price frequently returns to the broken level to "test" it from the other side. This is called a retest. It is widely considered the cleanest, lowest-risk entry in all of technical trading.' },
+          { type: 'svg', id: 'svg-retests', caption: 'Breakout, retest and continuation — the ideal trade setup' },
+          { type: 'heading', text: 'How to Trade a Retest' },
+          { type: 'list', items: ['Wait for price to break and close above resistance (bullish) or below support (bearish).', 'Do not chase — let price come back to the broken level.', 'Look for a rejection candle (hammer, engulfing) when price touches the level.', 'Enter on confirmation, place Stop Loss below the retested level.'] },
+          { type: 'callout', text: 'The retest entry gives you: a clear level to trade from, a logical Stop Loss placement, and a defined Risk-Reward ratio. This is the S&R system\'s highest-confidence entry.' }
+        ]
+      }
+    ]
+  }
+];
+
+// ── Build sidebar ─────────────────────────────────────────────────────────────
+function buildSidebar(data) {
+  const sb = document.getElementById('libSidebar');
+  sb.innerHTML = '';
+  data.forEach((cat, ci) => {
+    const grp = document.createElement('div');
+    grp.className = 'cat-group' + (ci === 0 ? ' open' : '');
+    grp.innerHTML = `
+      <div class="cat-header" onclick="toggleCat(this.parentElement)">
+        <div class="cat-header-left">
+          <span class="cat-icon">${cat.icon}</span>
+          <span class="cat-title">${cat.title}</span>
+          <span class="cat-count">${cat.topics.length}</span>
+        </div>
+        <span class="cat-chevron">&#x25BE;</span>
+      </div>
+      <div class="cat-topics">
+        ${cat.topics.map(t => `
+          <div class="topic-link" data-id="${t.id}" onclick="openTopic('${t.id}')">
+            <span class="topic-link-dot"></span>${t.title}
+          </div>`).join('')}
+      </div>`;
+    sb.appendChild(grp);
+  });
+}
+
+function toggleCat(grp) {
+  grp.classList.toggle('open');
+}
+
+// ── Open topic ────────────────────────────────────────────────────────────────
+let currentTopic = null;
+
+function openTopic(id) {
+  let topic = null, catTitle = '';
+  for (const cat of LIBRARY) {
+    const t = cat.topics.find(x => x.id === id);
+    if (t) { topic = t; catTitle = cat.title; break; }
+  }
+  if (!topic) return;
+  currentTopic = topic;
+
+  // Sidebar highlight
+  document.querySelectorAll('.topic-link').forEach(el => {
+    el.classList.toggle('active', el.dataset.id === id);
+  });
+
+  // Build panel
+  const panel = document.getElementById('libPanel');
+  const levelClass = topic.level === 'Beginner' ? 'level-beginner' : topic.level === 'Intermediate' ? 'level-intermediate' : 'level-advanced';
+
+  let blocksHTML = '';
+  topic.content.forEach(b => {
+    if (b.type === 'heading') {
+      blocksHTML += `<div class="content-h2">${b.text}</div>`;
+    } else if (b.type === 'paragraph') {
+      blocksHTML += `<p class="content-p">${b.text}</p>`;
+    } else if (b.type === 'list') {
+      blocksHTML += `<ul class="content-list">${b.items.map(i => `<li>${i}</li>`).join('')}</ul>`;
+    } else if (b.type === 'callout') {
+      blocksHTML += `<div class="content-callout">${b.text}</div>`;
+    } else if (b.type === 'svg') {
+      const srcSvg = document.getElementById(b.id);
+      const svgClone = srcSvg ? srcSvg.outerHTML.replace(/id="/, 'id="clone-') : '';
+      blocksHTML += `<div class="content-svg-wrap" data-svgid="${b.id}">${svgClone}<div class="content-svg-caption">${b.caption}</div></div>`;
+    }
+  });
+
+  panel.innerHTML = `
+    <div class="topic-content">
+      <div class="topic-top">
+        <div>
+          <div class="topic-meta">
+            <span class="level-badge ${levelClass}">${topic.level}</span>
+            <span class="cat-badge">${catTitle}</span>
+          </div>
+          <div class="topic-title-h">${topic.title}</div>
+        </div>
+        <button class="download-btn" onclick="downloadPDF()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download PDF
+        </button>
+      </div>
+      <div class="topic-divider"></div>
+      ${blocksHTML}
+    </div>`;
+}
+
+// ── Search ────────────────────────────────────────────────────────────────────
+function filterTopics(q) {
+  const term = q.toLowerCase().trim();
+  document.querySelectorAll('.topic-link').forEach(el => {
+    const match = !term || el.textContent.toLowerCase().includes(term);
+    el.style.display = match ? '' : 'none';
+  });
+  // Auto-open cats with matches
+  if (term) {
+    document.querySelectorAll('.cat-group').forEach(grp => {
+      const visible = grp.querySelectorAll('.topic-link:not([style*="none"])');
+      grp.classList.toggle('open', visible.length > 0);
+    });
+  }
+}
+
+// ── PDF Generation ────────────────────────────────────────────────────────────
+async function svgToPng(svgId) {
+  return new Promise((resolve) => {
+    const svgEl = document.getElementById(svgId);
+    if (!svgEl) { resolve(null); return; }
+    const w = svgEl.viewBox.baseVal.width || 600;
+    const h = svgEl.viewBox.baseVal.height || 260;
+    const xml = new XMLSerializer().serializeToString(svgEl);
+    const blob = new Blob([xml], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = w * 2; canvas.height = h * 2;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.scale(2, 2);
+      ctx.drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      resolve(canvas.toDataURL('image/png'));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+    img.src = url;
+  });
+}
+
+async function downloadPDF() {
+  if (!currentTopic) return;
+  const btn = document.querySelector('.download-btn');
+  btn.classList.add('loading');
+  btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg> Generating...`;
+
+  // Convert all SVGs in this topic to PNG
+  const svgImages = {};
+  for (const block of currentTopic.content) {
+    if (block.type === 'svg') {
+      const png = await svgToPng(block.id);
+      if (png) svgImages[block.id] = png;
+    }
+  }
+
+  // Build pdfmake content
+  const docContent = [];
+  currentTopic.content.forEach(b => {
+    if (b.type === 'heading') {
+      docContent.push({ text: b.text, style: 'h2', margin: [0, 16, 0, 6] });
+    } else if (b.type === 'paragraph') {
+      docContent.push({ text: b.text, style: 'body', margin: [0, 0, 0, 10] });
+    } else if (b.type === 'list') {
+      docContent.push({
+        ul: b.items,
+        style: 'body',
+        margin: [0, 0, 0, 10]
+      });
+    } else if (b.type === 'callout') {
+      docContent.push({
+        table: { widths: ['*'], body: [[{ text: b.text, style: 'callout', fillColor: '#F0FDF4', border: [true, false, false, false], borderColor: ['#2DD4BF', '', '', ''] }]] },
+        layout: { paddingLeft: () => 12, paddingRight: () => 12, paddingTop: () => 10, paddingBottom: () => 10 },
+        margin: [0, 8, 0, 12]
+      });
+    } else if (b.type === 'svg' && svgImages[b.id]) {
+      docContent.push({ image: svgImages[b.id], width: 460, alignment: 'center', margin: [0, 10, 0, 4] });
+      docContent.push({ text: b.caption, style: 'caption', margin: [0, 0, 0, 14] });
+    }
+  });
+
+  let catTitle = '';
+  for (const cat of LIBRARY) {
+    if (cat.topics.find(t => t.id === currentTopic.id)) { catTitle = cat.title.replace('&amp;', '&'); break; }
+  }
+
+  const docDef = {
+    pageSize: 'A4',
+    pageMargins: [50, 80, 50, 70],
+    watermark: { text: 'Trends & Trade', color: '#2DD4BF', opacity: 0.055, bold: true, angle: 315, fontSize: 54 },
+    header: (page, pages) => ({
+      columns: [
+        { text: 'Trends & Trade — Trading Library', style: 'headerLeft', margin: [50, 28, 0, 0] },
+        { text: `Page ${page} of ${pages}`, style: 'headerRight', margin: [0, 28, 50, 0] }
+      ]
+    }),
+    footer: { columns: [{ text: 'snrtrades.com  |  Educational content only — not financial advice', style: 'footer', margin: [50, 0, 50, 0] }] },
+    content: [
+      { text: catTitle.toUpperCase(), style: 'catLabel', margin: [0, 0, 0, 6] },
+      { text: currentTopic.title, style: 'h1', margin: [0, 0, 0, 4] },
+      { canvas: [{ type: 'line', x1: 0, y1: 0, x2: 460, y2: 0, lineWidth: 2, lineColor: '#2DD4BF' }], margin: [0, 0, 0, 18] },
+      ...docContent
+    ],
+    styles: {
+      h1: { font: 'Roboto', fontSize: 24, bold: true, color: '#0F172A' },
+      h2: { font: 'Roboto', fontSize: 15, bold: true, color: '#0F172A' },
+      body: { font: 'Roboto', fontSize: 11, color: '#334155', lineHeight: 1.6 },
+      callout: { font: 'Roboto', fontSize: 10.5, color: '#065F46', italics: true, lineHeight: 1.6 },
+      caption: { font: 'Roboto', fontSize: 9, color: '#64748B', alignment: 'center', italics: true },
+      catLabel: { font: 'Roboto', fontSize: 10, bold: true, color: '#2DD4BF', characterSpacing: 1 },
+      headerLeft: { font: 'Roboto', fontSize: 9, color: '#94A3B8' },
+      headerRight: { font: 'Roboto', fontSize: 9, color: '#94A3B8', alignment: 'right' },
+      footer: { font: 'Roboto', fontSize: 8, color: '#94A3B8', alignment: 'center' }
+    }
+  };
+
+  pdfMake.createPdf(docDef).download(currentTopic.title.replace(/[^a-z0-9]/gi, '_') + '.pdf');
+
+  btn.classList.remove('loading');
+  btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download PDF`;
+}
+
+// ── Nav + Ticker ──────────────────────────────────────────────────────────────
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 10);
+});
+function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('open'); }
+
+const track = document.getElementById('ticker');
+const tickerData = [
+  {name:'BTC/USDT',price:'$104,500',chg:'0.85'},{name:'ETH/USDT',price:'$2,520',chg:'1.20'},
+  {name:'BNB/USDT',price:'$645',chg:'0.50'},{name:'SOL/USDT',price:'$175',chg:'1.10'},
+  {name:'XRP/USDT',price:'$2.32',chg:'0.30'},{name:'GOLD',price:'$3,320',chg:'0.40'},
+  {name:'SILVER',price:'$33.50',chg:'0.60'},{name:'OIL (WTI)',price:'$61.50',chg:'-0.30'},
+  {name:'NASDAQ',price:'18,900',chg:'0.55'},{name:'KSE-100',price:'117,000',chg:'0.20'},
+];
+function buildTicker(d) {
+  track.innerHTML = '';
+  [...d,...d].forEach(t => {
+    const up = parseFloat(t.chg) >= 0;
+    track.innerHTML += `<div class="tick-item"><div class="tick-dot ${up?'up':'dn'}"></div><span class="tick-name">${t.name}</span><span class="tick-price">${t.price}</span><span class="tick-change ${up?'up':'dn'}">${up?'+':''}${parseFloat(t.chg).toFixed(2)}%</span></div>`;
+  });
+}
+buildTicker(tickerData);
+async function fetchTicker() {
+  try {
+    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,ripple&vs_currencies=usd&include_24hr_change=true',{signal:AbortSignal.timeout(8000)});
+    const d = await r.json();
+    const map = [{id:'bitcoin',name:'BTC/USDT'},{id:'ethereum',name:'ETH/USDT'},{id:'binancecoin',name:'BNB/USDT'},{id:'solana',name:'SOL/USDT'},{id:'ripple',name:'XRP/USDT'}];
+    const res = map.map(a => { if(!d[a.id]) return null; const p=d[a.id].usd,c=(d[a.id].usd_24h_change||0).toFixed(2),dp=p<1?4:p<100?2:0; return {name:a.name,price:'$'+p.toLocaleString(undefined,{minimumFractionDigits:dp,maximumFractionDigits:dp}),chg:c}; }).filter(Boolean);
+    if(res.length) buildTicker(res);
+  } catch(e){}
+}
+fetchTicker();
+setInterval(fetchTicker, 60000);
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+buildSidebar(LIBRARY);
+</script>
+</body>
+</html>
