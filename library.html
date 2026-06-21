@@ -925,6 +925,11 @@ function openTopic(id) {
       <div class="topic-divider"></div>
       ${blocksHTML}
     </div>`;
+
+  // On mobile, scroll to top so content is immediately visible
+  if (window.innerWidth <= 760) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 }
 
 // ── Search ────────────────────────────────────────────────────────────────────
