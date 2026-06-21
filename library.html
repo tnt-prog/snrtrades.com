@@ -49,14 +49,16 @@
     @media(max-width:900px){.nav-col{display:none;}.nav-hamburger{display:block !important;}}
 
     /* Page */
-    .lib-page{max-width:1200px;margin:0 auto;padding:120px 24px 60px;}
+    .lib-page{max-width:1200px;margin:0 auto;padding:150px 24px 60px;}
 
     /* Library header */
     .lib-header{text-align:center;padding:40px 0 36px;}
-    .lib-header .label{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.2);color:var(--teal);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;}
-    .lib-header h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,4vw,44px);font-weight:800;margin-bottom:12px;}
+    .lib-header .label{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.2);color:var(--teal);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:28px;}
+    .lib-header-title-row{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:14px;}
+    .lib-header-logo{width:56px;height:56px;border-radius:10px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 0 10px rgba(45,212,191,0.2));}
+    .lib-header h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,4vw,44px);font-weight:800;margin-bottom:0;line-height:1.1;}
     .lib-header h1 span{color:var(--teal);}
-    .lib-header p{font-size:15px;color:var(--text-muted);margin-bottom:24px;}
+    .lib-header p{font-size:15px;color:var(--text-muted);margin-bottom:24px;margin-top:10px;}
     .lib-search{display:flex;align-items:center;gap:10px;max-width:440px;margin:0 auto;background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:10px 16px;}
     .lib-search input{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;}
     .lib-search input::placeholder{color:var(--text-dim);}
@@ -85,10 +87,34 @@
 
     /* Reading panel */
     .lib-panel{background:var(--bg);overflow-y:auto;max-height:calc(100vh - 180px);}
-    .panel-welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:400px;text-align:center;padding:40px;}
-    .panel-welcome .w-logo{width:220px;height:220px;border-radius:24px;object-fit:contain;margin-bottom:24px;opacity:0.92;filter:drop-shadow(0 0 28px rgba(45,212,191,0.22));}
-    .panel-welcome h3{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;margin-bottom:10px;color:var(--text);}
-    .panel-welcome p{font-size:14px;color:var(--text-muted);line-height:1.7;max-width:300px;}
+    .panel-welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;padding:36px 32px 48px;}
+    .panel-welcome h3{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;color:var(--text);}
+    .panel-welcome p{font-size:14px;color:var(--text-muted);line-height:1.7;max-width:380px;}
+
+    /* Category thumbnail grid */
+    .cat-thumbs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:32px;width:100%;max-width:780px;}
+    .cat-thumb-card{
+      display:flex;flex-direction:column;align-items:center;gap:14px;
+      padding:28px 18px 22px;
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(45,212,191,0.14);
+      border-radius:18px;cursor:pointer;
+      transition:all 0.22s;
+    }
+    .cat-thumb-card:hover{
+      background:rgba(45,212,191,0.07);
+      border-color:var(--teal);
+      transform:translateY(-5px);
+      box-shadow:0 12px 32px rgba(45,212,191,0.18);
+    }
+    .cat-thumb-img{width:185px;height:185px;object-fit:contain;border-radius:14px;display:block;}
+    .cat-thumb-name{
+      font-size:13px;font-weight:700;
+      color:var(--text-muted);
+      text-align:center;line-height:1.4;
+      letter-spacing:0.2px;
+    }
+    .cat-thumb-card:hover .cat-thumb-name{color:var(--teal);}
 
     /* Topic content */
     .topic-content{padding:32px 36px;}
@@ -237,8 +263,10 @@
 
 <div class="lib-page">
   <div class="lib-header">
-    <div class="label">&#128218; Free Resource</div>
-    <h1>Trends &amp; Trade <span>Library</span></h1>
+    <div class="lib-header-title-row">
+      <img src="Librarylogo.jpg" alt="Trends &amp; Trade" class="lib-header-logo"/>
+      <h1>Trends &amp; Trade <span>Library</span></h1>
+    </div>
     <p>Select any topic to read or download a free PDF guide.</p>
     <div class="lib-search">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -250,9 +278,32 @@
     <div class="lib-sidebar" id="libSidebar"><!-- built by JS --></div>
     <div class="lib-panel" id="libPanel">
       <div class="panel-welcome">
-        <img src="Librarylogo.jpg" alt="Trends &amp; Trade" class="w-logo"/>
-        <h3>Select a topic to begin</h3>
-        <p>Choose any topic from the left to read it here and download a free PDF guide.</p>
+        <div class="cat-thumbs-grid">
+          <div class="cat-thumb-card" onclick="expandCategory('technical-analysis')">
+            <img src="Technical_Analysis.png" alt="Technical Analysis" class="cat-thumb-img"/>
+            <div class="cat-thumb-name">Technical Analysis</div>
+          </div>
+          <div class="cat-thumb-card" onclick="expandCategory('fundamental-analysis')">
+            <img src="Fundamental_analysis.png" alt="Fundamental Analysis" class="cat-thumb-img"/>
+            <div class="cat-thumb-name">Fundamental Analysis</div>
+          </div>
+          <div class="cat-thumb-card" onclick="expandCategory('stocks')">
+            <img src="Stocks.png" alt="Stocks" class="cat-thumb-img"/>
+            <div class="cat-thumb-name">Stocks</div>
+          </div>
+          <div class="cat-thumb-card" onclick="expandCategory('commodities')">
+            <img src="Commodities.png" alt="Commodities" class="cat-thumb-img"/>
+            <div class="cat-thumb-name">Commodities</div>
+          </div>
+          <div class="cat-thumb-card" onclick="expandCategory('crypto')">
+            <img src="Crypto.png" alt="Crypto" class="cat-thumb-img"/>
+            <div class="cat-thumb-name">Crypto</div>
+          </div>
+          <div class="cat-thumb-card" onclick="expandCategory('forex')">
+            <img src="Forex.png" alt="Forex" class="cat-thumb-img"/>
+            <div class="cat-thumb-name">Forex</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -644,6 +695,7 @@ function buildSidebar(data) {
   sorted.forEach((cat) => {
     const grp = document.createElement('div');
     grp.className = 'cat-group'; // all collapsed on load
+    grp.dataset.catid = cat.id;
     grp.innerHTML = `
       <div class="cat-header" onclick="toggleCat(this.parentElement)">
         <div class="cat-header-left">
@@ -665,6 +717,21 @@ function buildSidebar(data) {
 
 function toggleCat(grp) {
   grp.classList.toggle('open');
+}
+
+function expandCategory(id) {
+  // Close all open categories first
+  document.querySelectorAll('.cat-group').forEach(g => g.classList.remove('open'));
+  // Find and open the target
+  const target = document.querySelector(`.cat-group[data-catid="${id}"]`);
+  if (!target) return;
+  target.classList.add('open');
+  // Scroll sidebar to bring target into view
+  const sidebar = document.getElementById('libSidebar');
+  if (sidebar) {
+    const topOffset = target.offsetTop - sidebar.offsetTop;
+    sidebar.scrollTo({ top: topOffset - 56, behavior: 'smooth' });
+  }
 }
 
 // ── Open topic ────────────────────────────────────────────────────────────────
