@@ -729,23 +729,62 @@ let logoPngDataUrl = null;
 
 // ── Convert image URL to data URL via fetch (avoids canvas CORS taint) ────────
 async function imgToDataUrl(src) {
+  // Method 1: fetch → blob → object URL → canvas
   try {
     const res = await fetch(src);
-    const blob = await res.blob();
-    const objUrl = URL.createObjectURL(blob);
+    if (res.ok) {
+      const blob = await res.blob();
+      const objUrl = URL.createObjectURL(blob);
+      const result = await new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => {
+          const c = document.createElement('canvas');
+          c.width = img.naturalWidth; c.height = img.naturalHeight;
+          c.getContext('2d').drawImage(img, 0, 0);
+          URL.revokeObjectURL(objUrl);
+          resolve(c.toDataURL('image/png'));
+        };
+        img.onerror = () => { URL.revokeObjectURL(objUrl); resolve(null); };
+        img.src = objUrl;
+      });
+      if (result) return result;
+    }
+  } catch(e) {}
+  // Method 2: Image element with crossOrigin → canvas
+  try {
     return await new Promise(resolve => {
       const img = new Image();
+      img.crossOrigin = 'anonymous';
       img.onload = () => {
-        const c = document.createElement('canvas');
-        c.width = img.naturalWidth; c.height = img.naturalHeight;
-        c.getContext('2d').drawImage(img, 0, 0);
-        URL.revokeObjectURL(objUrl);
-        resolve(c.toDataURL('image/png'));
+        try {
+          const c = document.createElement('canvas');
+          c.width = img.naturalWidth; c.height = img.naturalHeight;
+          c.getContext('2d').drawImage(img, 0, 0);
+          resolve(c.toDataURL('image/png'));
+        } catch(e) { resolve(null); }
       };
-      img.onerror = () => { URL.revokeObjectURL(objUrl); resolve(null); };
-      img.src = objUrl;
+      img.onerror = () => resolve(null);
+      img.src = src + '?v=' + Date.now();
     });
   } catch(e) { return null; }
+}
+
+// ── Convert HTML callout text to pdfmake text array ───────────────────────────
+function htmlToPdfText(html) {
+  const parts = [];
+  const regex = /<strong>(.*?)<\/strong>/gi;
+  let last = 0, match;
+  while ((match = regex.exec(html)) !== null) {
+    if (match.index > last) {
+      const plain = html.slice(last, match.index).replace(/<[^>]+>/g, '');
+      if (plain) parts.push({ text: plain });
+    }
+    parts.push({ text: match[1], bold: true });
+    last = match.index + match[0].length;
+  }
+  const tail = html.slice(last).replace(/<[^>]+>/g, '');
+  if (tail) parts.push({ text: tail });
+  return parts.length ? parts : [{ text: html.replace(/<[^>]+>/g, '') }];
 }
 
 // ── Welcome panel snapshot (restored when Topics & Articles is clicked) ───────
@@ -1012,7 +1051,7 @@ async function downloadPDF() {
       });
     } else if (b.type === 'callout') {
       docContent.push({
-        table: { widths: ['*'], body: [[{ text: b.text, style: 'callout', fillColor: '#F0FDF4', border: [true, false, false, false], borderColor: ['#2DD4BF', '', '', ''] }]] },
+        table: { widths: ['*'], body: [[{ text: htmlToPdfText(b.text), style: 'callout', fillColor: '#F0FDF4', border: [true, false, false, false], borderColor: ['#2DD4BF', '', '', ''] }]] },
         layout: { paddingLeft: () => 12, paddingRight: () => 12, paddingTop: () => 10, paddingBottom: () => 10 },
         margin: [0, 8, 0, 12]
       });
