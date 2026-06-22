@@ -610,6 +610,66 @@
     .tag-dim { background: rgba(255,255,255,0.04); color: var(--text-muted); border: 1px solid var(--border-dim); }
 
     /* ══════════════════════════════════════
+       TOPIC OF THE DAY
+    ══════════════════════════════════════ */
+    .totd-section { padding: 70px 0 60px; }
+    .totd-wrap {
+      max-width: 860px; margin: 0 auto;
+      background: linear-gradient(135deg, rgba(13,148,136,0.13) 0%, rgba(45,212,191,0.06) 100%);
+      border: 1px solid rgba(45,212,191,0.32);
+      border-radius: 22px; padding: 36px 40px 32px;
+      position: relative; overflow: hidden;
+    }
+    .totd-wrap::before {
+      content: ''; position: absolute; top: -60px; right: -60px;
+      width: 220px; height: 220px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(45,212,191,0.14) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .totd-label-row {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--teal); margin-bottom: 18px;
+    }
+    .totd-label-row::before { content: '✦'; font-size: 12px; }
+    .totd-label-row::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(90deg, rgba(45,212,191,0.3), transparent);
+    }
+    .totd-inner { display: flex; align-items: flex-end; gap: 28px; flex-wrap: wrap; }
+    .totd-text { flex: 1; min-width: 0; }
+    .totd-badges { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+    .totd-cat-badge {
+      font-size: 11px; font-weight: 600; color: var(--text-muted);
+      background: rgba(255,255,255,0.06); padding: 3px 12px; border-radius: 10px;
+      border: 1px solid var(--border-dim);
+    }
+    .totd-level {
+      font-size: 10px; font-weight: 700; padding: 3px 10px;
+      border-radius: 10px; text-transform: uppercase; letter-spacing: 0.07em;
+    }
+    .totd-level.beginner  { background: rgba(34,197,94,0.12);  color: #22C55E; border: 1px solid rgba(34,197,94,0.25); }
+    .totd-level.intermediate { background: rgba(251,191,36,0.12); color: #FBBF24; border: 1px solid rgba(251,191,36,0.25); }
+    .totd-level.advanced  { background: rgba(239,68,68,0.12);  color: #EF4444; border: 1px solid rgba(239,68,68,0.25); }
+    .totd-title-main {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(20px, 3vw, 26px); font-weight: 800;
+      color: var(--text); line-height: 1.2; margin-bottom: 8px;
+    }
+    .totd-summary-main { font-size: 14px; color: var(--text-muted); line-height: 1.7; max-width: 560px; }
+    .totd-action { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; flex-shrink: 0; }
+    .totd-read-btn {
+      display: inline-flex; align-items: center; gap: 9px;
+      padding: 13px 26px; border-radius: 12px;
+      background: var(--teal); color: #051012;
+      font-size: 14px; font-weight: 700;
+      text-decoration: none; transition: all 0.2s; white-space: nowrap;
+    }
+    .totd-read-btn:hover { background: var(--teal-dark); color: #fff; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(45,212,191,0.25); }
+    .totd-countdown-txt { font-size: 11px; color: var(--text-dim); text-align: right; }
+    .totd-countdown-txt span { color: var(--teal); font-weight: 600; }
+
+    /* ══════════════════════════════════════
        FREE RESOURCES (Video Cards)
     ══════════════════════════════════════ */
     .resources-section {
@@ -1066,6 +1126,13 @@
       </div>
     </div>
   </div>
+
+  <!-- ══ TOPIC OF THE DAY ══ -->
+  <section class="totd-section">
+    <div class="container">
+      <div id="totdMainCard" class="reveal"></div>
+    </div>
+  </section>
 
   <!-- ══ ABOUT ══ -->
 
@@ -1676,6 +1743,59 @@
           '<a href="courses.html" style="color:var(--teal);font-weight:700;text-decoration:none;font-size:14px;">' +
           'View All Free Courses →</a></div>';
       }
+    })();
+  </script>
+
+  <!-- Topic of the Day -->
+  <script src="library-data.js"></script>
+  <script>
+    (function() {
+      const el = document.getElementById('totdMainCard');
+      if (!el || typeof LIBRARY === 'undefined') return;
+
+      // Flatten all topics that have content
+      const all = [];
+      LIBRARY.forEach(cat => {
+        cat.topics.forEach(t => {
+          if (t.content && t.content.length) all.push({ topic: t, catTitle: cat.title, catId: cat.id });
+        });
+      });
+      if (!all.length) return;
+
+      // Pick by day-of-year — rotates daily automatically
+      const now = new Date();
+      const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
+      const pick = all[dayOfYear % all.length];
+
+      // Countdown to midnight
+      const tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+      const diff = tomorrow - now;
+      const hh = Math.floor(diff / 3600000);
+      const mm = Math.floor((diff % 3600000) / 60000);
+
+      const lvl = (pick.topic.level || '').toLowerCase();
+      const link = 'library.html?topic=' + encodeURIComponent(pick.topic.id);
+
+      el.innerHTML = `
+        <div class="totd-wrap">
+          <div class="totd-label-row">Topic of the Day</div>
+          <div class="totd-inner">
+            <div class="totd-text">
+              <div class="totd-badges">
+                <span class="totd-cat-badge">${pick.catTitle}</span>
+                ${pick.topic.level ? `<span class="totd-level ${lvl}">${pick.topic.level}</span>` : ''}
+              </div>
+              <div class="totd-title-main">${pick.topic.title}</div>
+              <div class="totd-summary-main">${pick.topic.summary || ''}</div>
+            </div>
+            <div class="totd-action">
+              <a href="${link}" class="totd-read-btn">Read Now ›</a>
+              <div class="totd-countdown-txt">Next topic in <span>${hh}h ${mm}m</span></div>
+            </div>
+          </div>
+        </div>`;
     })();
   </script>
 </body>
