@@ -1177,12 +1177,16 @@ const LIBRARY = [
         content: [
           { type: 'image', src: 'images/SNRTA023.jpg', alt: 'Order Blocks FVG BOS and CHOCH' },
           { type: 'paragraph', text: 'Order Blocks, Fair Value Gaps, Break of Structure, and Change of Character are advanced price-action concepts used within Smart Money Concepts and institutional-style technical analysis. They help traders interpret structural shifts, imbalance, liquidity interaction, and potential reaction zones.' },
+          { type: 'image', src: 'images/SNRTA023_A.jpg', alt: 'Order Blocks FVG BOS CHOCH overview' },
           { type: 'heading', text: 'Core Concepts' },
           { type: 'paragraph', text: 'An Order Block is generally viewed as a price zone where significant buying or selling activity may have occurred before a strong directional move. A Fair Value Gap represents an imbalance created when price moves rapidly, leaving inefficient delivery between candles. Break of Structure occurs when price breaks a meaningful swing point in the direction of trend, suggesting continuation. Change of Character occurs when price violates previous structure against the existing trend, potentially signaling transition or reversal.' },
+          { type: 'image', src: 'images/SNRTA023_B.jpg', alt: 'Order Block and Fair Value Gap identification' },
           { type: 'heading', text: 'Professional Application' },
           { type: 'paragraph', text: 'Professional traders do not use these concepts mechanically. A valid order block is more meaningful when preceded by liquidity collection and followed by strong displacement. A fair value gap is more important when aligned with higher-timeframe bias and structure. BOS and CHOCH help define whether the market is continuing or transitioning, but not every minor break qualifies as structural confirmation — major and minor structure must be separated.' },
+          { type: 'image', src: 'images/SNRTA023_C.jpg', alt: 'BOS and CHOCH professional application' },
           { type: 'heading', text: 'Common Misinterpretations' },
           { type: 'paragraph', text: 'A common mistake is marking too many order blocks and FVGs, making the chart unusable. Another mistake is entering every FVG fill or order block touch without confirmation. Context is more important than labels.' },
+          { type: 'image', src: 'images/SNRTA023_D.jpg', alt: 'Common mistakes in SMC order block marking' },
           { type: 'callout', text: '<strong>Professional Summary:</strong> Order Blocks, FVG, BOS, and CHOCH provide a sophisticated framework for reading liquidity, imbalance, structure, and transition, but they require precision and disciplined validation.' },
           { type: 'callout', text: '<strong>Disclaimer:</strong> This material is provided strictly for educational and informational purposes only. It does not constitute financial advice or a recommendation to trade any financial instrument. These concepts are interpretive and may fail or be incorrectly identified. They do not guarantee reversal, continuation, or profitability. Conduct independent analysis and consult qualified professionals before making financial decisions.' },
         ]
