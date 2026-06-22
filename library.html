@@ -353,6 +353,47 @@
       .cat-thumb-name{ font-size:10px; }
     }
 
+    /* Topic of the Day card */
+    .totd-card{
+      width:100%;max-width:780px;
+      background:linear-gradient(135deg,rgba(13,148,136,0.12) 0%,rgba(45,212,191,0.06) 100%);
+      border:1px solid rgba(45,212,191,0.32);
+      border-radius:18px;padding:22px 28px 20px;
+      margin-bottom:28px;text-align:left;
+      position:relative;overflow:hidden;
+    }
+    .totd-card::before{
+      content:'';position:absolute;top:-40px;right:-40px;
+      width:160px;height:160px;border-radius:50%;
+      background:radial-gradient(circle,rgba(45,212,191,0.12) 0%,transparent 70%);
+      pointer-events:none;
+    }
+    .totd-label{
+      display:inline-flex;align-items:center;gap:7px;
+      font-size:10px;font-weight:700;letter-spacing:0.1em;
+      text-transform:uppercase;color:var(--teal);margin-bottom:12px;
+    }
+    .totd-label::before{content:'✦';font-size:10px;}
+    .totd-body{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+    .totd-info{flex:1;min-width:0;}
+    .totd-badges{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+    .totd-title{
+      font-family:'Space Grotesk',sans-serif;
+      font-size:20px;font-weight:800;color:var(--text);
+      line-height:1.25;margin-bottom:6px;
+    }
+    .totd-summary{font-size:13px;color:var(--text-muted);line-height:1.6;max-width:520px;}
+    .totd-btn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:11px 22px;border-radius:10px;
+      background:var(--teal);color:#051012;
+      font-size:13px;font-weight:700;cursor:pointer;
+      border:none;transition:all 0.2s;white-space:nowrap;flex-shrink:0;
+    }
+    .totd-btn:hover{background:var(--teal-dark);color:#fff;}
+    .totd-countdown{font-size:11px;color:var(--text-dim);margin-top:12px;}
+    .totd-countdown span{color:var(--teal);font-weight:600;}
+
     /* Footer */
     .lib-footer{text-align:center;padding:28px 0;border-top:1px solid var(--border);margin-top:40px;font-size:12px;color:var(--text-dim);line-height:1.8;}
     .lib-footer a{color:var(--teal);text-decoration:none;}
@@ -415,6 +456,7 @@
     <div class="lib-sidebar" id="libSidebar"><!-- built by JS --></div>
     <div class="lib-panel" id="libPanel">
       <div class="panel-welcome">
+        <div id="totdCard"></div>
         <div class="cat-thumbs-grid">
           <div class="cat-thumb-card" data-catid="technical-analysis" onclick="expandCategory('technical-analysis')">
             <img src="images/Technical_Analysis.jpg" alt="Technical Analysis" class="cat-thumb-img"/>
@@ -760,6 +802,51 @@ function htmlToPdfText(html) {
   const tail = html.slice(last).replace(/<[^>]+>/g, '');
   if (tail) parts.push({ text: tail });
   return parts.length ? parts : [{ text: html.replace(/<[^>]+>/g, '') }];
+}
+
+// ── Topic of the Day ──────────────────────────────────────────────────────────
+function buildTotdCard() {
+  // Flatten all topics with their category info
+  const all = [];
+  LIBRARY.forEach(cat => {
+    cat.topics.forEach(t => {
+      if (t.content && t.content.length) all.push({ topic: t, catTitle: cat.title, catId: cat.id });
+    });
+  });
+  if (!all.length) return;
+
+  // Pick by day-of-year so it rotates daily automatically
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const dayOfYear = Math.floor((now - start) / 86400000);
+  const pick = all[dayOfYear % all.length];
+
+  // Countdown to midnight
+  const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(0,0,0,0);
+  const diffMs = tomorrow - now;
+  const hh = Math.floor(diffMs / 3600000);
+  const mm = Math.floor((diffMs % 3600000) / 60000);
+
+  const levelClass = pick.topic.level ? 'level-' + pick.topic.level.toLowerCase() : '';
+
+  const el = document.getElementById('totdCard');
+  if (!el) return;
+  el.innerHTML = `
+    <div class="totd-card">
+      <div class="totd-label">Topic of the Day</div>
+      <div class="totd-body">
+        <div class="totd-info">
+          <div class="totd-badges">
+            <span class="cat-badge">${pick.catTitle}</span>
+            ${pick.topic.level ? `<span class="level-badge ${levelClass}">${pick.topic.level}</span>` : ''}
+          </div>
+          <div class="totd-title">${pick.topic.title}</div>
+          <div class="totd-summary">${pick.topic.summary || ''}</div>
+        </div>
+        <button class="totd-btn" onclick="expandCategory('${pick.catId}');openTopic('${pick.topic.id}')">Read Now ›</button>
+      </div>
+      <div class="totd-countdown">Next topic in <span>${hh}h ${mm}m</span></div>
+    </div>`;
 }
 
 // ── Welcome panel snapshot (restored when Topics & Articles is clicked) ───────
@@ -1117,8 +1204,27 @@ setInterval(fetchTicker, 60000);
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 buildSidebar(LIBRARY);
+buildTotdCard();
 // Capture welcome panel HTML after DOM is ready so reset can always restore it
 welcomePanelHTML = document.getElementById('libPanel').innerHTML;
+
+// ── Deep-link: auto-open topic from ?topic= URL param ─────────────────────
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const topicId = params.get('topic');
+  if (!topicId) return;
+  // Find which category this topic belongs to and expand it
+  for (const cat of LIBRARY) {
+    if (cat.topics.find(t => t.id === topicId)) {
+      expandCategory(cat.id);
+      break;
+    }
+  }
+  openTopic(topicId);
+  // Scroll reading panel to top
+  const panel = document.getElementById('libPanel');
+  if (panel) panel.scrollTop = 0;
+})();
 </script>
 </body>
 </html>
