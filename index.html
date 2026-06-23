@@ -3,1227 +3,136 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Trading Library — Trends &amp; Trade</title>
-  <meta name="description" content="Free trading education library — candlesticks, S&R, chart patterns and more."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <title>Trends &amp; Trade — Coming Soon</title>
+  <meta name="description" content="Trends & Trade — S&R Intelligent Trading System. Coming Soon."/>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
   <style>
-    :root{--bg:#070F1A;--bg-2:#0A1628;--bg-3:#0D1E34;--teal:#2DD4BF;--teal-dark:#0D9488;--border:rgba(45,212,191,0.18);--border-dim:rgba(255,255,255,0.06);--text:#F0F4F8;--text-muted:#94A3B8;--text-dim:#4A5568;--green:#22C55E;--red:#EF4444;}
-    *{box-sizing:border-box;margin:0;padding:0;}
-    html{scroll-behavior:smooth;}
-    body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
-
-    /* Ticker */
-    .ticker-bar{background:var(--bg-2);border-bottom:1px solid var(--border);padding:8px 0;overflow:hidden;position:fixed;top:0;left:0;right:0;z-index:200;}
-    .ticker-track{display:flex;gap:0;animation:ticker-scroll 35s linear infinite;white-space:nowrap;width:max-content;}
-    .ticker-track:hover{animation-play-state:paused;}
-    @keyframes ticker-scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
-    .tick-item{display:inline-flex;align-items:center;gap:7px;padding:0 28px;font-size:12px;font-weight:600;border-right:1px solid var(--border-dim);}
-    .tick-name{color:var(--text-muted);}.tick-price{color:var(--text);font-weight:700;}
-    .tick-change{font-size:11px;font-weight:700;}.tick-change.up{color:var(--green);}.tick-change.dn{color:var(--red);}
-    .tick-dot{width:6px;height:6px;border-radius:50%;}.tick-dot.up{background:var(--green);}.tick-dot.dn{background:var(--red);}
-
-    /* Nav */
-    .nav{position:fixed;top:37px;left:0;right:0;z-index:100;padding:0 24px;transition:all 0.3s;}
-    .nav.scrolled{background:rgba(7,15,26,0.94);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
-    .nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:flex-start;gap:40px;padding:10px 0 8px;}
-    .nav-col{display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
-    .nav-row-1{display:flex;align-items:center;gap:30px;list-style:none;}
-    .nav-row-2{display:flex;align-items:center;gap:10px;}
-    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
-    .logo-img{height:44px;width:auto;border-radius:6px;box-shadow:0 0 0 1px rgba(45,212,191,0.3);}
-    .logo-text{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:800;color:var(--text);}
-    .logo-text span{color:var(--teal);}
-    .nav-links a{font-size:13px;font-weight:600;color:var(--text-muted);text-decoration:none;transition:color 0.2s;}
-    .nav-links a:hover,.nav-links a.active{color:var(--teal);}
-    .nav-hamburger{display:none;background:none;border:none;color:var(--text);font-size:22px;cursor:pointer;margin-left:auto;}
-    .mobile-menu{display:none;position:fixed;top:130px;left:0;right:0;bottom:0;background:var(--bg-2);z-index:99;padding:32px 24px;flex-direction:column;gap:24px;overflow-y:auto;}
-    .mobile-menu.open{display:flex;}
-    .mobile-menu a{font-size:18px;font-weight:600;color:var(--text);text-decoration:none;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
-    .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:10px;font-weight:700;font-size:14px;text-decoration:none;transition:all 0.2s;cursor:pointer;border:none;}
-    .btn-primary{background:var(--teal);color:#051012;}.btn-primary:hover{background:var(--teal-dark);color:#fff;}
-    .btn-outline{background:transparent;border:1.5px solid var(--teal);color:var(--teal);}.btn-outline:hover{background:rgba(45,212,191,0.1);}
-    @media(max-width:900px){.nav-col{display:none;}.nav-hamburger{display:block !important;}}
-
-    /* Page */
-    .lib-page{max-width:1200px;margin:0 auto;padding:100px 24px 60px;}
-
-    /* Library header */
-    .lib-header{text-align:center;padding:16px 0 28px;}
-    .lib-header .label{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.2);color:var(--teal);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:28px;}
-    .lib-header-title-row{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:14px;}
-    .lib-header-logo{width:56px;height:56px;border-radius:10px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 0 10px rgba(45,212,191,0.2));}
-    .lib-header h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,4vw,44px);font-weight:800;margin-bottom:0;line-height:1.1;}
-    .lib-header h1 span{color:var(--teal);}
-    .lib-header p{font-size:15px;color:var(--text-muted);margin-bottom:24px;margin-top:10px;}
-    .lib-search{display:flex;align-items:center;gap:10px;max-width:440px;margin:0 auto;background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:10px 16px;}
-    .lib-search input{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;}
-    .lib-search input::placeholder{color:var(--text-dim);}
-    .lib-search svg{color:var(--text-dim);flex-shrink:0;}
-
-    /* Body layout */
-    .lib-body{display:grid;grid-template-columns:300px 1fr;gap:0;border:1px solid var(--border);border-radius:18px;overflow:hidden;min-height:600px;}
-
-    /* Sidebar */
-    .lib-sidebar{background:var(--bg-2);border-right:1px solid var(--border);overflow-y:auto;max-height:calc(100vh - 180px);position:sticky;top:120px;}
-    .cat-group{border-bottom:1px solid var(--border-dim);}
-    .cat-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;user-select:none;transition:background 0.15s;}
-    .cat-header:hover{background:rgba(45,212,191,0.05);}
-    .cat-header-left{display:flex;align-items:center;gap:10px;}
-    .cat-icon{font-size:16px;}
-    .cat-title{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--text);}
-    .cat-count{font-size:11px;color:var(--text-dim);background:var(--bg-3);padding:2px 7px;border-radius:10px;}
-    .cat-chevron{color:var(--text-dim);font-size:12px;transition:transform 0.25s;}
-    .cat-group.open .cat-chevron{transform:rotate(180deg);}
-    .cat-topics{display:none;padding:4px 0 8px;}
-    .cat-group.open .cat-topics{display:block;}
-    .topic-link{display:flex;align-items:center;gap:8px;padding:9px 18px 9px 42px;cursor:pointer;font-size:13px;color:var(--text-muted);transition:all 0.15s;border-left:2px solid transparent;}
-    .topic-link:hover{color:var(--text);background:rgba(255,255,255,0.03);}
-    .topic-link.active{color:var(--teal);border-left-color:var(--teal);background:rgba(45,212,191,0.06);font-weight:600;}
-    .topic-link-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:0.5;}
-    .topic-link.topic-done .topic-link-dot{background:#F59E0B;opacity:1;box-shadow:0 0 5px rgba(245,158,11,0.5);}
-    .topic-link.topic-done{color:var(--text-muted);}
-
-    /* Reading panel */
-    .lib-panel{background:var(--bg);overflow-y:auto;max-height:calc(100vh - 180px);}
-    .panel-welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;padding:36px 32px 48px;}
-    .panel-welcome h3{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;color:var(--text);}
-    .panel-welcome p{font-size:14px;color:var(--text-muted);line-height:1.7;max-width:380px;}
-
-    /* Category thumbnail grid */
-    .cat-thumbs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:32px;width:100%;max-width:780px;}
-    .cat-thumb-card{
-      display:flex;flex-direction:column;align-items:center;gap:14px;
-      padding:28px 18px 22px;
-      background:rgba(255,255,255,0.03);
-      border:1px solid rgba(45,212,191,0.14);
-      border-radius:18px;cursor:pointer;
-      transition:all 0.22s;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal: #2DD4BF;
+      --teal-dark: #0D9488;
+      --bg: #070F1A;
+      --bg-2: #0A1628;
+      --text: #E8F4F2;
+      --text-muted: #7A9E9B;
+      --border: rgba(45,212,191,0.18);
     }
-    .cat-thumb-card:hover{
-      background:rgba(45,212,191,0.07);
-      border-color:var(--teal);
-      transform:translateY(-5px);
-      box-shadow:0 12px 32px rgba(45,212,191,0.18);
-    }
-    .cat-thumb-img{width:185px;height:185px;object-fit:contain;border-radius:14px;display:block;}
-    .cat-thumb-name{
-      font-size:13px;font-weight:700;
-      color:var(--text-muted);
-      text-align:center;line-height:1.4;
-      letter-spacing:0.2px;
-    }
-    .cat-thumb-card:hover .cat-thumb-name{color:var(--teal);}
-
-    /* Topic content */
-    .topic-content{padding:32px 36px;}
-    .topic-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:28px;flex-wrap:wrap;}
-    .topic-meta{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-    .level-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:0.07em;}
-    .level-beginner{background:rgba(34,197,94,0.12);color:#22C55E;border:1px solid rgba(34,197,94,0.25);}
-    .level-intermediate{background:rgba(251,191,36,0.12);color:#FBBF24;border:1px solid rgba(251,191,36,0.25);}
-    .level-advanced{background:rgba(239,68,68,0.12);color:#EF4444;border:1px solid rgba(239,68,68,0.25);}
-    .cat-badge{font-size:10px;font-weight:600;color:var(--text-dim);background:var(--bg-3);padding:3px 10px;border-radius:10px;}
-    .topic-title-h{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:800;line-height:1.2;}
-    .download-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.3);color:var(--teal);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
-    .download-btn:hover{background:rgba(45,212,191,0.18);}
-    .download-btn.loading{opacity:0.6;cursor:wait;}
-    .topic-divider{height:1px;background:var(--border);margin:24px 0;}
-
-    /* Content blocks */
-    .content-h2{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;margin:28px 0 12px;color:var(--text);}
-    .content-h2:first-child{margin-top:0;}
-    .content-p{font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:14px;}
-    .content-svg-wrap{background:#fff;border-radius:14px;overflow:hidden;margin:20px 0;border:1px solid rgba(255,255,255,0.1);}
-    .content-svg-wrap svg{display:block;width:100%;height:auto;}
-    .content-svg-caption{font-size:11px;color:var(--text-dim);text-align:center;padding:8px 12px;background:rgba(255,255,255,0.03);border-top:1px solid var(--border-dim);}
-    .content-list{margin:0 0 16px 0;padding-left:20px;}
-    .content-list li{font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:4px;}
-    .content-callout{background:rgba(45,212,191,0.06);border-left:3px solid var(--teal);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:13px;color:var(--text-muted);line-height:1.7;}
-    .content-callout strong{color:var(--teal);}
-
-    /* Sidebar header */
-    .sidebar-header{
-      padding:16px 18px 12px;
-      border-bottom:1px solid var(--border);
-      background:var(--bg-2);
-      position:sticky;top:0;z-index:2;
-    }
-    .sidebar-header-label{
-      font-size:10px;font-weight:700;letter-spacing:1.5px;
-      text-transform:uppercase;color:var(--teal);
-      display:flex;align-items:center;gap:7px;margin-bottom:4px;
-    }
-    .sidebar-header-label::before{
-      content:'';width:16px;height:2px;
-      background:var(--teal);border-radius:2px;flex-shrink:0;
-    }
-    .sidebar-header-title{
-      font-family:'Space Grotesk',sans-serif;
-      font-size:15px;font-weight:800;color:var(--text);line-height:1.2;
+    html, body {
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
     }
 
-    /* Custom scrollbars — teal theme */
-    .lib-sidebar,
-    .lib-panel{
-      scrollbar-width:thin;
-      scrollbar-color:rgba(45,212,191,0.35) transparent;
-    }
-    .lib-sidebar::-webkit-scrollbar,
-    .lib-panel::-webkit-scrollbar{ width:5px; }
-    .lib-sidebar::-webkit-scrollbar-track,
-    .lib-panel::-webkit-scrollbar-track{ background:transparent; }
-    .lib-sidebar::-webkit-scrollbar-thumb,
-    .lib-panel::-webkit-scrollbar-thumb{
-      background:rgba(45,212,191,0.3);
-      border-radius:4px;
-    }
-    .lib-sidebar::-webkit-scrollbar-thumb:hover,
-    .lib-panel::-webkit-scrollbar-thumb:hover{
-      background:rgba(45,212,191,0.6);
+    /* Animated background grid */
+    .bg-grid {
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(45,212,191,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(45,212,191,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
     }
 
-    /* Thumbnail focus states */
-    .cat-thumbs-grid.single-view{
-      grid-template-columns:1fr;
-      justify-items:center;
-      max-width:380px;
-      margin-left:auto;margin-right:auto;
+    /* Glow orbs */
+    .orb {
+      position: fixed; border-radius: 50%;
+      filter: blur(120px); pointer-events: none; z-index: 0;
     }
-    .cat-thumb-card.thumb-hidden{ display:none; }
-    .cat-thumb-card.thumb-active{
-      border-color:var(--teal);
-      background:rgba(45,212,191,0.07);
-      box-shadow:0 0 48px rgba(45,212,191,0.18);
-      cursor:default;
-      pointer-events:none;
+    .orb-1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(13,148,136,0.25), transparent 70%);
+      top: -150px; left: -150px;
     }
-    .cat-thumb-card.thumb-active .cat-thumb-img{ width:476px; height:476px; }
-    .cat-thumb-card.thumb-active .cat-thumb-name{ font-size:16px; color:var(--teal); }
-
-    /* Sidebar header clickable */
-    .sidebar-header{ cursor:pointer; transition:background 0.18s; }
-    .sidebar-header:hover{ background:rgba(45,212,191,0.06); }
-    .sidebar-header:hover .sidebar-header-title::after{
-      content:' ↩'; font-size:11px; color:var(--teal); opacity:0.75; font-weight:400;
+    .orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(45,212,191,0.15), transparent 70%);
+      bottom: -100px; right: -100px;
     }
 
-    /* Topic image block */
-    .content-img-wrap{margin:0 0 28px;border-radius:14px;overflow:hidden;background:rgba(255,255,255,0.03);border:1px solid var(--border);}
-    .content-topic-img{width:100%;height:auto;max-height:480px;object-fit:contain;display:block;}
-
-    /* Topic sequence tag (sidebar) */
-    .topic-seq-tag{
-      font-size:9.5px;font-weight:700;
-      color:var(--text-dim);
-      font-family:'Space Grotesk',sans-serif;
-      letter-spacing:0.04em;
-      flex-shrink:0;
-      margin-right:5px;
-      opacity:0.75;
-    }
-    .topic-link:hover .topic-seq-tag,
-    .topic-link.active .topic-seq-tag{ opacity:1; }
-
-    /* Topic ID badge (panel header) */
-    .topic-id-badge{
-      font-size:10px;font-weight:700;
-      color:var(--text-dim);
-      background:var(--bg-3);
-      padding:2px 9px;border-radius:8px;
-      letter-spacing:0.05em;
-      font-family:'Space Grotesk',sans-serif;
+    /* Center content */
+    .wrap {
+      position: relative; z-index: 1;
+      height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 24px;
     }
 
-    /* Coming Soon panel */
-    .coming-soon-wrap{
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      min-height:340px;text-align:center;padding:48px 32px;
+    .label {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px; border-radius: 20px;
+      background: rgba(45,212,191,0.08);
+      border: 1px solid rgba(45,212,191,0.22);
+      color: var(--teal); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 32px;
     }
-    .cs-icon{font-size:52px;margin-bottom:20px;opacity:0.35;}
-    .cs-title{
-      font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800;
-      color:var(--text);margin-bottom:10px;
+    .label::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--teal);
+      animation: pulse 2s ease-in-out infinite;
     }
-    .cs-text{font-size:14px;color:var(--text-muted);line-height:1.7;margin-bottom:6px;max-width:360px;}
-    .cs-text strong{color:var(--teal);}
-    .cs-sub{font-size:12px;color:var(--text-dim);margin-top:4px;}
-    .cs-badge{
-      display:inline-flex;align-items:center;gap:7px;margin-top:20px;
-      padding:7px 16px;border-radius:20px;
-      background:rgba(45,212,191,0.07);border:1px solid rgba(45,212,191,0.22);
-      font-size:12px;font-weight:700;color:var(--teal);
-    }
-    .download-btn.disabled{
-      opacity:0.3;cursor:not-allowed;pointer-events:none;
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.7); }
     }
 
-    /* ── Mobile ── */
-    @media(max-width:760px){
-      /* Page */
-      .lib-page{ padding:90px 10px 40px; }
+    .site-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(18px, 4vw, 26px);
+      font-weight: 700; color: var(--text-muted);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .site-name span { color: var(--teal); }
 
-      /* Header */
-      .lib-header{ padding:8px 0 18px; }
-      .lib-header-title-row{ gap:10px; }
-      .lib-header-logo{ width:36px; height:36px; border-radius:8px; }
-      .lib-header h1{ font-size:clamp(18px,5.5vw,26px); }
-      .lib-header p{ font-size:13px; margin-bottom:14px; }
-      .lib-search{ max-width:100%; }
-
-      /* Body — thumbnails (panel) first, sidebar below */
-      .lib-body{
-        display:flex !important;
-        flex-direction:column !important;
-        border-radius:12px;
-      }
-      .lib-panel{ order:1; max-height:none; width:100%; overflow:hidden; }
-      .lib-sidebar{
-        order:2;
-        max-height:none;
-        position:static;
-        border-right:none;
-        border-top:1px solid var(--border);
-        width:100%;
-      }
-
-      /* Welcome panel */
-      .panel-welcome{ padding:14px 8px 20px; min-height:unset; overflow:hidden; width:100%; }
-
-      /* Thumbnail grid — 2 columns, no overflow */
-      .cat-thumbs-grid{
-        display:grid !important;
-        grid-template-columns:repeat(2,1fr) !important;
-        gap:10px;
-        width:100%;
-        max-width:100%;
-        margin-top:12px;
-        padding:0;
-        box-sizing:border-box;
-      }
-      .cat-thumb-card{
-        padding:12px 8px 10px;
-        border-radius:12px;
-        width:100%;
-        min-width:0;
-        box-sizing:border-box;
-        overflow:hidden;
-      }
-      .cat-thumb-img{
-        width:100%;
-        height:auto;
-        aspect-ratio:1/1;
-        object-fit:contain;
-        border-radius:10px;
-      }
-      .cat-thumb-name{ font-size:11px; }
-
-      /* Enlarged single thumbnail on mobile */
-      .cat-thumbs-grid.single-view{
-        grid-template-columns:1fr !important;
-        max-width:100%;
-      }
-      .cat-thumb-card.thumb-active{ padding:20px 16px; }
-      .cat-thumb-card.thumb-active .cat-thumb-img{
-        width:100%;
-        height:auto;
-        max-height:280px;
-        aspect-ratio:1/1;
-      }
-      .cat-thumb-card.thumb-active .cat-thumb-name{ font-size:15px; }
-
-      /* Topic image on mobile */
-      .content-img-wrap{ margin:0 0 16px; }
-      /* Topic content */
-      .topic-content{ padding:16px 14px; }
-      .topic-top{ flex-direction:column; }
-      .topic-title-h{ font-size:20px; }
-      .download-btn{ width:100%; justify-content:center; }
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(52px, 12vw, 100px);
+      font-weight: 800; line-height: 1;
+      letter-spacing: -2px;
+      background: linear-gradient(135deg, #E8F4F2 30%, var(--teal) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
     }
 
-    /* Extra small screens */
-    @media(max-width:400px){
-      .lib-page{ padding:85px 8px 32px; }
-      .lib-header h1{ font-size:16px; }
-      .lib-header-logo{ width:30px; height:30px; }
-      .cat-thumbs-grid{ gap:8px; }
-      .cat-thumb-name{ font-size:10px; }
+    .tagline {
+      font-size: clamp(14px, 2vw, 18px);
+      color: var(--text-muted); line-height: 1.7;
+      max-width: 480px; margin-bottom: 48px;
     }
 
-    /* Topic of the Day card */
-    .totd-card{
-      width:100%;max-width:780px;
-      background:linear-gradient(135deg,rgba(13,148,136,0.12) 0%,rgba(45,212,191,0.06) 100%);
-      border:1px solid rgba(45,212,191,0.32);
-      border-radius:18px;padding:22px 28px 20px;
-      margin-bottom:28px;text-align:left;
-      position:relative;overflow:hidden;
+    .divider {
+      width: 60px; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--teal), transparent);
+      margin: 0 auto 48px;
     }
-    .totd-card::before{
-      content:'';position:absolute;top:-40px;right:-40px;
-      width:160px;height:160px;border-radius:50%;
-      background:radial-gradient(circle,rgba(45,212,191,0.12) 0%,transparent 70%);
-      pointer-events:none;
-    }
-    .totd-label{
-      display:inline-flex;align-items:center;gap:7px;
-      font-size:10px;font-weight:700;letter-spacing:0.1em;
-      text-transform:uppercase;color:var(--teal);margin-bottom:12px;
-    }
-    .totd-label::before{content:'✦';font-size:10px;}
-    .totd-body{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;}
-    .totd-info{flex:1;min-width:0;}
-    .totd-badges{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-    .totd-title{
-      font-family:'Space Grotesk',sans-serif;
-      font-size:20px;font-weight:800;color:var(--text);
-      line-height:1.25;margin-bottom:6px;
-    }
-    .totd-summary{font-size:13px;color:var(--text-muted);line-height:1.6;max-width:520px;}
-    .totd-btn{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:11px 22px;border-radius:10px;
-      background:var(--teal);color:#051012;
-      font-size:13px;font-weight:700;cursor:pointer;
-      border:none;transition:all 0.2s;white-space:nowrap;flex-shrink:0;
-    }
-    .totd-btn:hover{background:var(--teal-dark);color:#fff;}
-    .totd-countdown{font-size:11px;color:var(--text-dim);margin-top:12px;}
-    .totd-countdown span{color:var(--teal);font-weight:600;}
 
-    /* Footer */
-    .lib-footer{text-align:center;padding:28px 0;border-top:1px solid var(--border);margin-top:40px;font-size:12px;color:var(--text-dim);line-height:1.8;}
-    .lib-footer a{color:var(--teal);text-decoration:none;}
+    .footer-txt {
+      position: fixed; bottom: 28px;
+      font-size: 12px; color: rgba(122,158,155,0.5);
+      letter-spacing: 0.05em;
+    }
   </style>
 </head>
 <body>
 
-<div class="ticker-bar"><div class="ticker-track" id="ticker"></div></div>
+<div class="bg-grid"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
 
-<nav class="nav" id="mainNav">
-  <div class="nav-inner">
-    <a href="index.html" class="nav-logo">
-      <img src="logo.jpg" class="logo-img" alt="Trends &amp; Trade" onerror="this.style.display='none'"/>
-      <div class="logo-text">Trends <span>&amp;</span> Trade</div>
-    </a>
-    <div class="nav-col">
-      <ul class="nav-row-1 nav-links">
-        <li><a href="about.html">About</a></li>
-        <li><a href="index.html#resources">Free Resources</a></li>
-        <li><a href="library.html" class="active">Library</a></li>
-        <li><a href="index.html#pricing">Pricing</a></li>
-        <li><a href="index.html#community">Community</a></li>
-        <li><a href="team.html">Our Team</a></li>
-        <li><a href="social.html">Media</a></li>
-      </ul>
-      <div class="nav-row-2 nav-cta">
-        <a href="courses.html" class="btn btn-outline" style="padding:9px 18px;font-size:13px;">Free Courses</a>
-        <a href="index.html#email" class="btn btn-primary" style="padding:9px 18px;font-size:13px;">Get Free Analysis</a>
-      </div>
-    </div>
-    <button class="nav-hamburger" onclick="toggleMenu()">&#9776;</button>
-  </div>
-</nav>
-
-<div class="mobile-menu" id="mobileMenu">
-  <a href="about.html" onclick="toggleMenu()">About</a>
-  <a href="index.html#resources" onclick="toggleMenu()">Free Resources</a>
-  <a href="library.html" onclick="toggleMenu()" style="color:var(--teal);">Library</a>
-  <a href="index.html#pricing" onclick="toggleMenu()">Pricing</a>
-  <a href="index.html#community" onclick="toggleMenu()">Community</a>
-  <a href="team.html" onclick="toggleMenu()">Our Team</a>
-  <a href="social.html" onclick="toggleMenu()">Media</a>
-  <a href="index.html#email" class="btn btn-primary" style="margin-top:16px;justify-content:center;" onclick="toggleMenu()">Get Free Analysis</a>
+<div class="wrap">
+  <div class="label">Stay Tuned</div>
+  <div class="site-name">Trends <span>&amp;</span> Trade</div>
+  <h1>Coming Soon</h1>
+  <div class="divider"></div>
+  <p class="tagline">We're putting the finishing touches.</p>
 </div>
 
-<div class="lib-page">
-  <div class="lib-header">
-    <div class="lib-header-title-row">
-      <img src="images/Librarylogo.jpg" alt="Trends &amp; Trade" class="lib-header-logo"/>
-      <h1>Trends &amp; Trade <span>Library</span></h1>
-    </div>
-    <p>Select any topic to read or download a free PDF guide.</p>
-    <div class="lib-search">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" id="libSearch" placeholder="Search topics..." oninput="filterTopics(this.value)"/>
-    </div>
-  </div>
+<div class="footer-txt">snrtrades.com &nbsp;&middot;&nbsp; &copy; 2026 Trends &amp; Trade</div>
 
-  <div class="lib-body">
-    <div class="lib-sidebar" id="libSidebar"><!-- built by JS --></div>
-    <div class="lib-panel" id="libPanel">
-      <div class="panel-welcome">
-        <div class="cat-thumbs-grid">
-          <div class="cat-thumb-card" data-catid="technical-analysis" onclick="expandCategory('technical-analysis')">
-            <img src="images/Technical_Analysis.jpg" alt="Technical Analysis" class="cat-thumb-img"/>
-            <div class="cat-thumb-name">Technical Analysis</div>
-          </div>
-          <div class="cat-thumb-card" data-catid="fundamental-analysis" onclick="expandCategory('fundamental-analysis')">
-            <img src="images/Fundamental_analysis.jpg" alt="Fundamental Analysis" class="cat-thumb-img"/>
-            <div class="cat-thumb-name">Fundamental Analysis</div>
-          </div>
-          <div class="cat-thumb-card" data-catid="stocks" onclick="expandCategory('stocks')">
-            <img src="images/Stocks.jpg" alt="Stocks" class="cat-thumb-img"/>
-            <div class="cat-thumb-name">Stocks</div>
-          </div>
-          <div class="cat-thumb-card" data-catid="commodities" onclick="expandCategory('commodities')">
-            <img src="images/Commodities.jpg" alt="Commodities" class="cat-thumb-img"/>
-            <div class="cat-thumb-name">Commodities</div>
-          </div>
-          <div class="cat-thumb-card" data-catid="crypto" onclick="expandCategory('crypto')">
-            <img src="images/Crypto.jpg" alt="Crypto" class="cat-thumb-img"/>
-            <div class="cat-thumb-name">Crypto</div>
-          </div>
-          <div class="cat-thumb-card" data-catid="forex" onclick="expandCategory('forex')">
-            <img src="images/Forex.jpg" alt="Forex" class="cat-thumb-img"/>
-            <div class="cat-thumb-name">Forex</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="lib-footer">
-    <a href="index.html">Home</a> &nbsp;&middot;&nbsp;
-    <a href="about.html">About</a> &nbsp;&middot;&nbsp;
-    <a href="library.html">Library</a> &nbsp;&middot;&nbsp;
-    <a href="courses.html">Free Courses</a> &nbsp;&middot;&nbsp;
-    <a href="social.html">Media</a><br/>
-    &copy; 2026 Trends &amp; Trade &middot; Educational content only
-  </div>
-</div>
-
-<!-- ══ HIDDEN SVG DEFINITIONS ══ -->
-<div id="svgDefs" style="display:none">
-
-  <!-- SVG: What is Trading -->
-  <svg id="svg-what-is-trading" viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
-    <rect width="600" height="260" fill="#F8FAFB"/>
-    <polyline points="40,200 100,160 160,180 220,120 280,140 340,80 400,100 460,50 520,70" fill="none" stroke="#2DD4BF" stroke-width="2.5" stroke-linejoin="round"/>
-    <line x1="40" y1="220" x2="540" y2="220" stroke="#CBD5E1" stroke-width="1"/>
-    <line x1="40" y1="40" x2="40" y2="220" stroke="#CBD5E1" stroke-width="1"/>
-    <!-- BUY marker -->
-    <circle cx="220" cy="120" r="7" fill="#22C55E"/>
-    <text x="220" y="108" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#22C55E" font-weight="700">BUY</text>
-    <line x1="220" y1="113" x2="220" y2="120" stroke="#22C55E" stroke-width="1.5"/>
-    <!-- SELL marker -->
-    <circle cx="460" cy="50" r="7" fill="#EF4444"/>
-    <text x="460" y="80" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#EF4444" font-weight="700">SELL</text>
-    <line x1="460" y1="57" x2="460" y2="73" stroke="#EF4444" stroke-width="1.5"/>
-    <!-- Profit arrow -->
-    <line x1="220" y1="120" x2="460" y2="50" stroke="#94A3B8" stroke-width="1" stroke-dasharray="4,3"/>
-    <text x="340" y="95" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Profit</text>
-    <!-- Y labels -->
-    <text x="30" y="45" text-anchor="end" font-family="Inter,sans-serif" font-size="10" fill="#94A3B8">High</text>
-    <text x="30" y="225" text-anchor="end" font-family="Inter,sans-serif" font-size="10" fill="#94A3B8">Low</text>
-    <text x="290" y="248" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#94A3B8">Time &#x2192;</text>
-  </svg>
-
-  <!-- SVG: Market Types -->
-  <svg id="svg-market-types" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
-    <rect width="600" height="240" fill="#F8FAFB"/>
-    <!-- Stocks box -->
-    <rect x="20" y="20" width="130" height="100" rx="12" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1.5"/>
-    <text x="85" y="55" text-anchor="middle" font-family="Inter,sans-serif" font-size="24">&#x1F4C8;</text>
-    <text x="85" y="82" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#1E40AF">Stocks</text>
-    <text x="85" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">PSX &bull; NASDAQ</text>
-    <text x="85" y="112" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">NYSE &bull; ADX</text>
-    <!-- Crypto box -->
-    <rect x="165" y="20" width="130" height="100" rx="12" fill="#FFF7ED" stroke="#FED7AA" stroke-width="1.5"/>
-    <text x="230" y="55" text-anchor="middle" font-family="Inter,sans-serif" font-size="24">&#x20BF;</text>
-    <text x="230" y="82" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#C2410C">Crypto</text>
-    <text x="230" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Bitcoin &bull; Ethereum</text>
-    <text x="230" y="112" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Altcoins</text>
-    <!-- Forex box -->
-    <rect x="310" y="20" width="130" height="100" rx="12" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1.5"/>
-    <text x="375" y="55" text-anchor="middle" font-family="Inter,sans-serif" font-size="24">&#x1F4B1;</text>
-    <text x="375" y="82" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#15803D">Forex</text>
-    <text x="375" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">EUR/USD &bull; GBP/JPY</text>
-    <text x="375" y="112" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Major &bull; Minor pairs</text>
-    <!-- Commodities box -->
-    <rect x="455" y="20" width="130" height="100" rx="12" fill="#FEFCE8" stroke="#FEF08A" stroke-width="1.5"/>
-    <text x="520" y="55" text-anchor="middle" font-family="Inter,sans-serif" font-size="24">&#x1F947;</text>
-    <text x="520" y="82" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#A16207">Commodities</text>
-    <text x="520" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Gold &bull; Silver</text>
-    <text x="520" y="112" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Oil &bull; Natural Gas</text>
-    <!-- Common trait -->
-    <rect x="150" y="148" width="300" height="36" rx="8" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
-    <text x="300" y="172" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#475569">All markets follow the same law: <tspan font-weight="700" fill="#0D9488">Supply &amp; Demand</tspan></text>
-  </svg>
-
-  <!-- SVG: Order Types -->
-  <svg id="svg-order-types" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
-    <rect width="600" height="240" fill="#F8FAFB"/>
-    <!-- Market Order column -->
-    <rect x="20" y="16" width="265" height="210" rx="12" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1.5"/>
-    <text x="152" y="44" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" font-weight="700" fill="#1E40AF">Market Order</text>
-    <line x1="40" y1="54" x2="264" y2="54" stroke="#BFDBFE" stroke-width="1"/>
-    <text x="152" y="78" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#334155">Executes immediately</text>
-    <text x="152" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#334155">at the current market price</text>
-    <text x="152" y="128" text-anchor="middle" font-family="Inter,sans-serif" font-size="28">&#x26A1;</text>
-    <text x="152" y="162" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#22C55E" font-weight="600">&#10003; Fast execution</text>
-    <text x="152" y="180" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#EF4444" font-weight="600">&#10005; No price control</text>
-    <text x="152" y="198" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Use when: entry speed matters</text>
-    <!-- Limit Order column -->
-    <rect x="315" y="16" width="265" height="210" rx="12" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1.5"/>
-    <text x="447" y="44" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" font-weight="700" fill="#15803D">Limit Order</text>
-    <line x1="335" y1="54" x2="559" y2="54" stroke="#BBF7D0" stroke-width="1"/>
-    <text x="447" y="78" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#334155">Executes only at your</text>
-    <text x="447" y="98" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#334155">specified price or better</text>
-    <text x="447" y="128" text-anchor="middle" font-family="Inter,sans-serif" font-size="28">&#x1F3AF;</text>
-    <text x="447" y="162" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#22C55E" font-weight="600">&#10003; Precise price control</text>
-    <text x="447" y="180" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#EF4444" font-weight="600">&#10005; May not fill</text>
-    <text x="447" y="198" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Use when: price level matters</text>
-  </svg>
-
-  <!-- SVG: Candlestick Anatomy -->
-  <svg id="svg-candlesticks" viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
-    <rect width="600" height="260" fill="#F8FAFB"/>
-    <!-- Bullish candle -->
-    <text x="150" y="26" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#15803D">Bullish Candle</text>
-    <line x1="150" y1="40" x2="150" y2="75" stroke="#15803D" stroke-width="2"/>
-    <rect x="120" y="75" width="60" height="110" rx="2" fill="#22C55E"/>
-    <line x1="150" y1="185" x2="150" y2="220" stroke="#15803D" stroke-width="2"/>
-    <text x="230" y="48" font-family="Inter,sans-serif" font-size="11" fill="#64748B">&#x2190; High (Upper wick)</text>
-    <text x="230" y="82" font-family="Inter,sans-serif" font-size="11" fill="#64748B">&#x2190; Close (top of body)</text>
-    <text x="230" y="180" font-family="Inter,sans-serif" font-size="11" fill="#64748B">&#x2190; Open (bottom of body)</text>
-    <text x="230" y="218" font-family="Inter,sans-serif" font-size="11" fill="#64748B">&#x2190; Low (Lower wick)</text>
-    <text x="150" y="138" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="white" font-weight="700">BODY</text>
-    <!-- Bearish candle -->
-    <text x="430" y="26" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#B91C1C">Bearish Candle</text>
-    <line x1="430" y1="40" x2="430" y2="75" stroke="#B91C1C" stroke-width="2"/>
-    <rect x="400" y="75" width="60" height="110" rx="2" fill="#EF4444"/>
-    <line x1="430" y1="185" x2="430" y2="220" stroke="#B91C1C" stroke-width="2"/>
-    <text x="340" y="48" text-anchor="end" font-family="Inter,sans-serif" font-size="11" fill="#64748B">High &#x2192;</text>
-    <text x="340" y="82" text-anchor="end" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Open &#x2192;</text>
-    <text x="340" y="180" text-anchor="end" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Close &#x2192;</text>
-    <text x="340" y="218" text-anchor="end" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Low &#x2192;</text>
-    <text x="430" y="138" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="white" font-weight="700">BODY</text>
-    <line x1="300" y1="30" x2="300" y2="230" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4,3"/>
-  </svg>
-
-  <!-- SVG: Trend Lines -->
-  <svg id="svg-trend-lines" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
-    <rect width="600" height="240" fill="#F8FAFB"/>
-    <!-- Uptrend (left side) -->
-    <text x="140" y="22" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#15803D">Uptrend</text>
-    <polyline points="30,195 70,160 110,170 150,130 190,140 230,100 270,115" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
-    <line x1="30" y1="195" x2="270" y2="95" stroke="#22C55E" stroke-width="2" stroke-dasharray="5,3"/>
-    <text x="250" y="88" font-family="Inter,sans-serif" font-size="10" fill="#22C55E" font-weight="700">Support line</text>
-    <circle cx="30" cy="195" r="4" fill="#22C55E"/>
-    <circle cx="110" cy="170" r="4" fill="#22C55E"/>
-    <circle cx="190" cy="140" r="4" fill="#22C55E"/>
-    <!-- Downtrend (right side) -->
-    <text x="450" y="22" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#B91C1C">Downtrend</text>
-    <polyline points="320,60 360,95 400,80 440,120 480,105 520,145 560,130" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
-    <line x1="320" y1="60" x2="560" y2="155" stroke="#EF4444" stroke-width="2" stroke-dasharray="5,3"/>
-    <text x="318" y="152" font-family="Inter,sans-serif" font-size="10" fill="#EF4444" font-weight="700">Resistance line</text>
-    <circle cx="320" cy="60" r="4" fill="#EF4444"/>
-    <circle cx="400" cy="80" r="4" fill="#EF4444"/>
-    <circle cx="480" cy="105" r="4" fill="#EF4444"/>
-    <line x1="295" y1="20" x2="295" y2="220" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4,3"/>
-  </svg>
-
-  <!-- SVG: Support and Resistance -->
-  <svg id="svg-snr-basics" viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
-    <rect width="600" height="260" fill="#F8FAFB"/>
-    <!-- Resistance line -->
-    <line x1="40" y1="75" x2="560" y2="75" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="6,3"/>
-    <text x="565" y="79" font-family="Inter,sans-serif" font-size="11" fill="#EF4444" font-weight="700">Resistance</text>
-    <!-- Support line -->
-    <line x1="40" y1="195" x2="560" y2="195" stroke="#22C55E" stroke-width="1.5" stroke-dasharray="6,3"/>
-    <text x="565" y="199" font-family="Inter,sans-serif" font-size="11" fill="#22C55E" font-weight="700">Support</text>
-    <!-- Price bouncing -->
-    <polyline points="40,140 80,75 120,140 160,195 200,130 240,75 280,140 320,195 360,120 400,75 440,140 480,195 520,130 560,140" fill="none" stroke="#2DD4BF" stroke-width="2" stroke-linejoin="round"/>
-    <!-- Bounce arrows down from resistance -->
-    <text x="83" y="63" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" fill="#EF4444">&#x2193;</text>
-    <text x="243" y="63" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" fill="#EF4444">&#x2193;</text>
-    <text x="403" y="63" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" fill="#EF4444">&#x2193;</text>
-    <!-- Bounce arrows up from support -->
-    <text x="163" y="215" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" fill="#22C55E">&#x2191;</text>
-    <text x="323" y="215" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" fill="#22C55E">&#x2191;</text>
-    <text x="483" y="215" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" fill="#22C55E">&#x2191;</text>
-    <text x="300" y="248" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Price oscillates between Support and Resistance until a breakout occurs</text>
-  </svg>
-
-  <!-- SVG: Breakouts -->
-  <svg id="svg-breakouts" viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
-    <rect width="600" height="260" fill="#F8FAFB"/>
-    <!-- Resistance line -->
-    <line x1="40" y1="120" x2="560" y2="120" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="6,3"/>
-    <text x="10" y="124" font-family="Inter,sans-serif" font-size="10" fill="#EF4444" font-weight="700">R</text>
-    <!-- Price consolidation then breakout -->
-    <polyline points="40,200 80,180 120,190 160,170 200,180 240,160 280,170 320,120 360,80 400,60 440,40 480,30" fill="none" stroke="#2DD4BF" stroke-width="2.5" stroke-linejoin="round"/>
-    <!-- Volume bars -->
-    <rect x="50" y="230" width="12" height="8" fill="#94A3B8" opacity="0.5"/>
-    <rect x="90" y="228" width="12" height="10" fill="#94A3B8" opacity="0.5"/>
-    <rect x="130" y="229" width="12" height="9" fill="#94A3B8" opacity="0.5"/>
-    <rect x="170" y="227" width="12" height="11" fill="#94A3B8" opacity="0.5"/>
-    <rect x="210" y="228" width="12" height="10" fill="#94A3B8" opacity="0.5"/>
-    <rect x="250" y="226" width="12" height="12" fill="#94A3B8" opacity="0.5"/>
-    <rect x="290" y="215" width="12" height="23" fill="#22C55E" opacity="0.8"/>
-    <rect x="330" y="210" width="12" height="28" fill="#22C55E" opacity="0.8"/>
-    <rect x="370" y="212" width="12" height="26" fill="#22C55E" opacity="0.8"/>
-    <text x="310" y="248" font-family="Inter,sans-serif" font-size="10" fill="#22C55E" font-weight="700">Volume surge on breakout</text>
-    <!-- Breakout label -->
-    <text x="310" y="108" font-family="Inter,sans-serif" font-size="11" fill="#22C55E" font-weight="700">BREAKOUT &#x2191;</text>
-    <text x="40" y="248" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Consolidation</text>
-  </svg>
-
-  <!-- SVG: Retests -->
-  <svg id="svg-retests" viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
-    <rect width="600" height="260" fill="#F8FAFB"/>
-    <!-- Old resistance becomes support -->
-    <line x1="40" y1="130" x2="560" y2="130" stroke="#2DD4BF" stroke-width="1.5" stroke-dasharray="5,3"/>
-    <text x="8" y="134" font-family="Inter,sans-serif" font-size="9" fill="#2DD4BF" font-weight="700">R&#x2192;S</text>
-    <!-- Price: consolidation, breakout, retest, continuation -->
-    <polyline points="40,200 90,170 130,180 170,160 210,170 250,130 290,80 330,130 370,135 400,90 440,60 480,40" fill="none" stroke="#2DD4BF" stroke-width="2.5" stroke-linejoin="round"/>
-    <!-- Labels -->
-    <text x="145" y="240" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Consolidation</text>
-    <text x="265" y="118" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#22C55E" font-weight="700">Breakout</text>
-    <text x="350" y="155" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#F59E0B" font-weight="700">Retest</text>
-    <text x="460" y="50" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#22C55E" font-weight="700">Continuation</text>
-    <!-- Retest circle -->
-    <circle cx="340" cy="130" r="18" fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="3,2"/>
-    <!-- Entry marker -->
-    <circle cx="390" cy="90" r="6" fill="#22C55E"/>
-    <text x="410" y="88" font-family="Inter,sans-serif" font-size="10" fill="#22C55E" font-weight="700">Entry</text>
-    <text x="300" y="248" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Retest provides a low-risk entry after confirmation</text>
-  </svg>
-
-  <!-- SVG: Chart Patterns -->
-  <svg id="svg-chart-patterns" viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
-    <rect width="600" height="260" fill="#F8FAFB"/>
-    <text x="300" y="22" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#334155">Head &amp; Shoulders (Reversal Pattern)</text>
-    <!-- Neckline -->
-    <line x1="60" y1="175" x2="540" y2="175" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="5,3"/>
-    <text x="545" y="179" font-family="Inter,sans-serif" font-size="10" fill="#EF4444">Neckline</text>
-    <!-- Pattern -->
-    <polyline points="40,200 100,175 140,155 180,175 230,80 280,175 320,130 360,175 400,155 440,175 480,200 530,220" fill="none" stroke="#2DD4BF" stroke-width="2.5" stroke-linejoin="round"/>
-    <!-- Labels -->
-    <text x="140" y="148" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Left</text>
-    <text x="140" y="161" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Shoulder</text>
-    <text x="230" y="70" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700" fill="#334155">Head</text>
-    <text x="360" y="123" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Right</text>
-    <text x="360" y="136" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#64748B">Shoulder</text>
-    <!-- Breakdown arrow -->
-    <text x="490" y="195" font-family="Inter,sans-serif" font-size="18" fill="#EF4444">&#x2193;</text>
-    <text x="490" y="218" font-family="Inter,sans-serif" font-size="10" fill="#EF4444" font-weight="700">Breakdown</text>
-    <text x="300" y="248" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#64748B">Break below neckline confirms bearish reversal</text>
-  </svg>
-
-</div>
-<!-- ══ END SVG DEFS ══ -->
-
-<script src="library-data.js"></script>
-<script>
-
-// ── Build sequence number map with category-prefixed IDs ──────────────────────
-const DISPLAY_ORDER = ['technical-analysis','fundamental-analysis','stocks','commodities','crypto','forex'];
-const CAT_PREFIX = {
-  'technical-analysis':  'SNR-TA',
-  'fundamental-analysis':'SNR-FA',
-  'stocks':              'SNR-ST',
-  'commodities':         'SNR-COM',
-  'crypto':              'SNR-CR',
-  'forex':               'SNR-FX',
-};
-function buildSeqMap() {
-  const map = {};
-  DISPLAY_ORDER.forEach(catId => {
-    const cat = LIBRARY.find(c => c.id === catId);
-    if (!cat) return;
-    const prefix = CAT_PREFIX[catId] || 'SnR';
-    cat.topics.forEach((t, i) => {
-      map[t.id] = prefix + '-' + String(i + 1).padStart(3, '0');
-    });
-  });
-  return map;
-}
-const TOPIC_SEQ = buildSeqMap();
-
-// ── Pre-load logo for PDF watermark (fetch avoids canvas CORS taint) ─────────
-let logoPngDataUrl = null;
-(async function preloadLogo() {
-  try {
-    const res = await fetch('images/Librarylogo.jpg');
-    const blob = await res.blob();
-    const objUrl = URL.createObjectURL(blob);
-    await new Promise(resolve => {
-      const img = new Image();
-      img.onload = () => {
-        const c = document.createElement('canvas');
-        c.width = img.naturalWidth; c.height = img.naturalHeight;
-        c.getContext('2d').drawImage(img, 0, 0);
-        URL.revokeObjectURL(objUrl);
-        logoPngDataUrl = c.toDataURL('image/png');
-        resolve();
-      };
-      img.onerror = () => { URL.revokeObjectURL(objUrl); resolve(); };
-      img.src = objUrl;
-    });
-  } catch(e) {}
-})();
-
-// ── Convert image URL to data URL via FileReader (reliable for multiple images) ─
-async function imgToDataUrl(src) {
-  try {
-    const res = await fetch(src);
-    if (res.ok) {
-      const blob = await res.blob();
-      return await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.onerror = () => resolve(null);
-        reader.readAsDataURL(blob);
-      });
-    }
-  } catch(e) {}
-  return null;
-}
-
-// ── Convert HTML callout text to pdfmake text array ───────────────────────────
-function htmlToPdfText(html) {
-  const parts = [];
-  const regex = /<strong>(.*?)<\/strong>/gi;
-  let last = 0, match;
-  while ((match = regex.exec(html)) !== null) {
-    if (match.index > last) {
-      const plain = html.slice(last, match.index).replace(/<[^>]+>/g, '');
-      if (plain) parts.push({ text: plain });
-    }
-    parts.push({ text: match[1], bold: true });
-    last = match.index + match[0].length;
-  }
-  const tail = html.slice(last).replace(/<[^>]+>/g, '');
-  if (tail) parts.push({ text: tail });
-  return parts.length ? parts : [{ text: html.replace(/<[^>]+>/g, '') }];
-}
-
-// ── Topic of the Day ──────────────────────────────────────────────────────────
-function buildTotdCard() {
-  // Flatten all topics with their category info
-  const all = [];
-  LIBRARY.forEach(cat => {
-    cat.topics.forEach(t => {
-      if (t.content && t.content.length) all.push({ topic: t, catTitle: cat.title, catId: cat.id });
-    });
-  });
-  if (!all.length) return;
-
-  // Pick by day-of-year so it rotates daily automatically
-  const now = new Date();
-  const start = new Date(now.getFullYear(), 0, 0);
-  const dayOfYear = Math.floor((now - start) / 86400000);
-  const pick = all[dayOfYear % all.length];
-
-  // Countdown to midnight
-  const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(0,0,0,0);
-  const diffMs = tomorrow - now;
-  const hh = Math.floor(diffMs / 3600000);
-  const mm = Math.floor((diffMs % 3600000) / 60000);
-
-  const levelClass = pick.topic.level ? 'level-' + pick.topic.level.toLowerCase() : '';
-
-  const el = document.getElementById('totdCard');
-  if (!el) return;
-  el.innerHTML = `
-    <div class="totd-card">
-      <div class="totd-label">Topic of the Day</div>
-      <div class="totd-body">
-        <div class="totd-info">
-          <div class="totd-badges">
-            <span class="cat-badge">${pick.catTitle}</span>
-            ${pick.topic.level ? `<span class="level-badge ${levelClass}">${pick.topic.level}</span>` : ''}
-          </div>
-          <div class="totd-title">${pick.topic.title}</div>
-          <div class="totd-summary">${pick.topic.summary || ''}</div>
-        </div>
-        <button class="totd-btn" onclick="expandCategory('${pick.catId}');openTopic('${pick.topic.id}')">Read Now ›</button>
-      </div>
-      <div class="totd-countdown">Next topic in <span>${hh}h ${mm}m</span></div>
-    </div>`;
-}
-
-// ── Welcome panel snapshot (restored when Topics & Articles is clicked) ───────
-let welcomePanelHTML = '';
-
-// ── Build sidebar ─────────────────────────────────────────────────────────────
-function buildSidebar(data) {
-  const sb = document.getElementById('libSidebar');
-  sb.innerHTML = `
-    <div class="sidebar-header" onclick="resetThumbnails()" title="Click to show all categories">
-      <div class="sidebar-header-label">Library</div>
-      <div class="sidebar-header-title">Topics &amp; Articles</div>
-    </div>`;
-  // Display order
-  const ORDER = ['technical-analysis','fundamental-analysis','stocks','commodities','crypto','forex'];
-  const sorted = ORDER.map(id => data.find(c => c.id === id)).filter(Boolean);
-  sorted.forEach((cat) => {
-    const grp = document.createElement('div');
-    grp.className = 'cat-group'; // all collapsed on load
-    grp.dataset.catid = cat.id;
-    grp.innerHTML = `
-      <div class="cat-header" onclick="selectCategory(this.parentElement, '${cat.id}')">
-        <div class="cat-header-left">
-          <span class="cat-icon">${cat.icon}</span>
-          <span class="cat-title">${cat.title}</span>
-          <span class="cat-count">${cat.topics.length}</span>
-        </div>
-        <span class="cat-chevron">&#x25BE;</span>
-      </div>
-      <div class="cat-topics">
-        ${cat.topics.map(t => `
-          <div class="topic-link${t.content && t.content.length ? ' topic-done' : ''}" data-id="${t.id}" onclick="openTopic('${t.id}')">
-            <span class="topic-link-dot"></span>${t.title}<span class="topic-seq-tag" style="margin-left:6px;margin-right:0;">${TOPIC_SEQ[t.id]||''}</span>
-          </div>`).join('')}
-      </div>`;
-    sb.appendChild(grp);
-  });
-}
-
-function toggleCat(grp) {
-  grp.classList.toggle('open');
-}
-
-function selectCategory(grp, id) {
-  const isOpen = grp.classList.contains('open');
-  if (isOpen) {
-    // Clicking an already-open category collapses it and resets thumbnails
-    grp.classList.remove('open');
-    resetThumbnails();
-  } else {
-    // Close all other categories, open this one
-    document.querySelectorAll('.cat-group').forEach(g => g.classList.remove('open'));
-    grp.classList.add('open');
-    // Restore welcome panel so thumbnail grid is back in the DOM
-    const panel = document.getElementById('libPanel');
-    if (panel && welcomePanelHTML) panel.innerHTML = welcomePanelHTML;
-    currentTopic = null;
-    document.querySelectorAll('.topic-link').forEach(el => el.classList.remove('active'));
-    // Show the enlarged thumbnail for this category
-    focusThumbnail(id);
-  }
-}
-
-function expandCategory(id) {
-  // Close all open categories first
-  document.querySelectorAll('.cat-group').forEach(g => g.classList.remove('open'));
-  // Find and open the target
-  const target = document.querySelector(`.cat-group[data-catid="${id}"]`);
-  if (!target) return;
-  target.classList.add('open');
-  // Scroll sidebar to bring target into view
-  const sidebar = document.getElementById('libSidebar');
-  if (sidebar) {
-    const topOffset = target.offsetTop - sidebar.offsetTop;
-    sidebar.scrollTo({ top: topOffset - 56, behavior: 'smooth' });
-  }
-  // Focus the clicked thumbnail
-  focusThumbnail(id);
-}
-
-function focusThumbnail(id) {
-  const grid = document.querySelector('.cat-thumbs-grid');
-  if (!grid) return;
-  grid.querySelectorAll('.cat-thumb-card').forEach(card => {
-    if (card.dataset.catid === id) {
-      card.classList.add('thumb-active');
-      card.classList.remove('thumb-hidden');
-    } else {
-      card.classList.add('thumb-hidden');
-      card.classList.remove('thumb-active');
-    }
-  });
-  grid.classList.add('single-view');
-}
-
-function resetThumbnails() {
-  // Restore the original welcome panel (thumbnails may have been replaced by topic content)
-  const panel = document.getElementById('libPanel');
-  if (panel && welcomePanelHTML) panel.innerHTML = welcomePanelHTML;
-  currentTopic = null;
-  // Remove active highlight from sidebar topics
-  document.querySelectorAll('.topic-link').forEach(el => el.classList.remove('active'));
-  // Collapse all sidebar categories
-  document.querySelectorAll('.cat-group').forEach(g => g.classList.remove('open'));
-}
-
-// ── Open topic ────────────────────────────────────────────────────────────────
-let currentTopic = null;
-
-function openTopic(id) {
-  let topic = null, catTitle = '';
-  for (const cat of LIBRARY) {
-    const t = cat.topics.find(x => x.id === id);
-    if (t) { topic = t; catTitle = cat.title; break; }
-  }
-  if (!topic) return;
-  currentTopic = topic;
-
-  // Sidebar highlight
-  document.querySelectorAll('.topic-link').forEach(el => {
-    el.classList.toggle('active', el.dataset.id === id);
-  });
-
-  // Build panel
-  const panel = document.getElementById('libPanel');
-  const levelClass = topic.level === 'Beginner' ? 'level-beginner' : topic.level === 'Intermediate' ? 'level-intermediate' : 'level-advanced';
-  const hasContent = topic.content && topic.content.length > 0;
-
-  let blocksHTML = '';
-  if (hasContent) {
-    topic.content.forEach(b => {
-      if (b.type === 'image') {
-        blocksHTML += `<div class="content-img-wrap"><img src="${b.src}" alt="${b.alt||''}" class="content-topic-img"/></div>`;
-      } else if (b.type === 'heading') {
-        blocksHTML += `<div class="content-h2">${b.text}</div>`;
-      } else if (b.type === 'paragraph') {
-        blocksHTML += `<p class="content-p">${b.text}</p>`;
-      } else if (b.type === 'list') {
-        blocksHTML += `<ul class="content-list">${b.items.map(i => `<li>${i}</li>`).join('')}</ul>`;
-      } else if (b.type === 'callout') {
-        blocksHTML += `<div class="content-callout">${b.text}</div>`;
-      } else if (b.type === 'svg') {
-        const srcSvg = document.getElementById(b.id);
-        const svgClone = srcSvg ? srcSvg.outerHTML.replace(/id="/, 'id="clone-') : '';
-        blocksHTML += `<div class="content-svg-wrap" data-svgid="${b.id}">${svgClone}<div class="content-svg-caption">${b.caption}</div></div>`;
-      }
-    });
-  } else {
-    blocksHTML = `
-      <div class="coming-soon-wrap">
-        <div class="cs-icon">📚</div>
-        <div style="font-size:11px;font-weight:700;font-family:'Space Grotesk',sans-serif;letter-spacing:0.06em;color:var(--teal);opacity:0.7;margin-bottom:8px;">${TOPIC_SEQ[topic.id]||''}</div>
-        <h3 class="cs-title">Content Coming Soon</h3>
-        <p class="cs-text">A full guide on <strong>${topic.title}</strong> is being prepared by our educators.</p>
-        <p class="cs-sub">All articles are published gradually — check back soon.</p>
-        <div class="cs-badge">
-          <span>🔔</span> Subscribe for updates
-        </div>
-      </div>`;
-  }
-
-  panel.innerHTML = `
-    <div class="topic-content">
-      <div class="topic-top">
-        <div>
-          <div class="topic-meta">
-            <span class="level-badge ${levelClass}">${topic.level}</span>
-            <span class="cat-badge">${catTitle}</span>
-          </div>
-          <div class="topic-title-h">${topic.title} <span class="topic-id-badge" style="font-size:11px;vertical-align:middle;position:relative;top:-2px;">${TOPIC_SEQ[topic.id]||''}</span></div>
-        </div>
-        <button class="download-btn${hasContent ? '' : ' disabled'}" onclick="downloadPDF()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          ${hasContent ? 'Download PDF' : 'Coming Soon'}
-        </button>
-      </div>
-      <div class="topic-divider"></div>
-      ${blocksHTML}
-    </div>`;
-
-  // On mobile, scroll to top so content is immediately visible
-  if (window.innerWidth <= 760) {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-}
-
-// ── Search ────────────────────────────────────────────────────────────────────
-function filterTopics(q) {
-  const term = q.toLowerCase().trim();
-  document.querySelectorAll('.topic-link').forEach(el => {
-    const match = !term || el.textContent.toLowerCase().includes(term);
-    el.style.display = match ? '' : 'none';
-  });
-  // Auto-open cats with matches
-  if (term) {
-    document.querySelectorAll('.cat-group').forEach(grp => {
-      const visible = grp.querySelectorAll('.topic-link:not([style*="none"])');
-      grp.classList.toggle('open', visible.length > 0);
-    });
-  }
-}
-
-// ── PDF Generation ────────────────────────────────────────────────────────────
-async function svgToPng(svgId) {
-  return new Promise((resolve) => {
-    const svgEl = document.getElementById(svgId);
-    if (!svgEl) { resolve(null); return; }
-    const w = svgEl.viewBox.baseVal.width || 600;
-    const h = svgEl.viewBox.baseVal.height || 260;
-    const xml = new XMLSerializer().serializeToString(svgEl);
-    const blob = new Blob([xml], { type: 'image/svg+xml;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = w * 2; canvas.height = h * 2;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.scale(2, 2);
-      ctx.drawImage(img, 0, 0, w, h);
-      URL.revokeObjectURL(url);
-      resolve(canvas.toDataURL('image/png'));
-    };
-    img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
-    img.src = url;
-  });
-}
-
-async function downloadPDF() {
-  if (!currentTopic) return;
-  if (!currentTopic.content || currentTopic.content.length === 0) return;
-  const btn = document.querySelector('.download-btn');
-  btn.classList.add('loading');
-  btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg> Generating...`;
-
-  // Convert all SVGs and images in this topic to PNG
-  const svgImages = {};
-  const contentImages = {};
-  for (const block of currentTopic.content) {
-    if (block.type === 'svg') {
-      const png = await svgToPng(block.id);
-      if (png) svgImages[block.id] = png;
-    } else if (block.type === 'image') {
-      const png = await imgToDataUrl(block.src);
-      if (png) contentImages[block.src] = png;
-    }
-  }
-
-  // Build pdfmake content
-  const docContent = [];
-  currentTopic.content.forEach(b => {
-    if (b.type === 'image' && contentImages[b.src]) {
-      docContent.push({ image: contentImages[b.src], width: 460, alignment: 'center', margin: [0, 0, 0, 18], borderRadius: [8,8,8,8] });
-    } else if (b.type === 'heading') {
-      docContent.push({ text: b.text, style: 'h2', margin: [0, 16, 0, 6] });
-    } else if (b.type === 'paragraph') {
-      docContent.push({ text: b.text, style: 'body', margin: [0, 0, 0, 10] });
-    } else if (b.type === 'list') {
-      docContent.push({
-        ul: b.items,
-        style: 'body',
-        margin: [0, 0, 0, 10]
-      });
-    } else if (b.type === 'callout') {
-      docContent.push({
-        table: { widths: ['*'], body: [[{ text: htmlToPdfText(b.text), style: 'callout', fillColor: '#F0FDF4', border: [true, false, false, false], borderColor: ['#2DD4BF', '', '', ''] }]] },
-        layout: { paddingLeft: () => 12, paddingRight: () => 12, paddingTop: () => 10, paddingBottom: () => 10 },
-        margin: [0, 8, 0, 12]
-      });
-    } else if (b.type === 'svg' && svgImages[b.id]) {
-      docContent.push({ image: svgImages[b.id], width: 460, alignment: 'center', margin: [0, 10, 0, 4] });
-      docContent.push({ text: b.caption, style: 'caption', margin: [0, 0, 0, 14] });
-    }
-  });
-
-  let catTitle = '';
-  for (const cat of LIBRARY) {
-    if (cat.topics.find(t => t.id === currentTopic.id)) { catTitle = cat.title.replace('&amp;', '&'); break; }
-  }
-
-  const docDef = {
-    pageSize: 'A4',
-    pageMargins: [50, 80, 50, 70],
-    background: logoPngDataUrl ? function(currentPage, pageSize) {
-      return { image: logoPngDataUrl, width: 180, opacity: 0.055, absolutePosition: { x: (pageSize.width - 180) / 2, y: (pageSize.height - 180) / 2 } };
-    } : undefined,
-    header: (page, pages) => ({
-      columns: [
-        { text: 'Trends & Trade — Trading Library', style: 'headerLeft', margin: [50, 28, 0, 0] },
-        { text: `Page ${page} of ${pages}`, style: 'headerRight', margin: [0, 28, 50, 0] }
-      ]
-    }),
-    footer: { columns: [{ text: 'snrtrades.com  |  Educational content only — not financial advice', style: 'footer', margin: [50, 0, 50, 0] }] },
-    content: [
-      { text: catTitle.toUpperCase(), style: 'catLabel', margin: [0, 0, 0, 4] },
-      { text: currentTopic.title, style: 'h1', margin: [0, 0, 0, 6] },
-      { text: TOPIC_SEQ[currentTopic.id] || '', style: 'seqLabel', margin: [0, 0, 0, 6] },
-      { canvas: [{ type: 'line', x1: 0, y1: 0, x2: 460, y2: 0, lineWidth: 2, lineColor: '#2DD4BF' }], margin: [0, 0, 0, 18] },
-      ...docContent
-    ],
-    styles: {
-      h1: { font: 'Roboto', fontSize: 24, bold: true, color: '#0F172A' },
-      h2: { font: 'Roboto', fontSize: 15, bold: true, color: '#0F172A' },
-      body: { font: 'Roboto', fontSize: 11, color: '#334155', lineHeight: 1.6 },
-      callout: { font: 'Roboto', fontSize: 10.5, color: '#065F46', italics: true, lineHeight: 1.6 },
-      caption: { font: 'Roboto', fontSize: 9, color: '#64748B', alignment: 'center', italics: true },
-      catLabel: { font: 'Roboto', fontSize: 10, bold: true, color: '#2DD4BF', characterSpacing: 1 },
-      seqLabel: { font: 'Roboto', fontSize: 9, bold: true, color: '#94A3B8', characterSpacing: 0.5 },
-      headerLeft: { font: 'Roboto', fontSize: 9, color: '#94A3B8' },
-      headerRight: { font: 'Roboto', fontSize: 9, color: '#94A3B8', alignment: 'right' },
-      footer: { font: 'Roboto', fontSize: 8, color: '#94A3B8', alignment: 'center' }
-    }
-  };
-
-  pdfMake.createPdf(docDef).download(currentTopic.title.replace(/[^a-z0-9]/gi, '_') + '.pdf');
-
-  btn.classList.remove('loading');
-  btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download PDF`;
-}
-
-// ── Nav + Ticker ──────────────────────────────────────────────────────────────
-window.addEventListener('scroll', () => {
-  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 10);
-});
-function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('open'); }
-
-const track = document.getElementById('ticker');
-const tickerData = [
-  {name:'BTC/USDT',price:'$104,500',chg:'0.85'},{name:'ETH/USDT',price:'$2,520',chg:'1.20'},
-  {name:'BNB/USDT',price:'$645',chg:'0.50'},{name:'SOL/USDT',price:'$175',chg:'1.10'},
-  {name:'XRP/USDT',price:'$2.32',chg:'0.30'},{name:'GOLD',price:'$3,320',chg:'0.40'},
-  {name:'SILVER',price:'$33.50',chg:'0.60'},{name:'OIL (WTI)',price:'$61.50',chg:'-0.30'},
-  {name:'NASDAQ',price:'18,900',chg:'0.55'},{name:'KSE-100',price:'117,000',chg:'0.20'},
-];
-function buildTicker(d) {
-  track.innerHTML = '';
-  [...d,...d].forEach(t => {
-    const up = parseFloat(t.chg) >= 0;
-    track.innerHTML += `<div class="tick-item"><div class="tick-dot ${up?'up':'dn'}"></div><span class="tick-name">${t.name}</span><span class="tick-price">${t.price}</span><span class="tick-change ${up?'up':'dn'}">${up?'+':''}${parseFloat(t.chg).toFixed(2)}%</span></div>`;
-  });
-}
-buildTicker(tickerData);
-async function fetchTicker() {
-  try {
-    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,ripple&vs_currencies=usd&include_24hr_change=true',{signal:AbortSignal.timeout(8000)});
-    const d = await r.json();
-    const map = [{id:'bitcoin',name:'BTC/USDT'},{id:'ethereum',name:'ETH/USDT'},{id:'binancecoin',name:'BNB/USDT'},{id:'solana',name:'SOL/USDT'},{id:'ripple',name:'XRP/USDT'}];
-    const res = map.map(a => { if(!d[a.id]) return null; const p=d[a.id].usd,c=(d[a.id].usd_24h_change||0).toFixed(2),dp=p<1?4:p<100?2:0; return {name:a.name,price:'$'+p.toLocaleString(undefined,{minimumFractionDigits:dp,maximumFractionDigits:dp}),chg:c}; }).filter(Boolean);
-    if(res.length) buildTicker(res);
-  } catch(e){}
-}
-fetchTicker();
-setInterval(fetchTicker, 60000);
-
-// ── Init ──────────────────────────────────────────────────────────────────────
-buildSidebar(LIBRARY);
-buildTotdCard();
-// Capture welcome panel HTML after DOM is ready so reset can always restore it
-welcomePanelHTML = document.getElementById('libPanel').innerHTML;
-
-// ── Deep-link: auto-open topic from ?topic= URL param ─────────────────────
-(function() {
-  const params = new URLSearchParams(window.location.search);
-  const topicId = params.get('topic');
-  if (!topicId) return;
-  // Find which category this topic belongs to and expand it
-  for (const cat of LIBRARY) {
-    if (cat.topics.find(t => t.id === topicId)) {
-      expandCategory(cat.id);
-      break;
-    }
-  }
-  openTopic(topicId);
-  // Scroll reading panel to top
-  const panel = document.getElementById('libPanel');
-  if (panel) panel.scrollTop = 0;
-})();
-</script>
 </body>
 </html>
