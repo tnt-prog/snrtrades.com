@@ -986,6 +986,7 @@ function openTopic(id) {
     _ttsQueue = [];
     _ttsIndex = 0;
     _clearHighlight();
+
   }
 
   let topic = null, catTitle = '';
@@ -1049,15 +1050,17 @@ function openTopic(id) {
           </div>
           <div class="topic-title-h">${topic.title} <span class="topic-id-badge" style="font-size:11px;vertical-align:middle;position:relative;top:-2px;">${TOPIC_SEQ[topic.id]||''}</span></div>
         </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-          <button class="listen-btn" id="listenBtn" onclick="toggleListen()" ${!hasContent ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
-            Listen
-          </button>
-          <button class="download-btn${hasContent ? '' : ' disabled'}" onclick="downloadPDF()">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            ${hasContent ? 'Download PDF' : 'Coming Soon'}
-          </button>
+        <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+            <button class="listen-btn" id="listenBtn" onclick="toggleListen()" ${!hasContent ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+              Listen
+            </button>
+            <button class="download-btn${hasContent ? '' : ' disabled'}" onclick="downloadPDF()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              ${hasContent ? 'Download PDF' : 'Coming Soon'}
+            </button>
+          </div>
         </div>
       </div>
       <div id="ttsBar" class="tts-bar tts-bar-hidden">
@@ -1117,8 +1120,12 @@ function _buildTtsQueue() {
 
 function _getBestVoice() {
   const voices = window.speechSynthesis.getVoices();
+  // Priority: neural/premium first, then well-known smooth voices, then any en-US
   return voices.find(v => /natural|neural|premium|enhanced/i.test(v.name) && v.lang.startsWith('en'))
-    || voices.find(v => v.lang.startsWith('en-US'))
+    || voices.find(v => /microsoft.*david|microsoft.*mark|microsoft.*guy|microsoft.*aria|microsoft.*jenny/i.test(v.name))
+    || voices.find(v => /google.*us.*english|google.*uk.*english/i.test(v.name))
+    || voices.find(v => v.lang === 'en-US' && v.localService === false) // cloud voices are smoother
+    || voices.find(v => v.lang === 'en-US')
     || voices.find(v => v.lang.startsWith('en'))
     || voices[0];
 }
@@ -1138,30 +1145,40 @@ function _clearHighlight() {
 }
 
 // Speak one sentence from the queue at index i
+let _ttsExpectedIndex = -1; // guard against double-firing
+
 function _speakIndex(i) {
   if (_ttsPaused || i >= _ttsQueue.length) {
     if (i >= _ttsQueue.length) { _clearHighlight(); _resetTtsUI(); }
     return;
   }
+  _ttsExpectedIndex = i;
   const entry = _ttsQueue[i];
   _ttsIndex = i;
   _highlightEl(entry.element);
 
-  _ttsUtterance = new SpeechSynthesisUtterance(entry.text);
-  _ttsUtterance.rate = parseFloat(document.getElementById('ttsSpeed')?.value || '1');
-  _ttsUtterance.pitch = 1;
-  _ttsUtterance.lang = 'en-US';
+  const utt = new SpeechSynthesisUtterance(entry.text);
+  utt.rate = parseFloat(document.getElementById('ttsSpeed')?.value || '1') * 0.95;
+  utt.pitch = 0.95;
+  utt.lang = 'en-US';
   const voice = _getBestVoice();
-  if (voice) _ttsUtterance.voice = voice;
+  if (voice) utt.voice = voice;
+  _ttsUtterance = utt;
 
-  _ttsUtterance.onend = () => {
-    if (!_ttsPaused) _speakIndex(i + 1);
+  utt.onend = () => {
+    // Guard: only advance if this utterance is still the expected one
+    if (!_ttsPaused && _ttsExpectedIndex === i) {
+      setTimeout(() => _speakIndex(i + 1), 150);
+    }
   };
-  _ttsUtterance.onerror = (e) => {
-    if (e.error !== 'interrupted') { _clearHighlight(); _resetTtsUI(); }
+  utt.onerror = (e) => {
+    if (e.error !== 'interrupted' && e.error !== 'canceled') {
+      _clearHighlight(); _resetTtsUI();
+    }
   };
 
-  window.speechSynthesis.speak(_ttsUtterance);
+  // Do NOT cancel here — only speak
+  window.speechSynthesis.speak(utt);
 }
 
 function toggleListen() {
@@ -1183,11 +1200,10 @@ function toggleListen() {
   startListening();
 }
 
-function startListening() {
+function startListening(fromIndex) {
   window.speechSynthesis.cancel();
-  _ttsQueue = _buildTtsQueue();
-  _ttsIndex = 0;
   _ttsPaused = false;
+  _ttsQueue = _buildTtsQueue();
   if (!_ttsQueue.length) return;
 
   const btn = document.getElementById('listenBtn');
@@ -1195,17 +1211,20 @@ function startListening() {
   if (btn) { btn.classList.add('playing'); btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause'; }
   if (bar) bar.classList.remove('tts-bar-hidden');
 
+  _ttsIndex = fromIndex || 0;
+
   // Voices may not be loaded yet on first call — wait if needed
   if (window.speechSynthesis.getVoices().length === 0) {
-    window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.onvoiceschanged = null; _speakIndex(0); };
+    window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.onvoiceschanged = null; _speakIndex(_ttsIndex); };
   } else {
-    _speakIndex(0);
+    _speakIndex(_ttsIndex);
   }
 }
 
 function stopListening() {
   _ttsPaused = false;
   _ttsIndex = 0;
+  _ttsExpectedIndex = -1;
   window.speechSynthesis.cancel();
   _clearHighlight();
   _resetTtsUI();
