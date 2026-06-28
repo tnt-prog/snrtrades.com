@@ -489,15 +489,4 @@ Remember: Trading is not guessing. A professional trader follows a plan, manages
         const d = await r.json();
         const out = [];
         [{id:'bitcoin',name:'BTC/USDT'},{id:'ethereum',name:'ETH/USDT'},{id:'binancecoin',name:'BNB/USDT'},{id:'solana',name:'SOL/USDT'},{id:'ripple',name:'XRP/USDT'}].forEach(a=>{
-          if(!d[a.id])return;
-          const p=d[a.id].usd,dp=p<1?4:p<100?2:0;
-          out.push({name:a.name,price:'$'+p.toLocaleString(undefined,{minimumFractionDigits:dp,maximumFractionDigits:dp}),chg:(d[a.id].usd_24h_change||0).toFixed(2)});
-        });
-        if(out.length)buildTicker(out);
-      } catch(e) {}
-    }
-    fetchTicker();
-    setInterval(fetchTicker, 60000);
-  </script>
-</body>
-</html>
+    
