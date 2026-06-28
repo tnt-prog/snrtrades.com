@@ -14,7 +14,7 @@
     :root{--bg:#070F1A;--bg-2:#0A1628;--bg-3:#0D1E34;--teal:#2DD4BF;--teal-dark:#0D9488;--border:rgba(45,212,191,0.18);--border-dim:rgba(255,255,255,0.06);--text:#F0F4F8;--text-muted:#94A3B8;--text-dim:#4A5568;--green:#22C55E;--red:#EF4444;}
     *{box-sizing:border-box;margin:0;padding:0;}
     html{scroll-behavior:smooth;}
-    body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;background-image:linear-gradient(rgba(45,212,191,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(45,212,191,0.04) 1px,transparent 1px);background-size:52px 52px;}
 
     /* Ticker */
     .ticker-bar{background:var(--bg-2);border-bottom:1px solid var(--border);padding:8px 0;overflow:hidden;position:fixed;top:0;left:0;right:0;z-index:200;}
@@ -89,15 +89,15 @@
 
     /* Reading panel */
     .lib-panel{background:var(--bg);overflow-y:auto;max-height:calc(100vh - 180px);}
-    .panel-welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;padding:36px 32px 48px;}
+    .panel-welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:unset;text-align:center;padding:20px 32px 24px;}
     .panel-welcome h3{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;color:var(--text);}
     .panel-welcome p{font-size:14px;color:var(--text-muted);line-height:1.7;max-width:380px;}
 
     /* Category thumbnail grid */
-    .cat-thumbs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:32px;width:100%;max-width:780px;}
+    .cat-thumbs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px;width:100%;max-width:780px;}
     .cat-thumb-card{
-      display:flex;flex-direction:column;align-items:center;gap:14px;
-      padding:28px 18px 22px;
+      display:flex;flex-direction:column;align-items:center;gap:8px;
+      padding:14px 12px 12px;
       background:rgba(255,255,255,0.03);
       border:1px solid rgba(45,212,191,0.14);
       border-radius:18px;cursor:pointer;
@@ -134,15 +134,15 @@
     .topic-divider{height:1px;background:var(--border);margin:24px 0;}
 
     /* Content blocks */
-    .content-h2{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;margin:28px 0 12px;color:var(--text);}
+    .content-h2{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;margin:28px 0 12px;color:var(--text);transition:font-size 0.25s ease;}
     .content-h2:first-child{margin-top:0;}
-    .content-p{font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:14px;}
+    .content-p{font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:14px;transition:font-size 0.25s ease;}
     .content-svg-wrap{background:#fff;border-radius:14px;overflow:hidden;margin:20px 0;border:1px solid rgba(255,255,255,0.1);}
     .content-svg-wrap svg{display:block;width:100%;height:auto;}
     .content-svg-caption{font-size:11px;color:var(--text-dim);text-align:center;padding:8px 12px;background:rgba(255,255,255,0.03);border-top:1px solid var(--border-dim);}
     .content-list{margin:0 0 16px 0;padding-left:20px;}
     .content-list li{font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:4px;}
-    .content-callout{background:rgba(45,212,191,0.06);border-left:3px solid var(--teal);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:13px;color:var(--text-muted);line-height:1.7;}
+    .content-callout{background:rgba(45,212,191,0.06);border-left:3px solid var(--teal);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:13px;color:var(--text-muted);line-height:1.7;transition:font-size 0.25s ease;}
     .content-callout strong{color:var(--teal);}
 
     /* Sidebar header */
@@ -261,6 +261,26 @@
       opacity:0.3;cursor:not-allowed;pointer-events:none;
     }
 
+    /* ── TTS sentence highlight ── */
+    .tts-active{
+      background:rgba(255,236,100,0.18);
+      border-radius:6px;
+      box-shadow:0 0 0 2px rgba(255,236,100,0.35);
+      font-size:16px !important;
+      transition:background 0.2s, box-shadow 0.2s, font-size 0.25s ease;
+    }
+
+    /* ── Listen / TTS ── */
+    .listen-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.3);color:var(--teal);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
+    .listen-btn:hover{background:rgba(45,212,191,0.18);}
+    .listen-btn.playing{background:rgba(45,212,191,0.18);border-color:var(--teal);}
+    .tts-bar{display:flex;align-items:center;gap:10px;margin-top:14px;padding:10px 16px;border-radius:10px;background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.18);}
+    .tts-bar-hidden{display:none;}
+    .tts-stop-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:8px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#EF4444;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;}
+    .tts-stop-btn:hover{background:rgba(239,68,68,0.2);}
+    .tts-speed-select{padding:5px 10px;border-radius:8px;background:var(--bg-3);border:1px solid var(--border);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;}
+    .tts-label{font-size:12px;color:var(--text-dim);margin-right:4px;}
+
     /* ── Mobile ── */
     @media(max-width:760px){
       /* Page */
@@ -342,6 +362,8 @@
       .topic-top{ flex-direction:column; }
       .topic-title-h{ font-size:20px; }
       .download-btn{ width:100%; justify-content:center; }
+      .listen-btn{ width:100%; justify-content:center; }
+      .tts-bar{ flex-wrap:wrap; }
     }
 
     /* Extra small screens */
@@ -358,8 +380,8 @@
       width:100%;max-width:780px;
       background:linear-gradient(135deg,rgba(13,148,136,0.12) 0%,rgba(45,212,191,0.06) 100%);
       border:1px solid rgba(45,212,191,0.32);
-      border-radius:18px;padding:22px 28px 20px;
-      margin-bottom:28px;text-align:left;
+      border-radius:18px;padding:16px 24px 14px;
+      margin-bottom:14px;text-align:left;
       position:relative;overflow:hidden;
     }
     .totd-card::before{
@@ -956,6 +978,17 @@ function resetThumbnails() {
 let currentTopic = null;
 
 function openTopic(id) {
+  // Stop any active TTS when navigating to a new topic
+  if (window.speechSynthesis && (window.speechSynthesis.speaking || _ttsPaused)) {
+    window.speechSynthesis.cancel();
+    _ttsPaused = false;
+    _ttsUtterance = null;
+    _ttsCharIndex = 0;
+    _ttsFullText = '';
+    _ttsSentenceMap = [];
+    _clearHighlight();
+  }
+
   let topic = null, catTitle = '';
   for (const cat of LIBRARY) {
     const t = cat.topics.find(x => x.id === id);
@@ -1017,10 +1050,31 @@ function openTopic(id) {
           </div>
           <div class="topic-title-h">${topic.title} <span class="topic-id-badge" style="font-size:11px;vertical-align:middle;position:relative;top:-2px;">${TOPIC_SEQ[topic.id]||''}</span></div>
         </div>
-        <button class="download-btn${hasContent ? '' : ' disabled'}" onclick="downloadPDF()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          ${hasContent ? 'Download PDF' : 'Coming Soon'}
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <button class="listen-btn" id="listenBtn" onclick="toggleListen()" ${!hasContent ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+            Listen
+          </button>
+          <button class="download-btn${hasContent ? '' : ' disabled'}" onclick="downloadPDF()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            ${hasContent ? 'Download PDF' : 'Coming Soon'}
+          </button>
+        </div>
+      </div>
+      <div id="ttsBar" class="tts-bar tts-bar-hidden">
+        <span class="tts-label">▶ Reading aloud</span>
+        <button class="tts-stop-btn" onclick="stopListening()">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+          Stop
         </button>
+        <span class="tts-label" style="margin-left:auto;">Speed:</span>
+        <select class="tts-speed-select" id="ttsSpeed" onchange="setTtsSpeed(this.value)">
+          <option value="0.8">0.8×</option>
+          <option value="1" selected>1×</option>
+          <option value="1.2">1.2×</option>
+          <option value="1.5">1.5×</option>
+          <option value="2">2×</option>
+        </select>
       </div>
       <div class="topic-divider"></div>
       ${blocksHTML}
@@ -1030,6 +1084,164 @@ function openTopic(id) {
   if (window.innerWidth <= 760) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+}
+
+// ── Text-to-Speech ────────────────────────────────────────────────────────────
+let _ttsUtterance = null;
+let _ttsPaused = false;
+let _ttsFullText = '';
+let _ttsCharIndex = 0;
+let _ttsSentenceMap = []; // [{startChar, endChar, element}]
+let _ttsActiveEl = null;
+
+// Build full TTS text AND a sentence map linking charIndex ranges → DOM elements
+function _buildTtsData() {
+  const panel = document.getElementById('libPanel');
+  if (!panel) return { text: '', map: [] };
+
+  const map = [];
+  let cursor = 0;
+  const parts = [];
+
+  const addEntry = (rawText, el) => {
+    // Split element text into sentences
+    const sentences = rawText.match(/[^.!?]+[.!?]*/g) || [rawText];
+    sentences.forEach(s => {
+      const t = s.trim();
+      if (!t) return;
+      const start = cursor;
+      parts.push(t);
+      cursor += t.length + 2; // +2 for '. ' separator
+      map.push({ startChar: start, endChar: cursor, element: el });
+    });
+  };
+
+  const title = panel.querySelector('.topic-title-h');
+  if (title) addEntry(title.textContent.trim().replace(/SNR-\S+/g, '').trim(), title);
+
+  panel.querySelectorAll('.content-h2, .content-p, .content-callout, .content-list li').forEach(el => {
+    const t = el.textContent.trim();
+    if (t) addEntry(t, el);
+  });
+
+  return { text: parts.join('. '), map };
+}
+
+function _getBestVoice() {
+  const voices = window.speechSynthesis.getVoices();
+  return voices.find(v => /natural|neural|premium|enhanced/i.test(v.name) && v.lang.startsWith('en'))
+    || voices.find(v => v.lang.startsWith('en-US'))
+    || voices.find(v => v.lang.startsWith('en'))
+    || voices[0];
+}
+
+function _highlightSentenceAt(absCharIndex) {
+  // Find which sentence map entry covers this position
+  const entry = _ttsSentenceMap.find(s => absCharIndex >= s.startChar && absCharIndex < s.endChar);
+  if (!entry) return;
+  if (entry.element === _ttsActiveEl) return; // already highlighted
+
+  // Remove previous highlight
+  if (_ttsActiveEl) _ttsActiveEl.classList.remove('tts-active');
+  _ttsActiveEl = entry.element;
+  _ttsActiveEl.classList.add('tts-active');
+
+  // Scroll element into view inside the panel
+  const panel = document.getElementById('libPanel');
+  if (panel && _ttsActiveEl) {
+    const elTop = _ttsActiveEl.getBoundingClientRect().top;
+    const panelTop = panel.getBoundingClientRect().top;
+    const offset = elTop - panelTop - 120; // 120px padding from top
+    if (offset > 0) panel.scrollBy({ top: offset, behavior: 'smooth' });
+  }
+}
+
+function _clearHighlight() {
+  if (_ttsActiveEl) { _ttsActiveEl.classList.remove('tts-active'); _ttsActiveEl = null; }
+}
+
+function _speakFrom(charIndex) {
+  window.speechSynthesis.cancel();
+  _clearHighlight();
+  const slice = _ttsFullText.substring(charIndex);
+  if (!slice.trim()) { _resetTtsUI(); return; }
+
+  _ttsUtterance = new SpeechSynthesisUtterance(slice);
+  _ttsUtterance.rate = parseFloat(document.getElementById('ttsSpeed')?.value || '1');
+  _ttsUtterance.pitch = 1;
+  _ttsUtterance.lang = 'en-US';
+  const voice = _getBestVoice();
+  if (voice) _ttsUtterance.voice = voice;
+
+  _ttsUtterance.onboundary = (e) => {
+    if (e.name === 'word') {
+      _ttsCharIndex = charIndex + e.charIndex;
+      _highlightSentenceAt(_ttsCharIndex);
+    }
+  };
+
+  _ttsUtterance.onstart = () => {
+    const btn = document.getElementById('listenBtn');
+    const bar = document.getElementById('ttsBar');
+    if (btn) { btn.classList.add('playing'); btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause'; }
+    if (bar) bar.classList.remove('tts-bar-hidden');
+  };
+  _ttsUtterance.onend = () => { _clearHighlight(); _resetTtsUI(); };
+  _ttsUtterance.onerror = (e) => { if (e.error !== 'interrupted') { _clearHighlight(); _resetTtsUI(); } };
+
+  window.speechSynthesis.speak(_ttsUtterance);
+}
+
+function toggleListen() {
+  if (window.speechSynthesis.speaking && !_ttsPaused) {
+    window.speechSynthesis.pause();
+    _ttsPaused = true;
+    const btn = document.getElementById('listenBtn');
+    if (btn) btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Resume';
+    return;
+  }
+  if (_ttsPaused) {
+    window.speechSynthesis.resume();
+    _ttsPaused = false;
+    const btn = document.getElementById('listenBtn');
+    if (btn) btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause';
+    return;
+  }
+  startListening();
+}
+
+function startListening() {
+  const data = _buildTtsData();
+  _ttsFullText = data.text;
+  _ttsSentenceMap = data.map;
+  _ttsCharIndex = 0;
+  _ttsPaused = false;
+  _speakFrom(0);
+}
+
+function stopListening() {
+  window.speechSynthesis.cancel();
+  _ttsPaused = false;
+  _ttsUtterance = null;
+  _ttsCharIndex = 0;
+  _clearHighlight();
+  _resetTtsUI();
+}
+
+function setTtsSpeed(val) {
+  if (!window.speechSynthesis.speaking && !_ttsPaused) return;
+  const resumeFrom = _ttsCharIndex;
+  _ttsPaused = false;
+  _speakFrom(resumeFrom);
+}
+
+function _resetTtsUI() {
+  _ttsUtterance = null;
+  _ttsPaused = false;
+  const btn = document.getElementById('listenBtn');
+  const bar = document.getElementById('ttsBar');
+  if (btn) { btn.classList.remove('playing'); btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg> Listen'; }
+  if (bar) bar.classList.add('tts-bar-hidden');
 }
 
 // ── Search ────────────────────────────────────────────────────────────────────
