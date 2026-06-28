@@ -1254,4 +1254,29 @@ function _resetTtsUI() {
 // ── Search ────────────────────────────────────────────────────────────────────
 function filterTopics(q) {
   const term = q.toLowerCase().trim();
-  doc
+  document.querySelectorAll('.cat-block').forEach(block => {
+    let anyVisible = false;
+    block.querySelectorAll('.topic-item').forEach(item => {
+      const match = !term || item.textContent.toLowerCase().includes(term);
+      item.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    block.style.display = anyVisible ? '' : 'none';
+    if (anyVisible && term) {
+      const list = block.querySelector('.topic-list');
+      if (list) list.style.display = 'block';
+    }
+  });
+}
+
+// ── Nav scroll + mobile menu ──────────────────────────────────────────────────
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 10);
+});
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+</script>
+</body>
+</html>
