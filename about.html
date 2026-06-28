@@ -365,4 +365,12 @@
         const res = map.map(a => {
           if(!d[a.id]) return null;
           const p = d[a.id].usd, c = (d[a.id].usd_24h_change||0).toFixed(2), dp = p<1?4:p<100?2:0;
-          return {name:a.name,price:'$'+p.toLocaleString(undefined,{
+          return {name:a.name,price:'$'+p.toLocaleString(undefined,{minimumFractionDigits:dp,maximumFractionDigits:dp}),chg:c};
+        }).filter(Boolean);
+        buildTicker([...res,...tickerFallback.slice(res.length)]);
+      } catch(e) { /* use fallback already shown */ }
+    }
+    fetchTicker();
+  </script>
+</body>
+</html>
