@@ -745,5 +745,16 @@
     try {
       const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,ripple&vs_currencies=usd&include_24hr_change=true',{signal:AbortSignal.timeout(8000)});
       const d = await r.json();
-      const out = [];
-      [{id:'bitcoin',name:'BTC/USDT'},
+      const map = [{id:'bitcoin',name:'BTC/USDT'},{id:'ethereum',name:'ETH/USDT'},{id:'binancecoin',name:'BNB/USDT'},{id:'solana',name:'SOL/USDT'},{id:'ripple',name:'XRP/USDT'}];
+      const res = map.map(a => {
+        if (!d[a.id]) return null;
+        const p = d[a.id].usd, c = (d[a.id].usd_24h_change||0).toFixed(2), dp = p<1?4:p<100?2:0;
+        return {name:a.name, price:'$'+p.toLocaleString(undefined,{minimumFractionDigits:dp,maximumFractionDigits:dp}), chg:c};
+      }).filter(Boolean);
+      buildTicker([...res, ...tickerFallback.slice(res.length)]);
+    } catch(e) {}
+  }
+  fetchTicker();
+</script>
+</body>
+</html>
