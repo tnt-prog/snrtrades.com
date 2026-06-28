@@ -48,7 +48,7 @@
       gap: 40px; padding: 10px 24px 8px;
     }
     .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; flex-shrink: 0; }
-    .logo-img { width: 40px; height: 40px; object-fit: contain; }
+    .logo-img { height:90px; width: auto; border-radius: 6px; box-shadow: 0 0 0 1px rgba(45,212,191,0.3); }
     .logo-text {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 20px; font-weight: 800; letter-spacing: 0.3px; color: var(--text);
@@ -496,8 +496,3 @@ Remember: Trading is not guessing. A professional trader follows a plan, manages
     });
     if (out.length) buildTicker([...out, ...tickerFallback.slice(out.length)]);
   } catch(e) {}
-}
-fetchTicker();
-</script>
-</body>
-</html>
