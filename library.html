@@ -213,7 +213,14 @@
 
     /* Topic image block */
     .content-img-wrap{margin:0 0 28px;border-radius:14px;overflow:hidden;background:rgba(255,255,255,0.03);border:1px solid var(--border);}
-    .content-topic-img{width:100%;height:auto;max-height:480px;object-fit:contain;display:block;}
+    .content-topic-img{width:100%;height:auto;max-height:480px;object-fit:contain;display:block;cursor:zoom-in;}
+
+    /* Image lightbox */
+    .img-lightbox{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;padding:16px;}
+    .img-lightbox.open{display:flex;}
+    .img-lightbox img{max-width:100%;max-height:90vh;object-fit:contain;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.6);}
+    .img-lightbox-close{position:absolute;top:16px;right:20px;font-size:32px;color:#fff;cursor:pointer;line-height:1;opacity:0.8;}
+    .img-lightbox-close:hover{opacity:1;}
 
     /* Topic sequence tag (sidebar) */
     .topic-seq-tag{
@@ -1014,7 +1021,7 @@ function openTopic(id) {
   if (hasContent) {
     topic.content.forEach(b => {
       if (b.type === 'image') {
-        blocksHTML += `<div class="content-img-wrap"><img src="${b.src}" alt="${b.alt||''}" class="content-topic-img"/></div>`;
+        blocksHTML += `<div class="content-img-wrap"><img src="${b.src}" alt="${b.alt||''}" class="content-topic-img" onclick="openLightbox(this.src)"/></div>`;
       } else if (b.type === 'heading') {
         blocksHTML += `<div class="content-h2">${b.text}</div>`;
       } else if (b.type === 'paragraph') {
@@ -1269,6 +1276,17 @@ function filterTopics(q) {
   });
 }
 
+// ── Image lightbox ────────────────────────────────────────────────────────────
+function openLightbox(src) {
+  const lb = document.getElementById('imgLightbox');
+  const img = document.getElementById('imgLightboxImg');
+  img.src = src;
+  lb.classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('imgLightbox').classList.remove('open');
+}
+
 // ── Nav scroll + mobile menu ──────────────────────────────────────────────────
 window.addEventListener('scroll', () => {
   document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 10);
@@ -1277,6 +1295,28 @@ function toggleMenu() {
   document.getElementById('mobileMenu').classList.toggle('open');
 }
 
+// ── Initialise ───────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  if (typeof LIBRARY !== 'undefined') {
+    buildSidebar(LIBRARY);
+  } else {
+    // library-data.js loads async — wait for it
+    const wait = setInterval(() => {
+      if (typeof LIBRARY !== 'undefined') {
+        clearInterval(wait);
+        buildSidebar(LIBRARY);
+      }
+    }, 50);
+  }
+});
+
 </script>
+
+<!-- Image lightbox -->
+<div class="img-lightbox" id="imgLightbox" onclick="closeLightbox()">
+  <span class="img-lightbox-close" onclick="closeLightbox()">&#x2715;</span>
+  <img id="imgLightboxImg" src="" alt=""/>
+</div>
+
 </body>
 </html>
