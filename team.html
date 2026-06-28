@@ -31,6 +31,8 @@
       color: var(--text);
       font-family: 'Inter', sans-serif;
       min-height: 100vh;
+      background-image: linear-gradient(rgba(45,212,191,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(45,212,191,0.04) 1px, transparent 1px);
+      background-size: 52px 52px;
     }
 
     /* ── Nav ── */
@@ -123,7 +125,7 @@
     /* ── Hero ── */
     .hero {
       text-align: center;
-      padding: 170px 24px 60px;
+      padding: 100px 24px 60px;
       max-width: 700px;
       margin: 0 auto;
     }
@@ -248,9 +250,14 @@
 
     /* Team cards grid — 2 col */
     .team-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
+      justify-content: center;
       gap: 20px;
+      flex-wrap: wrap;
+    }
+    .team-grid .team-card {
+      width: 100%;
+      max-width: 480px;
     }
     .team-card {
       background: var(--bg-2);
@@ -467,23 +474,22 @@
     <!-- Ali Safwan — Founder spotlight -->
     <div class="founder-card">
       <div class="founder-photo">
-        <img src="AliSafwan.jpg" alt="Ali Safwan — Founder & CEO"
+        <img src="AliSafwan.jpg" alt="Ali Safwan — Founder"
              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
         <div class="founder-photo-fallback" style="display:none;">AS</div>
       </div>
       <div class="founder-info">
-        <div class="member-role-badge founder-badge">★ Founder & CEO</div>
+        <div class="member-role-badge founder-badge">★ Founder</div>
         <div class="member-name">Ali Safwan</div>
-        <div class="member-title">Founder, CEO & Head Trainer</div>
+        <div class="member-title">Founder & Training Mentor</div>
         <p class="member-bio">
-          Every trade has a reason. Every entry has a rule. That's the S&R way. Ali brings over 5 years of active trading experience across PSX, NASDAQ, Crypto, and Gold — combined with deep technical expertise as a Telecom professional. He built the S&R Intelligent Trading System from the ground up through real trades, real losses, and real wins. Today he teaches the same system to traders across 4 continents.
+          Behind every successful trader is a system — and behind the S&R Intelligent Trading System is Ali Safwan. With over 5 years of active trading experience across stocks, crypto, and commodities, Ali developed this system through years of market observation, research, discipline, and real trading exposure. With a professional background in telecom and technology, he applies analytical precision, structured thinking, and data-driven research to the world of trading education. A telecom professional by background, a trader by passion, and a quantitative researcher by instinct, Ali's goal is to help traders understand markets with clarity, manage risk with discipline, and build confidence through a structured learning path.
         </p>
         <div class="member-tags">
           <span class="mtag">S&R System Creator</span>
-          <span class="mtag">PSX · NASDAQ · Crypto</span>
-          <span class="mtag">Gold & Silver</span>
+          <span class="mtag">Stocks · Crypto · Commodities</span>
+          <span class="mtag">Quantitative Researcher</span>
           <span class="mtag">Trading Educator</span>
-          <span class="mtag">Telecom Professional</span>
         </div>
         <div class="member-socials">
           <a href="https://www.tradingview.com/u/ALIDX80/" target="_blank" class="social-link" title="TradingView">
@@ -533,34 +539,6 @@
             <span class="mtag">Financial Markets</span>
           </div>
           <div class="member-socials">
-            <a href="https://www.instagram.com/snrtrades" target="_blank" class="social-link" title="Instagram">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="6"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Hassam -->
-      <div class="team-card">
-        <div class="team-card-photo">
-          <img src="Hassam.jpg" alt="Hassam — Media Director"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
-          <div class="team-card-photo-fallback" style="display:none;background:linear-gradient(135deg,#0e0718,#1a0a2e);">H</div>
-        </div>
-        <div class="team-card-body">
-          <div class="member-role-badge">Media</div>
-          <div class="member-name">Hassam</div>
-          <div class="member-title">Media Director</div>
-          <p class="member-bio">Hassam leads the creative and digital media strategy for Trends & Trade. From TikTok reels to YouTube content, he shapes how the S&R brand communicates, educates, and grows across every platform — turning complex trading concepts into compelling content.</p>
-          <div class="member-tags">
-            <span class="mtag">Content Strategy</span>
-            <span class="mtag">Social Media</span>
-            <span class="mtag">Video Production</span>
-          </div>
-          <div class="member-socials">
-            <a href="https://www.tiktok.com/@trendsandtradeuae" target="_blank" class="social-link" title="TikTok">
-              <svg width="14" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.79a8.18 8.18 0 004.78 1.52V6.88a4.85 4.85 0 01-1.01-.19z"/></svg>
-            </a>
             <a href="https://www.instagram.com/snrtrades" target="_blank" class="social-link" title="Instagram">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="6"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
             </a>
