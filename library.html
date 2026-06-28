@@ -983,9 +983,8 @@ function openTopic(id) {
     window.speechSynthesis.cancel();
     _ttsPaused = false;
     _ttsUtterance = null;
-    _ttsCharIndex = 0;
-    _ttsFullText = '';
-    _ttsSentenceMap = [];
+    _ttsQueue = [];
+    _ttsIndex = 0;
     _clearHighlight();
   }
 
@@ -1086,45 +1085,34 @@ function openTopic(id) {
   }
 }
 
-// ── Text-to-Speech ────────────────────────────────────────────────────────────
-let _ttsUtterance = null;
+// ── Text-to-Speech (per-sentence queue — works on mobile & desktop) ────────────
+let _ttsQueue = [];       // [{text, element}] one entry per sentence
+let _ttsIndex = 0;        // current sentence index in queue
 let _ttsPaused = false;
-let _ttsFullText = '';
-let _ttsCharIndex = 0;
-let _ttsSentenceMap = []; // [{startChar, endChar, element}]
 let _ttsActiveEl = null;
+let _ttsUtterance = null;
 
-// Build full TTS text AND a sentence map linking charIndex ranges → DOM elements
-function _buildTtsData() {
+// Build sentence queue from topic content
+function _buildTtsQueue() {
   const panel = document.getElementById('libPanel');
-  if (!panel) return { text: '', map: [] };
+  if (!panel) return [];
+  const queue = [];
 
-  const map = [];
-  let cursor = 0;
-  const parts = [];
-
-  const addEntry = (rawText, el) => {
-    // Split element text into sentences
+  const addEl = (rawText, el) => {
     const sentences = rawText.match(/[^.!?]+[.!?]*/g) || [rawText];
     sentences.forEach(s => {
       const t = s.trim();
-      if (!t) return;
-      const start = cursor;
-      parts.push(t);
-      cursor += t.length + 2; // +2 for '. ' separator
-      map.push({ startChar: start, endChar: cursor, element: el });
+      if (t.length > 1) queue.push({ text: t, element: el });
     });
   };
 
   const title = panel.querySelector('.topic-title-h');
-  if (title) addEntry(title.textContent.trim().replace(/SNR-\S+/g, '').trim(), title);
-
+  if (title) addEl(title.textContent.trim().replace(/SNR-\S+/g, '').trim(), title);
   panel.querySelectorAll('.content-h2, .content-p, .content-callout, .content-list li').forEach(el => {
     const t = el.textContent.trim();
-    if (t) addEntry(t, el);
+    if (t) addEl(t, el);
   });
-
-  return { text: parts.join('. '), map };
+  return queue;
 }
 
 function _getBestVoice() {
@@ -1135,59 +1123,43 @@ function _getBestVoice() {
     || voices[0];
 }
 
-function _highlightSentenceAt(absCharIndex) {
-  // Find which sentence map entry covers this position
-  const entry = _ttsSentenceMap.find(s => absCharIndex >= s.startChar && absCharIndex < s.endChar);
-  if (!entry) return;
-  if (entry.element === _ttsActiveEl) return; // already highlighted
-
-  // Remove previous highlight
+function _highlightEl(el) {
+  if (_ttsActiveEl === el) return;
   if (_ttsActiveEl) _ttsActiveEl.classList.remove('tts-active');
-  _ttsActiveEl = entry.element;
-  _ttsActiveEl.classList.add('tts-active');
-
-  // Scroll element into view inside the panel
-  const panel = document.getElementById('libPanel');
-  if (panel && _ttsActiveEl) {
-    const elTop = _ttsActiveEl.getBoundingClientRect().top;
-    const panelTop = panel.getBoundingClientRect().top;
-    const offset = elTop - panelTop - 120; // 120px padding from top
-    if (offset > 0) panel.scrollBy({ top: offset, behavior: 'smooth' });
-  }
+  _ttsActiveEl = el;
+  if (!el) return;
+  el.classList.add('tts-active');
+  // Auto-scroll: works on both desktop panel and mobile full page
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 function _clearHighlight() {
   if (_ttsActiveEl) { _ttsActiveEl.classList.remove('tts-active'); _ttsActiveEl = null; }
 }
 
-function _speakFrom(charIndex) {
-  window.speechSynthesis.cancel();
-  _clearHighlight();
-  const slice = _ttsFullText.substring(charIndex);
-  if (!slice.trim()) { _resetTtsUI(); return; }
+// Speak one sentence from the queue at index i
+function _speakIndex(i) {
+  if (_ttsPaused || i >= _ttsQueue.length) {
+    if (i >= _ttsQueue.length) { _clearHighlight(); _resetTtsUI(); }
+    return;
+  }
+  const entry = _ttsQueue[i];
+  _ttsIndex = i;
+  _highlightEl(entry.element);
 
-  _ttsUtterance = new SpeechSynthesisUtterance(slice);
+  _ttsUtterance = new SpeechSynthesisUtterance(entry.text);
   _ttsUtterance.rate = parseFloat(document.getElementById('ttsSpeed')?.value || '1');
   _ttsUtterance.pitch = 1;
   _ttsUtterance.lang = 'en-US';
   const voice = _getBestVoice();
   if (voice) _ttsUtterance.voice = voice;
 
-  _ttsUtterance.onboundary = (e) => {
-    if (e.name === 'word') {
-      _ttsCharIndex = charIndex + e.charIndex;
-      _highlightSentenceAt(_ttsCharIndex);
-    }
+  _ttsUtterance.onend = () => {
+    if (!_ttsPaused) _speakIndex(i + 1);
   };
-
-  _ttsUtterance.onstart = () => {
-    const btn = document.getElementById('listenBtn');
-    const bar = document.getElementById('ttsBar');
-    if (btn) { btn.classList.add('playing'); btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause'; }
-    if (bar) bar.classList.remove('tts-bar-hidden');
+  _ttsUtterance.onerror = (e) => {
+    if (e.error !== 'interrupted') { _clearHighlight(); _resetTtsUI(); }
   };
-  _ttsUtterance.onend = () => { _clearHighlight(); _resetTtsUI(); };
-  _ttsUtterance.onerror = (e) => { if (e.error !== 'interrupted') { _clearHighlight(); _resetTtsUI(); } };
 
   window.speechSynthesis.speak(_ttsUtterance);
 }
@@ -1201,38 +1173,51 @@ function toggleListen() {
     return;
   }
   if (_ttsPaused) {
-    window.speechSynthesis.resume();
     _ttsPaused = false;
+    window.speechSynthesis.cancel();
     const btn = document.getElementById('listenBtn');
     if (btn) btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause';
+    _speakIndex(_ttsIndex); // resume from same sentence
     return;
   }
   startListening();
 }
 
 function startListening() {
-  const data = _buildTtsData();
-  _ttsFullText = data.text;
-  _ttsSentenceMap = data.map;
-  _ttsCharIndex = 0;
+  window.speechSynthesis.cancel();
+  _ttsQueue = _buildTtsQueue();
+  _ttsIndex = 0;
   _ttsPaused = false;
-  _speakFrom(0);
+  if (!_ttsQueue.length) return;
+
+  const btn = document.getElementById('listenBtn');
+  const bar = document.getElementById('ttsBar');
+  if (btn) { btn.classList.add('playing'); btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause'; }
+  if (bar) bar.classList.remove('tts-bar-hidden');
+
+  // Voices may not be loaded yet on first call — wait if needed
+  if (window.speechSynthesis.getVoices().length === 0) {
+    window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.onvoiceschanged = null; _speakIndex(0); };
+  } else {
+    _speakIndex(0);
+  }
 }
 
 function stopListening() {
-  window.speechSynthesis.cancel();
   _ttsPaused = false;
-  _ttsUtterance = null;
-  _ttsCharIndex = 0;
+  _ttsIndex = 0;
+  window.speechSynthesis.cancel();
   _clearHighlight();
   _resetTtsUI();
 }
 
 function setTtsSpeed(val) {
   if (!window.speechSynthesis.speaking && !_ttsPaused) return;
-  const resumeFrom = _ttsCharIndex;
+  // Cancel current sentence and restart it at the new speed
+  const resumeIdx = _ttsIndex;
   _ttsPaused = false;
-  _speakFrom(resumeFrom);
+  window.speechSynthesis.cancel();
+  setTimeout(() => _speakIndex(resumeIdx), 50);
 }
 
 function _resetTtsUI() {
