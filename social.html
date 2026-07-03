@@ -31,15 +31,13 @@
       color: var(--text);
       font-family: 'Inter', sans-serif;
       min-height: 100vh;
-      background-image: linear-gradient(rgba(45,212,191,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(45,212,191,0.04) 1px, transparent 1px);
-      background-size: 52px 52px;
     }
 
     /* ── Page wrapper ── */
     .page {
       max-width: 960px;
       margin: 0 auto;
-      padding: 200px 24px 60px;
+      padding: 150px 24px 60px;
     }
 
     /* ── Header ── */
@@ -303,7 +301,7 @@
     .nav-row-2 { display: flex; align-items: center; gap: 10px; }
     .nav-inner > .nav-hamburger { margin-left: auto; display: none; }
     .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-    .logo-img { height:90px; width: auto; border-radius: 6px; box-shadow: 0 0 0 1px rgba(45,212,191,0.3); }
+    .logo-img { height: 44px; width: auto; border-radius: 6px; box-shadow: 0 0 0 1px rgba(45,212,191,0.3); }
     .logo-text {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 26px; font-weight: 800; letter-spacing: 0.3px; color: var(--text);
@@ -445,14 +443,14 @@
       </a>
       <div class="nav-col">
         <ul class="nav-row-1 nav-links">
-          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="index.html#resources">Free Resources</a></li>
           <li><a href="library.html">Library</a></li>
-          <li><a href="courses.html">Courses</a></li>
-          <li><a href="social.html" style="color:var(--teal);">Media</a></li>
-          <li><a href="index.html#community">Community</a></li>
+          
           <li><a href="index.html#pricing">Pricing</a></li>
-          <li><a href="team.html">Team</a></li>
-          <li><a href="about.html">About Us</a></li>
+          <li><a href="index.html#community">Community</a></li>
+          <li><a href="team.html">Our Team</a></li>
+          <li><a href="social.html" style="color:var(--teal);">Media</a></li>
         </ul>
         <div class="nav-row-2">
           <a href="index.html#courses" class="nav-btn nav-btn-outline">View Courses</a>
@@ -463,16 +461,16 @@
     </div>
   </nav>
 
-    <div class="mobile-menu" id="mobileMenu">
-    <a href="index.html" onclick="toggleMenu()">Home</a>
-    <a href="library.html" onclick="toggleMenu()">Library</a>
-    <a href="courses.html" onclick="toggleMenu()">Courses</a>
-    <a href="social.html" onclick="toggleMenu()" style="color:var(--teal);">Media</a>
-    <a href="index.html#community" onclick="toggleMenu()">Community</a>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="about.html" onclick="toggleMenu()">About</a>
+    <a href="index.html#resources" onclick="toggleMenu()">Free Resources</a>
+  <a href="library.html" onclick="toggleMenu()">Library</a>
+    
     <a href="index.html#pricing" onclick="toggleMenu()">Pricing</a>
-    <a href="team.html" onclick="toggleMenu()">Team</a>
-    <a href="about.html" onclick="toggleMenu()">About Us</a>
-    <a href="index.html#email" class="btn btn-primary" style="margin-top:16px;justify-content:center;" onclick="toggleMenu()">Get Free Analysis</a>
+    <a href="index.html#community" onclick="toggleMenu()">Community</a>
+    <a href="team.html" onclick="toggleMenu()">Our Team</a>
+    <a href="social.html" onclick="toggleMenu()" style="color:var(--teal);">Media</a>
+    <a href="index.html#email" class="nav-btn nav-btn-primary" style="margin-top:16px;" onclick="toggleMenu()">Get Free Analysis</a>
   </div>
 
 <div class="page">
@@ -580,16 +578,8 @@
 
   <!-- Footer -->
   <div class="footer">
-    <p>
-      <a href="index.html">Home</a> &nbsp;·&nbsp;
-      <a href="library.html">Library</a> &nbsp;·&nbsp;
-      <a href="courses.html">Courses</a> &nbsp;·&nbsp;
-      <a href="about.html">About</a> &nbsp;·&nbsp;
-      <a href="team.html">Team</a> &nbsp;·&nbsp;
-      <a href="social.html">Media</a>
-    </p>
-    <p style="margin-top:6px;">© 2026 Trends &amp; Trade · All rights reserved</p>
-    <p style="margin-top:6px;">⚠️ Trading involves significant risk. Educational content only.</p>
+    <p><a href="index.html">snrtrades.com</a> &nbsp;·&nbsp; Trends &amp; Trade</p>
+    <p style="margin-top:6px;">⚠️ Trading involves risk. Educational content only.</p>
   </div>
 
 </div>
@@ -663,15 +653,16 @@
   }
 
   // ── Instagram: fetch from Behold public feed (with hardcoded fallback)
-  const IG_FEED = 'https://feeds.behold.so/8kmjxx4i0FtHoqBCY9kD';
+  const IG_FEED = 'https://feeds.behold.so/8kmkjx8i0FtHoqBCY9kD';
   const IG_ICON = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" style="opacity:.85"><rect x="2" y="2" width="20" height="20" rx="6"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1.2" fill="white" stroke="none"/></svg>`;
+  // Last synced from Behold feed: 2026-07-03
   const IG_FALLBACK = [
-    { permalink:"https://www.instagram.com/reel/DZInUyKI1aX/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxODE1MDkxODg1OTQ5MTUwMSIsImgiOiJzNWFreXAifQ.jpg?class=originalSmall", caption:"Growth In Trading, Potential Future", likes:4, comments:0 },
-    { permalink:"https://www.instagram.com/reel/DZIm8WAougv/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxODA4MzU3MjIzODQwNzgzMSIsImgiOiJoamd0NHIifQ.jpg?class=originalSmall", caption:"Misconceptions about trading", likes:5, comments:0 },
-    { permalink:"https://www.instagram.com/reel/DZImz3DIfL4/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxODA0NTQxNTY5MTU2ODUzMSIsImgiOiJxdmxwNTkifQ.jpg?class=originalSmall", caption:"Patience vs Impulse: The Real Key to Smart Trading", likes:4, comments:0 },
-    { permalink:"https://www.instagram.com/reel/DZImvDuIhWJ/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxODM1Mjk5MjIxMTI0NjAzMCIsImgiOiIxOTJhemxsIn0.jpg?class=originalSmall", caption:"Risk and Reward Discipline", likes:4, comments:0 },
-    { permalink:"https://www.instagram.com/reel/DZImZCmo_-o/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxNzg3OTYxMjY4MjU5OTM5MyIsImgiOiJ1OWE3bmcifQ.jpg?class=originalSmall", caption:"Time and effort is required to learn Trading", likes:4, comments:0 },
-    { permalink:"https://www.instagram.com/reel/DZIgpNYIH9F/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxNzk0NjA4MDUyNjE5Njg5OCIsImgiOiIxNHV4MzBhIn0.jpg?class=originalSmall", caption:"The Truth Behind Flashy Trading Lifestyles", likes:9, comments:0 }
+    { permalink:"https://www.instagram.com/reel/DZx8Y8Jo2Nq/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxODA4MzA5NTIwMjE3MTkzNSIsImgiOiIxNmtrZGVuIn0.jpg?class=originalSmall", caption:"Trainings and Workshops coming soon ....", likes:3, comments:0 },
+    { permalink:"https://www.instagram.com/reel/DZInUyKI1aX/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxODE1MDkxODg1OTQ5MTUwMSIsImgiOiIxOWlpMGc1In0.jpg?class=originalSmall", caption:"Growth In Trading, Potential Future", likes:4, comments:0 },
+    { permalink:"https://www.instagram.com/reel/DZIm8WAougv/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxODA4MzU3MjIzODQwNzgzMSIsImgiOiIxeWxtZ3JlIn0.jpg?class=originalSmall", caption:"Misconceptions about trading", likes:5, comments:0 },
+    { permalink:"https://www.instagram.com/reel/DZImz3DIfL4/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxODA0NTQxNTY5MTU2ODUzMSIsImgiOiJyYmpyeHoifQ.jpg?class=originalSmall", caption:"Patience vs Impulse: The Real Key to Smart Trading", likes:4, comments:0 },
+    { permalink:"https://www.instagram.com/reel/DZImvDuIhWJ/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxODM1Mjk5MjIxMTI0NjAzMCIsImgiOiJrMnU3bmoifQ.jpg?class=originalSmall", caption:"Risk and Reward Discipline", likes:4, comments:0 },
+    { permalink:"https://www.instagram.com/reel/DZImZCmo_-o/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxNzg3OTYxMjY4MjU5OTM5MyIsImgiOiIxc2s2ZmJnIn0.jpg?class=originalSmall", caption:"Time and effort is required to learn Trading", likes:5, comments:0 }
   ];
 
   function renderIgPosts(posts) {
@@ -692,13 +683,19 @@
   }
 
   function loadInstagram() {
-    // Always render cached posts immediately so nothing hangs
+    // Render hardcoded posts immediately — always visible
     renderIgPosts(IG_FALLBACK);
-    // Then try to upgrade with live Behold data (works when hosted on a server)
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 4000);
-    fetch(IG_FEED, { signal: controller.signal })
-      .then(r => { clearTimeout(timeout); return r.ok ? r.json() : Promise.reject(); })
+    // Upgrade with live Behold data
+    fetch(IG_FEED, {
+      method: 'GET',
+      mode: 'cors',
+      cache: 'no-cache',
+      signal: AbortSignal.timeout(12000)
+    })
+      .then(r => {
+        if (!r.ok) throw new Error('Behold HTTP ' + r.status);
+        return r.json();
+      })
       .then(data => {
         const posts = (data.posts || []).map(p => ({
           permalink: p.permalink,
@@ -707,9 +704,14 @@
           likes: p.likeCount ?? 0,
           comments: p.commentsCount ?? 0
         }));
-        if (posts.length) renderIgPosts(posts);
+        if (posts.length) {
+          console.log('Behold: loaded ' + posts.length + ' live posts');
+          renderIgPosts(posts);
+        }
       })
-      .catch(() => { clearTimeout(timeout); /* keep fallback posts */ });
+      .catch(err => {
+        console.warn('Behold fetch failed (' + err.message + ') — showing cached posts');
+      });
   }
 
   // ── Init
@@ -745,16 +747,17 @@
     try {
       const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,ripple&vs_currencies=usd&include_24hr_change=true',{signal:AbortSignal.timeout(8000)});
       const d = await r.json();
-      const map = [{id:'bitcoin',name:'BTC/USDT'},{id:'ethereum',name:'ETH/USDT'},{id:'binancecoin',name:'BNB/USDT'},{id:'solana',name:'SOL/USDT'},{id:'ripple',name:'XRP/USDT'}];
-      const res = map.map(a => {
-        if (!d[a.id]) return null;
-        const p = d[a.id].usd, c = (d[a.id].usd_24h_change||0).toFixed(2), dp = p<1?4:p<100?2:0;
-        return {name:a.name, price:'$'+p.toLocaleString(undefined,{minimumFractionDigits:dp,maximumFractionDigits:dp}), chg:c};
-      }).filter(Boolean);
-      buildTicker([...res, ...tickerFallback.slice(res.length)]);
+      const out = [];
+      [{id:'bitcoin',name:'BTC/USDT'},{id:'ethereum',name:'ETH/USDT'},{id:'binancecoin',name:'BNB/USDT'},{id:'solana',name:'SOL/USDT'},{id:'ripple',name:'XRP/USDT'}].forEach(a => {
+        if (!d[a.id]) return;
+        const p = d[a.id].usd, dp = p<1?4:p<100?2:0;
+        out.push({name:a.name,price:'$'+p.toLocaleString(undefined,{minimumFractionDigits:dp,maximumFractionDigits:dp}),chg:(d[a.id].usd_24h_change||0).toFixed(2)});
+      });
+      if (out.length) buildTicker(out);
     } catch(e) {}
   }
   fetchTicker();
+  setInterval(fetchTicker, 60000);
 </script>
 </body>
 </html>
