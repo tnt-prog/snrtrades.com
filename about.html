@@ -21,7 +21,7 @@
     body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;background-image:linear-gradient(rgba(45,212,191,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(45,212,191,0.04) 1px,transparent 1px);background-size:52px 52px;}
 
     /* Ticker */
-    .ticker-bar{background:var(--bg-2);border-bottom:1px solid var(--border);padding:8px 0;overflow:hidden;position:fixed;top:0;left:0;right:0;z-index:200;}
+    .ticker-bar{background:var(--bg-2);border-bottom:1px solid var(--border);padding:0;height:37px;display:flex;align-items:center;overflow:hidden;position:fixed;top:0;left:0;right:0;z-index:200;}
     .ticker-track{display:flex;gap:0;animation:ticker-scroll 35s linear infinite;white-space:nowrap;width:max-content;}
     .ticker-track:hover{animation-play-state:paused;}
     @keyframes ticker-scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
@@ -148,10 +148,6 @@
           <li><a href="team.html">Team</a></li>
           <li><a href="about.html" class="active">About Us</a></li>
         </ul>
-        <div class="nav-row-2 nav-cta">
-          <a href="courses.html" class="btn btn-outline" style="padding:9px 18px;font-size:13px;">Free Courses</a>
-          <a href="index.html#email" class="btn btn-primary" style="padding:9px 18px;font-size:13px;">Get Free Analysis</a>
-        </div>
       </div>
       <button class="nav-hamburger" onclick="toggleMenu()">☰</button>
     </div>
@@ -166,7 +162,6 @@
     <a href="index.html#pricing" onclick="toggleMenu()">Pricing</a>
     <a href="team.html" onclick="toggleMenu()">Team</a>
     <a href="about.html" onclick="toggleMenu()" style="color:var(--teal);">About Us</a>
-    <a href="index.html#email" class="btn btn-primary" style="margin-top:16px;justify-content:center;" onclick="toggleMenu()">Get Free Analysis</a>
   </div>
 
   <div class="page">
