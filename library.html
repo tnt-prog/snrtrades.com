@@ -17,7 +17,7 @@
     body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;background-image:linear-gradient(rgba(45,212,191,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(45,212,191,0.04) 1px,transparent 1px);background-size:52px 52px;}
 
     /* Ticker */
-    .ticker-bar{background:var(--bg-2);border-bottom:1px solid var(--border);padding:8px 0;overflow:hidden;position:fixed;top:0;left:0;right:0;z-index:200;}
+    .ticker-bar{background:var(--bg-2);border-bottom:1px solid var(--border);padding:0;height:37px;display:flex;align-items:center;overflow:hidden;position:fixed;top:0;left:0;right:0;z-index:200;}
     .ticker-track{display:flex;gap:0;animation:ticker-scroll 35s linear infinite;white-space:nowrap;width:max-content;}
     .ticker-track:hover{animation-play-state:paused;}
     @keyframes ticker-scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
@@ -449,10 +449,6 @@
         <li><a href="team.html">Team</a></li>
         <li><a href="about.html">About Us</a></li>
       </ul>
-      <div class="nav-row-2 nav-cta">
-        <a href="courses.html" class="btn btn-outline" style="padding:9px 18px;font-size:13px;">Free Courses</a>
-        <a href="index.html#email" class="btn btn-primary" style="padding:9px 18px;font-size:13px;">Get Free Analysis</a>
-      </div>
     </div>
     <button class="nav-hamburger" onclick="toggleMenu()">&#9776;</button>
   </div>
@@ -467,7 +463,6 @@
     <a href="index.html#pricing" onclick="toggleMenu()">Pricing</a>
     <a href="team.html" onclick="toggleMenu()">Team</a>
     <a href="about.html" onclick="toggleMenu()">About Us</a>
-    <a href="index.html#email" class="btn btn-primary" style="margin-top:16px;justify-content:center;" onclick="toggleMenu()">Get Free Analysis</a>
   </div>
 
 <div class="lib-page">
@@ -751,6 +746,55 @@
 
 <script src="library-data.js"></script>
 <script>
+
+const track = document.getElementById('ticker');
+    const tickerFallback = [
+      {name:'BTC/USDT',  price:'$104,500', chg:'0.85'},
+      {name:'ETH/USDT',  price:'$2,520',   chg:'1.20'},
+      {name:'BNB/USDT',  price:'$645',     chg:'0.50'},
+      {name:'SOL/USDT',  price:'$175',     chg:'1.10'},
+      {name:'XRP/USDT',  price:'$2.32',    chg:'0.30'},
+      {name:'GOLD',      price:'$3,320',   chg:'0.40'},
+      {name:'SILVER',    price:'$33.50',   chg:'0.60'},
+      {name:'OIL (WTI)', price:'$61.50',   chg:'-0.30'},
+      {name:'NASDAQ',    price:'18,900',   chg:'0.55'},
+      {name:'KSE-100',   price:'117,000',  chg:'0.20'},
+    ];
+    function buildTicker(data) {
+      track.innerHTML = '';
+      [...data, ...data].forEach(t => {
+        const up = parseFloat(t.chg) >= 0;
+        track.innerHTML += `<div class="tick-item"><div class="tick-dot ${up?'up':'dn'}"></div><span class="tick-name">${t.name}</span><span class="tick-price">${t.price}</span><span class="tick-change ${up?'up':'dn'}">${up?'+':''}${parseFloat(t.chg).toFixed(2)}%</span></div>`;
+      });
+    }
+    buildTicker(tickerFallback);
+    async function fetchTickerPrices() {
+      const results = [];
+      try {
+        const cgUrl = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,ripple&vs_currencies=usd&include_24hr_change=true';
+        const r = await fetch(cgUrl, {signal: AbortSignal.timeout(8000)});
+        const d = await r.json();
+        [{id:'bitcoin',name:'BTC/USDT'},{id:'ethereum',name:'ETH/USDT'},{id:'binancecoin',name:'BNB/USDT'},{id:'solana',name:'SOL/USDT'},{id:'ripple',name:'XRP/USDT'}].forEach(a => {
+          if (!d[a.id]) return;
+          const price = d[a.id].usd, chg = (d[a.id].usd_24h_change||0).toFixed(2), dp = price<1?4:price<100?2:0;
+          results.push({name:a.name, price:'$'+price.toLocaleString(undefined,{minimumFractionDigits:dp,maximumFractionDigits:dp}), chg});
+        });
+      } catch(e) {}
+      const yahooAssets = [{symbol:'GC=F',name:'GOLD'},{symbol:'SI=F',name:'SILVER'},{symbol:'CL=F',name:'OIL (WTI)'},{symbol:'%5EIXIC',name:'NASDAQ'},{symbol:'%5EKSE',name:'KSE-100'}];
+      for (const asset of yahooAssets) {
+        try {
+          const r = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${asset.symbol}?interval=1d&range=1d`,{signal:AbortSignal.timeout(8000)});
+          const d = await r.json();
+          const meta = d?.chart?.result?.[0]?.meta;
+          if (meta?.regularMarketPrice) {
+            const price = meta.regularMarketPrice, prev = meta.chartPreviousClose||price, chg = ((price-prev)/prev*100).toFixed(2), dp = price<50?2:0;
+            results.push({name:asset.name, price:(asset.name==='KSE-100'?'':'$')+price.toLocaleString(undefined,{maximumFractionDigits:dp}), chg});
+          }
+        } catch(e) {}
+      }
+      if (results.length > 0) buildTicker(results);
+    }
+    fetchTickerPrices();
 
 // ── Build sequence number map with category-prefixed IDs ──────────────────────
 const DISPLAY_ORDER = ['technical-analysis','fundamental-analysis','stocks','commodities','crypto','forex'];
