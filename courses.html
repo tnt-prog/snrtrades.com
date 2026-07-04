@@ -23,7 +23,7 @@
     /* ── Ticker ── */
     .ticker-bar {
       background: var(--bg-2); border-bottom: 1px solid var(--border);
-      padding: 8px 0; overflow: hidden; position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      padding: 0; height: 33px; display: flex; align-items: center; overflow: hidden; position: fixed; top: 0; left: 0; right: 0; z-index: 200;
     }
     .ticker-track { display: flex; gap: 0; white-space: nowrap; animation: tickerScroll 40s linear infinite; }
     .ticker-track:hover { animation-play-state: paused; }
@@ -233,10 +233,6 @@
           <li><a href="team.html">Team</a></li>
           <li><a href="about.html">About Us</a></li>
         </ul>
-        <div class="nav-row-2">
-          <a href="index.html#courses" class="nav-btn nav-btn-outline">View Courses</a>
-          <a href="index.html#email" class="nav-btn nav-btn-primary">Get Free Analysis</a>
-        </div>
       </div>
       <button class="nav-hamburger" onclick="toggleMenu()">☰</button>
     </div>
@@ -251,7 +247,6 @@
     <a href="index.html#pricing" onclick="toggleMenu()">Pricing</a>
     <a href="team.html" onclick="toggleMenu()">Team</a>
     <a href="about.html" onclick="toggleMenu()">About Us</a>
-    <a href="index.html#email" class="btn btn-primary" style="margin-top:16px;justify-content:center;" onclick="toggleMenu()">Get Free Analysis</a>
   </div>
 
   <div class="page">
