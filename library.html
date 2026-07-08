@@ -881,6 +881,93 @@ function htmlToPdfText(html) {
   return parts.length ? parts : [{ text: html.replace(/<[^>]+>/g, '') }];
 }
 
+
+// ── Download PDF ──────────────────────────────────────────────────────────────
+async function downloadPDF() {
+  if (!currentTopic || !currentTopic.content || !currentTopic.content.length) return;
+
+  const topic = currentTopic;
+  const content = [];
+
+  // Header: logo + title
+  const logoRow = [];
+  if (logoPngDataUrl) {
+    logoRow.push({ image: logoPngDataUrl, width: 50, margin: [0, 0, 10, 0] });
+  }
+  logoRow.push({
+    stack: [
+      { text: 'Trends & Trade', style: 'brand' },
+      { text: 'S&R Intelligent Trading System', style: 'brandSub' }
+    ],
+    margin: [0, 6, 0, 0]
+  });
+  content.push({ columns: logoRow, margin: [0, 0, 0, 8] });
+  content.push({ canvas: [{ type: 'line', x1: 0, y1: 0, x2: 515, y2: 0, lineWidth: 1, lineColor: '#2DD4BF' }], margin: [0, 0, 0, 14] });
+
+  // Topic title
+  content.push({ text: topic.title, style: 'topicTitle', margin: [0, 0, 0, 4] });
+  if (topic.level) {
+    const levelColors = { Beginner: '#22C55E', Intermediate: '#F59E0B', Advanced: '#EF4444' };
+    content.push({ text: topic.level, style: 'levelBadge', color: levelColors[topic.level] || '#94A3B8', margin: [0, 0, 0, 14] });
+  }
+
+  // Content blocks
+  for (const block of topic.content) {
+    if (block.type === 'heading') {
+      content.push({ text: block.text, style: 'heading', margin: [0, 10, 0, 4] });
+    } else if (block.type === 'paragraph') {
+      content.push({ text: block.text, style: 'paragraph', margin: [0, 0, 0, 6] });
+    } else if (block.type === 'list') {
+      content.push({
+        ul: block.items.map(item => ({ text: item, style: 'listItem' })),
+        margin: [0, 2, 0, 8]
+      });
+    } else if (block.type === 'callout') {
+      content.push({
+        table: {
+          widths: ['*'],
+          body: [[{ text: block.text, style: 'callout', fillColor: '#0D1E34', margin: [10, 8, 10, 8] }]]
+        },
+        layout: { hLineColor: () => '#2DD4BF', vLineColor: () => '#2DD4BF', hLineWidth: () => 1, vLineWidth: (i) => i === 0 ? 3 : 1 },
+        margin: [0, 4, 0, 10]
+      });
+    } else if (block.type === 'image') {
+      try {
+        const dataUrl = await imgToDataUrl(block.src);
+        if (dataUrl) {
+          content.push({ image: dataUrl, width: 480, margin: [0, 6, 0, 10], alignment: 'center' });
+        }
+      } catch(e) {}
+    }
+  }
+
+  // Footer note
+  content.push({ canvas: [{ type: 'line', x1: 0, y1: 0, x2: 515, y2: 0, lineWidth: 0.5, lineColor: '#2DD4BF' }], margin: [0, 16, 0, 6] });
+  content.push({ text: 'For educational purposes only. Not financial advice. © Trends & Trade', style: 'footer', margin: [0, 0, 0, 0] });
+
+  const docDef = {
+    pageSize: 'A4',
+    pageMargins: [40, 40, 40, 40],
+    background: () => ({ canvas: [{ type: 'rect', x: 0, y: 0, w: 595, h: 842, color: '#070F1A' }] }),
+    content,
+    styles: {
+      brand:       { fontSize: 14, bold: true, color: '#2DD4BF', font: 'Roboto' },
+      brandSub:    { fontSize: 8, color: '#94A3B8' },
+      topicTitle:  { fontSize: 18, bold: true, color: '#F0F4F8' },
+      levelBadge:  { fontSize: 10, bold: true },
+      heading:     { fontSize: 13, bold: true, color: '#2DD4BF' },
+      paragraph:   { fontSize: 10, color: '#CBD5E1', lineHeight: 1.5 },
+      listItem:    { fontSize: 10, color: '#CBD5E1', lineHeight: 1.4 },
+      callout:     { fontSize: 10, color: '#F0F4F8', italics: true, lineHeight: 1.4 },
+      footer:      { fontSize: 8, color: '#4A5568', alignment: 'center' }
+    },
+    defaultStyle: { font: 'Roboto' }
+  };
+
+  const filename = topic.id + '.pdf';
+  pdfMake.createPdf(docDef).download(filename);
+}
+
 // ── Topic of the Day ──────────────────────────────────────────────────────────
 function buildTotdCard() {
   // Flatten all topics with their category info
