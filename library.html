@@ -83,9 +83,12 @@
     .topic-link{display:flex;align-items:center;gap:8px;padding:9px 18px 9px 42px;cursor:pointer;font-size:13px;color:var(--text-muted);transition:all 0.15s;border-left:2px solid transparent;}
     .topic-link:hover{color:var(--text);background:rgba(255,255,255,0.03);}
     .topic-link.active{color:var(--teal);border-left-color:var(--teal);background:rgba(45,212,191,0.06);font-weight:600;}
-    .topic-link-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:0.5;}
-    .topic-link.topic-done .topic-link-dot{background:#F59E0B;opacity:1;box-shadow:0 0 5px rgba(245,158,11,0.5);}
+    .topic-link-dot{width:7px;height:7px;border-radius:50%;background:var(--text-dim);flex-shrink:0;opacity:0.5;}
+    .topic-link.topic-done .topic-link-dot{opacity:0.8;}
     .topic-link.topic-done{color:var(--text-muted);}
+    .topic-link[data-level="Beginner"] .topic-link-dot{background:#22C55E !important;opacity:1 !important;box-shadow:0 0 5px rgba(34,197,94,0.4);}
+    .topic-link[data-level="Intermediate"] .topic-link-dot{background:#F59E0B !important;opacity:1 !important;box-shadow:0 0 5px rgba(245,158,11,0.4);}
+    .topic-link[data-level="Advanced"] .topic-link-dot{background:#EF4444 !important;opacity:1 !important;box-shadow:0 0 5px rgba(239,68,68,0.4);}
 
     /* Reading panel */
     .lib-panel{background:var(--bg);overflow-y:auto;max-height:calc(100vh - 180px);}
@@ -952,7 +955,7 @@ function buildSidebar(data) {
       </div>
       <div class="cat-topics">
         ${cat.topics.map(t => `
-          <div class="topic-link${t.content && t.content.length ? ' topic-done' : ''}" data-id="${t.id}" onclick="openTopic('${t.id}')">
+          <div class="topic-link${t.content && t.content.length ? ' topic-done' : ''}" data-id="${t.id}" data-level="${t.level||''}" onclick="openTopic('${t.id}')">
             <span class="topic-link-dot"></span>${t.title}<span class="topic-seq-tag" style="margin-left:6px;margin-right:0;">${TOPIC_SEQ[t.id]||''}</span>
           </div>`).join('')}
       </div>`;
