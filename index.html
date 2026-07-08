@@ -654,38 +654,47 @@
       content: ''; flex: 1; height: 1px;
       background: linear-gradient(90deg, rgba(45,212,191,0.3), transparent);
     }
-    .totd-inner { display: flex; align-items: flex-end; gap: 28px; flex-wrap: wrap; }
+    .totd-inner { display: flex; align-items: stretch; gap: 24px; }
     .totd-text { flex: 1; min-width: 0; }
-    .totd-badges { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+    .totd-badges { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
     .totd-cat-badge {
       font-size: 11px; font-weight: 600; color: var(--text-muted);
       background: rgba(255,255,255,0.06); padding: 3px 12px; border-radius: 10px;
       border: 1px solid var(--border-dim);
     }
-    .totd-level {
+    .totd-level-badge {
       font-size: 10px; font-weight: 700; padding: 3px 10px;
       border-radius: 10px; text-transform: uppercase; letter-spacing: 0.07em;
     }
-    .totd-level.beginner  { background: rgba(34,197,94,0.12);  color: #22C55E; border: 1px solid rgba(34,197,94,0.25); }
-    .totd-level.intermediate { background: rgba(251,191,36,0.12); color: #FBBF24; border: 1px solid rgba(251,191,36,0.25); }
-    .totd-level.advanced  { background: rgba(239,68,68,0.12);  color: #EF4444; border: 1px solid rgba(239,68,68,0.25); }
-    .totd-title-main {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(20px, 3vw, 26px); font-weight: 800;
-      color: var(--text); line-height: 1.2; margin-bottom: 8px;
+    .totd-beginner  { background: rgba(34,197,94,0.12);  color: #22C55E; border: 1px solid rgba(34,197,94,0.25); }
+    .totd-intermediate { background: rgba(251,191,36,0.12); color: #FBBF24; border: 1px solid rgba(251,191,36,0.25); }
+    .totd-advanced  { background: rgba(239,68,68,0.12);  color: #EF4444; border: 1px solid rgba(239,68,68,0.25); }
+    .totd-title {
+      font-size: clamp(18px, 2.4vw, 24px); font-weight: 800;
+      color: var(--text); line-height: 1.25; margin-bottom: 10px;
     }
-    .totd-summary-main { font-size: 14px; color: var(--text-muted); line-height: 1.7; max-width: 560px; }
-    .totd-action { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; flex-shrink: 0; }
+    .totd-summary { font-size: 13.5px; color: var(--text-muted); line-height: 1.7; }
+    .totd-action {
+      display: flex; flex-direction: column; align-items: flex-end;
+      justify-content: space-between; gap: 14px; flex-shrink: 0;
+      padding-left: 24px; border-left: 1px solid rgba(45,212,191,0.15);
+      min-width: 160px;
+    }
     .totd-read-btn {
-      display: inline-flex; align-items: center; gap: 9px;
-      padding: 13px 26px; border-radius: 12px;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 22px; border-radius: 12px;
       background: var(--teal); color: #051012;
       font-size: 14px; font-weight: 700;
       text-decoration: none; transition: all 0.2s; white-space: nowrap;
+      align-self: stretch; justify-content: center;
     }
-    .totd-read-btn:hover { background: var(--teal-dark); color: #fff; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(45,212,191,0.25); }
-    .totd-countdown-txt { font-size: 11px; color: var(--text-dim); text-align: right; }
-    .totd-countdown-txt span { color: var(--teal); font-weight: 600; }
+    .totd-read-btn:hover { background: var(--teal-dark); color: #fff; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(45,212,191,0.25); text-decoration: none; }
+    .totd-countdown { font-size: 11px; color: var(--text-dim); text-align: center; line-height: 1.5; }
+    .totd-countdown strong { display: block; font-size: 13px; color: var(--teal); font-weight: 700; }
+    @media(max-width:640px){
+      .totd-inner { flex-direction: column; }
+      .totd-action { flex-direction: row; border-left: none; border-top: 1px solid rgba(45,212,191,0.15); padding-left: 0; padding-top: 14px; min-width: 0; }
+    }
 
     /* ══════════════════════════════════════
        FREE RESOURCES (Video Cards)
@@ -1831,9 +1840,12 @@
               <div class="totd-title">${pick.topic.title}</div>
               <div class="totd-summary">${pick.topic.summary || 'A daily trading concept to sharpen your edge.'}</div>
             </div>
-            <div class="totd-footer">
-              <span class="totd-countdown">🕐 Refreshes in ${hh}h ${mm}m</span>
-              <a class="totd-cta" href="${link}">Read Now →</a>
+            <div class="totd-action">
+              <a class="totd-read-btn" href="${link}">Read Article →</a>
+              <div class="totd-countdown">
+                <strong>${hh}h ${mm}m</strong>
+                until next topic
+              </div>
             </div>
           </div>
         </div>`;
