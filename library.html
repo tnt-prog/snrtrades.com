@@ -1052,6 +1052,7 @@ async function downloadPDF() {
     if (block.type === 'heading') {
       headingIndex++;
       body.push({
+        id: 'sec-heading',
         table: { widths: ['*'], body: [[{
           text: [
             { text: headingIndex + '.  ', color: TEAL, bold: true, fontSize: 13 },
@@ -1072,13 +1073,13 @@ async function downloadPDF() {
       body.push({ text: stripHtml(block.text), style: 'para', margin: [0, 0, 0, 10] });
 
     } else if (block.type === 'list') {
-      body.push({
-        ul: block.items.map(item => ({
-          text: [{ text: '▸  ', color: TEAL, bold: true }, { text: stripHtml(item), style: 'listItem' }]
-        })),
-        listType: 'none',
-        margin: [6, 2, 0, 12]
+      block.items.forEach(item => {
+        body.push({
+          text: [{ text: '▸  ', color: TEAL, bold: true, fontSize: 11 }, { text: stripHtml(item), style: 'listItem' }],
+          margin: [12, 2, 0, 4]
+        });
       });
+      body.push({ text: '', margin: [0, 0, 0, 8] }); // spacing after list
 
     } else if (block.type === 'callout') {
       const cleanText = stripHtml(block.text);
@@ -1192,7 +1193,13 @@ async function downloadPDF() {
       wmTagline:    { fontSize: 10, italics: true, color: GREY },
       wmUrl:        { fontSize: 11, color: TEAL, decoration: 'underline', bold: true }
     },
-    defaultStyle: { font: 'Roboto' }
+    defaultStyle: { font: 'Roboto' },
+
+    // Prevent orphan headings and callouts at bottom of page
+    pageBreakBefore: function(currentNode, followingNodesOnPage) {
+      if (currentNode.id === 'sec-heading' && followingNodesOnPage.length < 3) return true;
+      return false;
+    }
   };
 
   pdfMake.createPdf(docDef).download((topicSeq || topic.id) + '.pdf');
