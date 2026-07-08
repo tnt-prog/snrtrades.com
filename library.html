@@ -976,104 +976,221 @@ async function downloadPDF() {
     if (cat.topics.find(t => t.id === topic.id)) { catTitle = cat.title.toUpperCase(); break; }
   }
 
-  const TEAL  = '#0D9488';
-  const GREY  = '#64748B';
-  const BLACK = '#1E293B';
-  const HDR   = 'Trends & Trade — Trading Library';
-  const FTR   = 'snrtrades.com  |  Educational content only — not financial advice';
+  // Strip HTML tags from text for pdfmake
+  function stripHtml(str) {
+    return (str || '').replace(/<[^>]*>/g, '').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&nbsp;/g,' ').replace(/&#39;/g,"'").replace(/&quot;/g,'"').trim();
+  }
 
-  // Build body blocks
+  const TEAL      = '#0D9488';
+  const TEAL_LITE = '#E6F4F3';
+  const TEAL_MID  = '#B2DFDB';
+  const GREY      = '#64748B';
+  const BLACK     = '#1E293B';
+  const BODY_CLR  = '#334155';
+  const HDR_LINE  = 'rgba(13,148,136,0.25)';   // teal tint for separator lines
+  const HDR       = 'Trends & Trade — Trading Library';
+  const FTR       = 'snrtrades.com  |  Educational content only — not financial advice';
+
+  // Level badge colour
+  const levelColorMap = { Beginner: '#16A34A', Intermediate: '#D97706', Advanced: '#DC2626' };
+  const levelColor = levelColorMap[topic.level] || TEAL;
+
+  // Reading time
+  const wordCount = (topic.content || []).reduce((acc, b) => {
+    if (b.type === 'paragraph') return acc + b.text.split(/\s+/).length;
+    if (b.type === 'list')      return acc + b.items.join(' ').split(/\s+/).length;
+    if (b.type === 'callout')   return acc + b.text.split(/\s+/).length;
+    return acc;
+  }, 0);
+  const readTime = Math.max(1, Math.ceil(wordCount / 200));
+
+  // ── Build body ──────────────────────────────────────────────────────────────
   const body = [];
 
-  // Article header on page 1
-  body.push({ text: catTitle, style: 'catLabel', margin: [0, 0, 0, 4] });
-  body.push({ text: topic.title, style: 'articleTitle', margin: [0, 0, 0, 6] });
-  if (topicSeq) body.push({ text: topicSeq, style: 'seqCode', margin: [0, 0, 0, 6] });
-  body.push({ canvas: [{ type: 'line', x1: 0, y1: 0, x2: 495, y2: 0, lineWidth: 1.5, lineColor: TEAL }], margin: [0, 0, 0, 14] });
+  // 1. Category label (uppercase, teal)
+  body.push({ text: catTitle, style: 'catLabel', margin: [0, 0, 0, 5] });
 
+  // 2. Article title
+  body.push({ text: topic.title, style: 'articleTitle', margin: [0, 0, 0, 8] });
+
+  // 3. Meta row: seq code + level badge + read time
+  const metaStack = [];
+  if (topicSeq) metaStack.push({ text: topicSeq, style: 'seqCode' });
+  if (topic.level) metaStack.push({
+    text: ' ' + topic.level.toUpperCase() + ' ',
+    fontSize: 8, bold: true, color: '#FFFFFF',
+    background: levelColor, characterSpacing: 0.5,
+    margin: topicSeq ? [8, 0, 0, 0] : [0, 0, 0, 0]
+  });
+  metaStack.push({ text: '  ⏱ ' + readTime + ' min read', fontSize: 9, color: GREY });
+  body.push({ columns: metaStack, margin: [0, 0, 0, 10] });
+
+  // 4. Teal divider
+  body.push({ canvas: [{ type: 'line', x1: 0, y1: 0, x2: 495, y2: 0, lineWidth: 2, lineColor: TEAL }], margin: [0, 0, 0, 14] });
+
+  // 5. Summary intro box (if topic has a summary)
+  if (topic.summary) {
+    body.push({
+      table: { widths: ['*'], body: [[{
+        text: stripHtml(topic.summary),
+        fontSize: 11, italics: true, color: BODY_CLR, lineHeight: 1.65,
+        margin: [14, 10, 14, 10]
+      }]] },
+      layout: {
+        hLineColor: () => TEAL_MID,
+        vLineColor: (i) => i === 0 ? TEAL : TEAL_MID,
+        hLineWidth: () => 0.5, vLineWidth: (i) => i === 0 ? 3 : 0,
+        fillColor: () => TEAL_LITE
+      },
+      margin: [0, 0, 0, 18]
+    });
+  }
+
+  // 6. Content blocks
+  let headingIndex = 0;
   for (const block of topic.content) {
     if (block.type === 'heading') {
-      body.push({ text: block.text, style: 'secHeading', margin: [0, 14, 0, 6] });
-    } else if (block.type === 'paragraph') {
-      body.push({ text: block.text, style: 'para', margin: [0, 0, 0, 10] });
-    } else if (block.type === 'list') {
-      body.push({ ul: block.items.map(item => ({ text: item, style: 'listItem' })), margin: [10, 2, 0, 10] });
-    } else if (block.type === 'callout') {
-      const isDisc = block.text.toLowerCase().startsWith('disclaimer');
+      headingIndex++;
       body.push({
-        table: {
-          widths: ['*'],
-          body: [[{
-            text: isDisc
-              ? [{ text: 'Disclaimer: ', bold: true, italics: true, color: BLACK },
-                 { text: block.text.replace(/^Disclaimer:\s*/i, ''), italics: true, color: GREY }]
-              : [{ text: block.text, italics: true, color: BLACK }],
-            margin: [12, 10, 12, 10]
-          }]]
+        table: { widths: ['*'], body: [[{
+          text: [
+            { text: headingIndex + '.  ', color: TEAL, bold: true, fontSize: 13 },
+            { text: stripHtml(block.text), bold: true, color: BLACK, fontSize: 13 }
+          ],
+          margin: [10, 7, 10, 7]
+        }]] },
+        layout: {
+          hLineWidth: () => 0, vLineColor: (i) => i === 0 ? TEAL : 'transparent',
+          hLineColor: () => 'transparent',
+          vLineWidth: (i) => i === 0 ? 3 : 0,
+          fillColor: () => '#F1F5F9'
         },
+        margin: [0, 16, 0, 8]
+      });
+
+    } else if (block.type === 'paragraph') {
+      body.push({ text: stripHtml(block.text), style: 'para', margin: [0, 0, 0, 10] });
+
+    } else if (block.type === 'list') {
+      body.push({
+        ul: block.items.map(item => ({
+          text: [{ text: '▸  ', color: TEAL, bold: true }, { text: stripHtml(item), style: 'listItem' }]
+        })),
+        listType: 'none',
+        margin: [6, 2, 0, 12]
+      });
+
+    } else if (block.type === 'callout') {
+      const cleanText = stripHtml(block.text);
+      const isDisc = cleanText.toLowerCase().startsWith('disclaimer');
+      body.push({
+        table: { widths: ['*'], body: [[{
+          text: isDisc
+            ? [{ text: 'Disclaimer: ', bold: true, italics: true, color: BLACK },
+               { text: cleanText.replace(/^Disclaimer:\s*/i, ''), italics: true, color: GREY }]
+            : [{ text: '💡  ', color: TEAL }, { text: cleanText, italics: true, color: BLACK }],
+          margin: [14, 10, 14, 10]
+        }]] },
         layout: {
           hLineColor: () => '#E2E8F0', vLineColor: (i) => i === 0 ? TEAL : '#E2E8F0',
           hLineWidth: () => 0.5, vLineWidth: (i) => i === 0 ? 3 : 0,
           fillColor: () => '#F8FAFC'
         },
-        margin: [0, 6, 0, 12]
+        margin: [0, 6, 0, 14]
       });
+
     } else if (block.type === 'image') {
       try {
         const dataUrl = await imgToDataUrl(block.src);
         if (dataUrl) {
-          body.push({ image: dataUrl, width: 495, alignment: 'center', margin: [0, 8, 0, 14] });
+          // Image wrapped in a subtle panel
+          body.push({
+            table: { widths: ['*'], body: [[{
+              image: dataUrl, width: 463, alignment: 'center',
+              margin: [4, 6, 4, 6]
+            }]] },
+            layout: {
+              hLineColor: () => '#E2E8F0', vLineColor: () => '#E2E8F0',
+              hLineWidth: () => 0.5, vLineWidth: () => 0.5,
+              fillColor: () => '#F8FAFC'
+            },
+            margin: [0, 8, 0, 16]
+          });
         }
       } catch(e) {}
     }
   }
 
+  // ── Document definition ─────────────────────────────────────────────────────
   const docDef = {
     pageSize: 'A4',
-    pageMargins: [50, 52, 50, 48],
+    pageMargins: [50, 56, 50, 52],
 
     header: function(currentPage, pageCount) {
       return [
         { columns: [
-            { text: HDR, style: 'hdrLeft', margin: [50, 14, 0, 0] },
-            { text: 'Page ' + currentPage + ' of ' + pageCount, style: 'hdrRight', margin: [0, 14, 50, 0] }
+            { text: HDR, style: 'hdrLeft', margin: [50, 16, 0, 0] },
+            { text: 'Page ' + currentPage + ' of ' + pageCount, style: 'hdrRight', margin: [0, 16, 50, 0] }
         ]},
-        { canvas: [{ type: 'line', x1: 50, y1: 0, x2: 545, y2: 0, lineWidth: 0.4, lineColor: '#E2E8F0' }] }
+        { canvas: [{ type: 'line', x1: 50, y1: 0, x2: 545, y2: 0, lineWidth: 0.6, lineColor: HDR_LINE }] }
       ];
     },
 
     footer: function(currentPage, pageCount) {
       return [
-        { canvas: [{ type: 'line', x1: 50, y1: 0, x2: 545, y2: 0, lineWidth: 0.4, lineColor: '#E2E8F0' }] },
-        { text: FTR, style: 'ftr', margin: [0, 5, 0, 0] }
+        { canvas: [{ type: 'line', x1: 50, y1: 0, x2: 545, y2: 0, lineWidth: 0.6, lineColor: HDR_LINE }] },
+        { text: FTR, style: 'ftr', margin: [0, 6, 0, 0] }
       ];
     },
 
     content: [
       ...body,
-      // Watermark page (last)
+
+      // ── Last page: brand page ──
       { text: '', pageBreak: 'before' },
+
+      // Top teal bar
+      {
+        canvas: [{ type: 'rect', x: -50, y: -10, w: 600, h: 8, color: TEAL }],
+        margin: [0, 0, 0, 0]
+      },
+
+      // Logo
       logoPngDataUrl
-        ? { image: logoPngDataUrl, width: 240, alignment: 'center', margin: [0, 110, 0, 0] }
-        : { text: '', margin: [0, 110, 0, 0] },
-      { text: 'TRENDS & TRADE', style: 'wmText', alignment: 'center', margin: [0, 12, 0, 2] },
-      { text: 'ONLINE LIBRARY', style: 'wmSub', alignment: 'center', margin: [0, 0, 0, 16] },
-      { text: 'https://snrtrades.com', style: 'wmUrl', alignment: 'center' }
+        ? { image: logoPngDataUrl, width: 200, alignment: 'center', margin: [0, 90, 0, 0] }
+        : { text: '', margin: [0, 90, 0, 0] },
+
+      { text: 'TRENDS & TRADE', style: 'wmText', alignment: 'center', margin: [0, 16, 0, 4] },
+      { text: 'ONLINE TRADING LIBRARY', style: 'wmSub', alignment: 'center', margin: [0, 0, 0, 8] },
+
+      // Teal divider
+      { canvas: [{ type: 'line', x1: 150, y1: 0, x2: 345, y2: 0, lineWidth: 1, lineColor: TEAL }], margin: [0, 0, 0, 12] },
+
+      { text: 'S&R Intelligent Trading System', style: 'wmTagline', alignment: 'center', margin: [0, 0, 0, 20] },
+      { text: 'https://snrtrades.com', style: 'wmUrl', alignment: 'center', margin: [0, 0, 0, 8] },
+      { text: 'Educational content only — not financial advice', fontSize: 8, color: GREY, alignment: 'center', italics: true },
+
+      // Bottom teal bar
+      {
+        canvas: [{ type: 'rect', x: -50, y: 20, w: 600, h: 8, color: TEAL }],
+        margin: [0, 0, 0, 0],
+        absolutePosition: { x: 0, y: 820 }
+      }
     ],
 
     styles: {
-      catLabel:     { fontSize: 9,  bold: true,  color: TEAL, characterSpacing: 1 },
-      articleTitle: { fontSize: 28, bold: true,  color: BLACK, lineHeight: 1.2 },
-      seqCode:      { fontSize: 10, bold: true,  color: TEAL },
-      secHeading:   { fontSize: 14, bold: true,  color: BLACK },
-      para:         { fontSize: 11, color: '#334155', lineHeight: 1.7 },
-      listItem:     { fontSize: 11, color: '#334155', lineHeight: 1.55 },
-      hdrLeft:      { fontSize: 9,  color: TEAL },
-      hdrRight:     { fontSize: 9,  color: TEAL, alignment: 'right' },
-      ftr:          { fontSize: 8.5, color: TEAL, alignment: 'center' },
-      wmText:       { fontSize: 18, bold: true, color: '#CBD5E1' },
-      wmSub:        { fontSize: 11, color: '#CBD5E1' },
-      wmUrl:        { fontSize: 10, color: '#0D9488', decoration: 'underline' }
+      catLabel:     { fontSize: 9,  bold: true, color: TEAL, characterSpacing: 1.5 },
+      articleTitle: { fontSize: 26, bold: true, color: BLACK, lineHeight: 1.25 },
+      seqCode:      { fontSize: 9,  bold: true, color: TEAL },
+      para:         { fontSize: 11, color: BODY_CLR, lineHeight: 1.72 },
+      listItem:     { fontSize: 11, color: BODY_CLR, lineHeight: 1.6 },
+      hdrLeft:      { fontSize: 8.5, color: TEAL, bold: false },
+      hdrRight:     { fontSize: 8.5, color: TEAL, alignment: 'right' },
+      ftr:          { fontSize: 8,   color: TEAL, alignment: 'center' },
+      wmText:       { fontSize: 20, bold: true,  color: BLACK, characterSpacing: 2 },
+      wmSub:        { fontSize: 11, color: GREY,  characterSpacing: 1 },
+      wmTagline:    { fontSize: 10, italics: true, color: GREY },
+      wmUrl:        { fontSize: 11, color: TEAL, decoration: 'underline', bold: true }
     },
     defaultStyle: { font: 'Roboto' }
   };
