@@ -827,7 +827,7 @@ const TOPIC_SEQ = buildSeqMap();
 let logoPngDataUrl = null;
 (async function preloadLogo() {
   try {
-    const res = await fetch('logo.jpg');
+    const res = await fetch('images/logo.jpg');
     const blob = await res.blob();
     const objUrl = URL.createObjectURL(blob);
     await new Promise(resolve => {
