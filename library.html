@@ -887,85 +887,160 @@ async function downloadPDF() {
   if (!currentTopic || !currentTopic.content || !currentTopic.content.length) return;
 
   const topic = currentTopic;
-  const content = [];
-
-  // Header: logo + title
-  const logoRow = [];
-  if (logoPngDataUrl) {
-    logoRow.push({ image: logoPngDataUrl, width: 50, margin: [0, 0, 10, 0] });
-  }
-  logoRow.push({
-    stack: [
-      { text: 'Trends & Trade', style: 'brand' },
-      { text: 'S&R Intelligent Trading System', style: 'brandSub' }
-    ],
-    margin: [0, 6, 0, 0]
-  });
-  content.push({ columns: logoRow, margin: [0, 0, 0, 8] });
-  content.push({ canvas: [{ type: 'line', x1: 0, y1: 0, x2: 515, y2: 0, lineWidth: 1, lineColor: '#2DD4BF' }], margin: [0, 0, 0, 14] });
-
-  // Topic title
-  content.push({ text: topic.title, style: 'topicTitle', margin: [0, 0, 0, 4] });
-  if (topic.level) {
-    const levelColors = { Beginner: '#22C55E', Intermediate: '#F59E0B', Advanced: '#EF4444' };
-    content.push({ text: topic.level, style: 'levelBadge', color: levelColors[topic.level] || '#94A3B8', margin: [0, 0, 0, 14] });
+  let catTitle = '';
+  for (const cat of LIBRARY) {
+    if (cat.topics.find(t => t.id === topic.id)) { catTitle = cat.title; break; }
   }
 
-  // Content blocks
+  const today = new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+  const levelColors = { Beginner: '#16A34A', Intermediate: '#D97706', Advanced: '#DC2626' };
+  const levelColor  = levelColors[topic.level] || '#64748B';
+
+  // ── Build body content blocks ─────────────────────────────────────────────
+  const bodyContent = [];
   for (const block of topic.content) {
     if (block.type === 'heading') {
-      content.push({ text: block.text, style: 'heading', margin: [0, 10, 0, 4] });
+      bodyContent.push({
+        text: block.text, style: 'heading',
+        margin: [0, 14, 0, 4]
+      });
     } else if (block.type === 'paragraph') {
-      content.push({ text: block.text, style: 'paragraph', margin: [0, 0, 0, 6] });
+      bodyContent.push({ text: block.text, style: 'paragraph', margin: [0, 0, 0, 8] });
     } else if (block.type === 'list') {
-      content.push({
+      bodyContent.push({
         ul: block.items.map(item => ({ text: item, style: 'listItem' })),
-        margin: [0, 2, 0, 8]
+        margin: [10, 2, 0, 10]
       });
     } else if (block.type === 'callout') {
-      content.push({
+      bodyContent.push({
         table: {
           widths: ['*'],
-          body: [[{ text: block.text, style: 'callout', fillColor: '#0D1E34', margin: [10, 8, 10, 8] }]]
+          body: [[{ text: block.text, style: 'callout', margin: [12, 10, 12, 10] }]]
         },
-        layout: { hLineColor: () => '#2DD4BF', vLineColor: () => '#2DD4BF', hLineWidth: () => 1, vLineWidth: (i) => i === 0 ? 3 : 1 },
-        margin: [0, 4, 0, 10]
+        layout: {
+          hLineColor: () => '#0D9488', vLineColor: (i) => i === 0 ? '#0D9488' : '#E2E8F0',
+          hLineWidth: () => 1, vLineWidth: (i) => i === 0 ? 3 : 0,
+          fillColor: () => '#F0FDFA'
+        },
+        margin: [0, 6, 0, 12]
       });
     } else if (block.type === 'image') {
       try {
         const dataUrl = await imgToDataUrl(block.src);
         if (dataUrl) {
-          content.push({ image: dataUrl, width: 480, margin: [0, 6, 0, 10], alignment: 'center' });
+          bodyContent.push({
+            image: dataUrl, width: 460, alignment: 'center',
+            margin: [0, 8, 0, 14]
+          });
         }
       } catch(e) {}
     }
   }
 
-  // Footer note
-  content.push({ canvas: [{ type: 'line', x1: 0, y1: 0, x2: 515, y2: 0, lineWidth: 0.5, lineColor: '#2DD4BF' }], margin: [0, 16, 0, 6] });
-  content.push({ text: 'For educational purposes only. Not financial advice. © Trends & Trade', style: 'footer', margin: [0, 0, 0, 0] });
-
+  // ── Document definition ───────────────────────────────────────────────────
   const docDef = {
     pageSize: 'A4',
-    pageMargins: [40, 40, 40, 40],
-    background: () => ({ canvas: [{ type: 'rect', x: 0, y: 0, w: 595, h: 842, color: '#070F1A' }] }),
-    content,
+    pageMargins: [50, 75, 50, 55],
+
+    // Faint watermark logo on every page
+    background: (currentPage) => {
+      if (!logoPngDataUrl) return null;
+      return {
+        image: logoPngDataUrl,
+        width: 220,
+        opacity: 0.04,
+        absolutePosition: { x: 188, y: 310 }
+      };
+    },
+
+    // Repeating header — skip cover page
+    header: (currentPage) => {
+      if (currentPage === 1) return null;
+      const cols = [];
+      if (logoPngDataUrl) cols.push({ image: logoPngDataUrl, width: 22, margin: [50, 12, 6, 0] });
+      else cols.push({ text: '', width: 28 });
+      cols.push({ text: 'Trends & Trade', style: 'hdrBrand', margin: [0, 14, 0, 0] });
+      cols.push({ text: topic.title, style: 'hdrTopic', margin: [0, 14, 50, 0], alignment: 'right' });
+      return [
+        { columns: cols },
+        { canvas: [{ type: 'line', x1: 50, y1: 0, x2: 545, y2: 0, lineWidth: 0.5, lineColor: '#0D9488' }], margin: [0, 4, 0, 0] }
+      ];
+    },
+
+    // Repeating footer — skip cover page
+    footer: (currentPage, pageCount) => {
+      if (currentPage === 1) return null;
+      return [
+        { canvas: [{ type: 'line', x1: 50, y1: 0, x2: 545, y2: 0, lineWidth: 0.5, lineColor: '#E2E8F0' }], margin: [0, 0, 0, 4] },
+        {
+          columns: [
+            { text: 'trendsandtrade.com', style: 'ftrText', margin: [50, 4, 0, 0] },
+            { text: `Page ${currentPage} of ${pageCount}`, style: 'ftrText', alignment: 'right', margin: [0, 4, 50, 0] }
+          ]
+        }
+      ];
+    },
+
+    content: [
+      // ── COVER PAGE ─────────────────────────────────────────────────────────
+      { stack: [
+          logoPngDataUrl
+            ? { image: logoPngDataUrl, width: 90, alignment: 'center', margin: [0, 0, 0, 14] }
+            : { text: '', margin: [0, 0, 0, 14] },
+          { text: 'Trends & Trade', style: 'coverBrand', alignment: 'center' },
+          { text: 'S&R Intelligent Trading System', style: 'coverSub', alignment: 'center', margin: [0, 3, 0, 32] },
+          { canvas: [{ type: 'line', x1: 0, y1: 0, x2: 460, y2: 0, lineWidth: 2, lineColor: '#0D9488' }], margin: [0, 0, 0, 32] },
+          { text: topic.title, style: 'coverTitle', alignment: 'center', margin: [0, 0, 0, 22] },
+          {
+            columns: [
+              { text: catTitle, style: 'coverMeta', alignment: 'center' },
+              { canvas: [{ type: 'line', x1: 0, y1: 6, x2: 0, y2: 20, lineWidth: 1, lineColor: '#CBD5E1' }], width: 20, alignment: 'center' },
+              { text: topic.level || 'General', style: 'coverMeta', color: levelColor, alignment: 'center' }
+            ],
+            columnGap: 10,
+            margin: [0, 0, 0, 12]
+          },
+          { text: today, style: 'coverDate', alignment: 'center' },
+          { canvas: [{ type: 'line', x1: 0, y1: 0, x2: 460, y2: 0, lineWidth: 0.5, lineColor: '#E2E8F0' }], margin: [0, 32, 0, 10] },
+          { text: 'Educational Material — Not Financial Advice', style: 'coverTag', alignment: 'center' }
+        ],
+        margin: [0, 120, 0, 0]
+      },
+      { text: '', pageBreak: 'after' },
+
+      // ── MAIN CONTENT ───────────────────────────────────────────────────────
+      ...bodyContent,
+
+      // ── DISCLAIMER (last page) ─────────────────────────────────────────────
+      { text: '', pageBreak: 'before' },
+      { text: 'Disclaimer', style: 'heading', margin: [0, 0, 0, 10] },
+      { canvas: [{ type: 'line', x1: 0, y1: 0, x2: 460, y2: 0, lineWidth: 1, lineColor: '#0D9488' }], margin: [0, 0, 0, 14] },
+      { text: 'This material is provided strictly for educational and informational purposes only. It does not constitute financial advice, investment advice, trading advice, legal advice, tax advice, or a recommendation to buy, sell, hold, or trade any stock, currency, commodity, cryptocurrency, derivative, CFD, futures contract, option, or any other financial instrument.', style: 'paragraph', margin: [0, 0, 0, 10] },
+      { text: 'Trading and investing in financial markets involves substantial risk of loss. Past performance is not indicative of future results. Price movements, market conditions, and trading outcomes are unpredictable and may result in significant financial loss. Any examples, charts, or strategies discussed are for illustrative purposes only and do not represent guaranteed outcomes.', style: 'paragraph', margin: [0, 0, 0, 10] },
+      { text: 'Readers must conduct independent research, apply strict risk management, understand the risks of leveraged products, and consult qualified financial, legal, tax, or investment professionals before making any financial decision. The website, authors, trainers, affiliates, and associated parties shall not be responsible for any financial loss, damage, or outcome resulting from the use of this material.', style: 'paragraph', margin: [0, 0, 0, 24] },
+      { canvas: [{ type: 'line', x1: 0, y1: 0, x2: 460, y2: 0, lineWidth: 0.5, lineColor: '#E2E8F0' }], margin: [0, 0, 0, 12] },
+      { text: '© ' + new Date().getFullYear() + ' Trends & Trade  ·  trendsandtrade.com  ·  All rights reserved.', style: 'ftrText', alignment: 'center' }
+    ],
+
     styles: {
-      brand:       { fontSize: 14, bold: true, color: '#2DD4BF', font: 'Roboto' },
-      brandSub:    { fontSize: 8, color: '#94A3B8' },
-      topicTitle:  { fontSize: 18, bold: true, color: '#F0F4F8' },
-      levelBadge:  { fontSize: 10, bold: true },
-      heading:     { fontSize: 13, bold: true, color: '#2DD4BF' },
-      paragraph:   { fontSize: 10, color: '#CBD5E1', lineHeight: 1.5 },
-      listItem:    { fontSize: 10, color: '#CBD5E1', lineHeight: 1.4 },
-      callout:     { fontSize: 10, color: '#F0F4F8', italics: true, lineHeight: 1.4 },
-      footer:      { fontSize: 8, color: '#4A5568', alignment: 'center' }
+      coverBrand:  { fontSize: 24, bold: true, color: '#0D9488' },
+      coverSub:    { fontSize: 11, color: '#64748B' },
+      coverTitle:  { fontSize: 22, bold: true, color: '#1E293B', lineHeight: 1.3 },
+      coverMeta:   { fontSize: 11, bold: true, color: '#0D9488' },
+      coverDate:   { fontSize: 10, color: '#94A3B8' },
+      coverTag:    { fontSize: 9, color: '#94A3B8', italics: true },
+      hdrBrand:    { fontSize: 10, bold: true, color: '#0D9488' },
+      hdrTopic:    { fontSize: 8, color: '#94A3B8' },
+      heading:     { fontSize: 13, bold: true, color: '#1E293B' },
+      paragraph:   { fontSize: 10.5, color: '#334155', lineHeight: 1.65 },
+      listItem:    { fontSize: 10.5, color: '#334155', lineHeight: 1.5 },
+      callout:     { fontSize: 10.5, color: '#134E4A', lineHeight: 1.5 },
+      ftrText:     { fontSize: 8, color: '#94A3B8' }
     },
     defaultStyle: { font: 'Roboto' }
   };
 
-  const filename = topic.id + '.pdf';
-  pdfMake.createPdf(docDef).download(filename);
+  pdfMake.createPdf(docDef).download(topic.id + '.pdf');
 }
 
 // ── Topic of the Day ──────────────────────────────────────────────────────────
