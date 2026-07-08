@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/jpeg" href="images/logo.jpg"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Legal — Trends &amp; Trade</title>
+  <meta name="description" content="Terms of Service and Privacy Policy for Trends &amp; Trade trading education platform."/>
+  <style>
+    :root{
+      --bg:#0A0F1E;--bg-2:#111827;--bg-3:#1E293B;
+      --teal:#2DD4BF;--teal-dark:#0D9488;
+      --text:#F1F5F9;--text-muted:#94A3B8;--text-dim:#64748B;
+      --border-dim:rgba(255,255,255,0.07);
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+    a{color:var(--teal);text-decoration:none;}
+    a:hover{text-decoration:underline;}
+
+    /* ── Ticker ── */
+    .ticker-bar{height:37px;display:flex;align-items:center;padding:0;background:#0D1B2A;overflow:hidden;position:sticky;top:0;z-index:1000;border-bottom:1px solid var(--border-dim);}
+    .ticker-track{display:flex;gap:0;white-space:nowrap;animation:ticker-scroll 40s linear infinite;}
+    .ticker-track:hover{animation-play-state:paused;}
+    @keyframes ticker-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    .ticker-item{display:inline-flex;align-items:center;gap:6px;padding:0 18px;font-size:12px;font-weight:600;color:var(--text-muted);}
+    .ticker-item .sym{color:var(--text);font-weight:700;}
+    .ticker-item .up{color:#22C55E;}
+    .ticker-item .dn{color:#EF4444;}
+    .ticker-sep{color:var(--border-dim);padding:0 2px;}
+
+    /* ── Nav ── */
+    .nav{position:sticky;top:37px;z-index:999;background:rgba(10,15,30,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-dim);}
+    .nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+    .logo-img{height:32px;width:32px;border-radius:6px;object-fit:cover;}
+    .logo-text{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-0.3px;}
+    .logo-text span{color:var(--teal);}
+    .nav-links{display:flex;list-style:none;gap:4px;}
+    .nav-links li a{font-size:13px;color:var(--text-muted);padding:6px 10px;border-radius:7px;transition:color 0.2s,background 0.2s;}
+    .nav-links li a:hover{color:var(--text);background:rgba(255,255,255,0.05);text-decoration:none;}
+    .nav-hamburger{display:none;background:none;border:none;color:var(--text);font-size:22px;cursor:pointer;padding:4px 8px;}
+    .mobile-menu{display:none;flex-direction:column;background:var(--bg-2);border-bottom:1px solid var(--border-dim);padding:12px 24px 16px;}
+    .mobile-menu.open{display:flex;}
+    .mobile-menu a{color:var(--text-muted);font-size:14px;padding:8px 0;border-bottom:1px solid var(--border-dim);}
+    .mobile-menu a:last-child{border-bottom:none;}
+    @media(max-width:768px){.nav-links{display:none;}.nav-hamburger{display:block;}}
+
+    /* ── Content ── */
+    .legal-hero{background:linear-gradient(135deg,#0A0F1E 0%,#0D1B2A 100%);border-bottom:1px solid var(--border-dim);padding:56px 24px 40px;}
+    .legal-hero-inner{max-width:800px;margin:0 auto;}
+    .legal-hero .tag{display:inline-block;font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:1px;background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.2);border-radius:20px;padding:3px 12px;margin-bottom:16px;}
+    .legal-hero h1{font-size:32px;font-weight:800;letter-spacing:-0.5px;margin-bottom:10px;}
+    .legal-hero p{color:var(--text-muted);font-size:14px;}
+
+    .legal-tabs{background:var(--bg-2);border-bottom:1px solid var(--border-dim);position:sticky;top:101px;z-index:100;}
+    .legal-tabs-inner{max-width:800px;margin:0 auto;padding:0 24px;display:flex;gap:4px;}
+    .tab-btn{padding:14px 20px;font-size:13px;font-weight:600;color:var(--text-muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color 0.2s,border-color 0.2s;margin-bottom:-1px;}
+    .tab-btn:hover{color:var(--text);}
+    .tab-btn.active{color:var(--teal);border-bottom-color:var(--teal);}
+
+    .legal-body{max-width:800px;margin:0 auto;padding:40px 24px 80px;}
+    .tab-panel{display:none;}
+    .tab-panel.active{display:block;}
+
+    .legal-body h2{font-size:20px;font-weight:700;color:var(--text);margin:36px 0 12px;}
+    .legal-body h2:first-child{margin-top:0;}
+    .legal-body h3{font-size:15px;font-weight:700;color:var(--teal);margin:24px 0 8px;}
+    .legal-body p{font-size:14px;color:var(--text-muted);margin-bottom:14px;line-height:1.8;}
+    .legal-body ul{padding-left:20px;margin-bottom:14px;}
+    .legal-body ul li{font-size:14px;color:var(--text-muted);margin-bottom:6px;line-height:1.7;}
+    .legal-body .updated{font-size:12px;color:var(--text-dim);margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border-dim);}
+    .callout{background:rgba(45,212,191,0.05);border-left:3px solid var(--teal);border-radius:0 8px 8px 0;padding:14px 18px;margin:20px 0;}
+    .callout p{margin:0;color:var(--text-muted);}
+
+    /* ── Footer ── */
+    .footer{background:#060A14;border-top:1px solid var(--border-dim);padding:48px 24px 24px;}
+    .footer-inner{max-width:1100px;margin:0 auto;}
+    .footer-bottom{display:flex;flex-direction:column;gap:6px;padding-top:24px;border-top:1px solid var(--border-dim);margin-top:24px;}
+    .footer-bottom p{font-size:12px;color:var(--text-dim);}
+    .disclaimer{font-size:11px;color:var(--text-dim);margin-top:10px;}
+  </style>
+
+  <!-- ── Cookie Banner ── -->
+  <style>
+    #cookieBanner{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#111827;border-top:1px solid rgba(45,212,191,0.2);padding:14px 24px;display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between;transform:translateY(100%);transition:transform 0.4s ease;font-family:'Segoe UI',system-ui,sans-serif;}
+    #cookieBanner.show{transform:translateY(0);}
+    #cookieBanner p{font-size:13px;color:#94A3B8;flex:1;min-width:220px;margin:0;}
+    #cookieBanner a{color:#2DD4BF;}
+    .cookie-accept{padding:9px 20px;border-radius:8px;background:#2DD4BF;color:#0A0F1E;font-size:13px;font-weight:700;border:none;cursor:pointer;white-space:nowrap;transition:opacity 0.2s;}
+    .cookie-accept:hover{opacity:0.85;}
+    .cookie-decline{padding:9px 16px;border-radius:8px;background:transparent;color:#64748B;font-size:13px;font-weight:600;border:1px solid rgba(255,255,255,0.1);cursor:pointer;white-space:nowrap;}
+    .cookie-decline:hover{color:#94A3B8;}
+  </style>
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website"/>
+  <meta property="og:url"         content="https://snrtrades.com/legal.html"/>
+  <meta property="og:title"       content="Terms & Privacy — Trends & Trade"/>
+  <meta property="og:description" content="Terms of Service and Privacy Policy for snrtrades.com."/>
+  <meta property="og:image"       content="https://snrtrades.com/images/logo.jpg"/>
+  <meta name="twitter:card"       content="summary_large_image"/>
+  <meta name="twitter:title"      content="Terms & Privacy — Trends & Trade"/>
+  <meta name="twitter:description" content="Terms of Service and Privacy Policy for snrtrades.com."/>
+  <meta name="twitter:image"      content="https://snrtrades.com/images/logo.jpg"/>
+</head>
+<body>
+
+  <!-- ══ TICKER ══ -->
+  <div class="ticker-bar">
+    <div class="ticker-track" id="ticker">
+      <span class="ticker-item"><span class="sym">Loading</span><span class="ticker-sep">|</span>live prices…</span>
+    </div>
+  </div>
+
+  <!-- ══ NAV ══ -->
+  <nav class="nav" id="mainNav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="logo.png" class="logo-img" alt="Trends &amp; Trade"/>
+        <div class="logo-text">Trends <span>&amp;</span> Trade</div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="library.html">Library</a></li>
+        <li><a href="courses.html">Courses</a></li>
+        <li><a href="social.html">Media</a></li>
+        <li><a href="team.html">Team</a></li>
+        <li><a href="about.html">About Us</a></li>
+      </ul>
+      <button class="nav-hamburger" onclick="toggleMenu()">☰</button>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">Home</a>
+    <a href="library.html">Library</a>
+    <a href="courses.html">Courses</a>
+    <a href="social.html">Media</a>
+    <a href="team.html">Team</a>
+    <a href="about.html">About Us</a>
+  </div>
+
+  <!-- ══ HERO ══ -->
+  <div class="legal-hero">
+    <div class="legal-hero-inner">
+      <div class="tag">Legal</div>
+      <h1>Terms &amp; Privacy</h1>
+      <p>Please read these policies carefully before using snrtrades.com.</p>
+    </div>
+  </div>
+
+  <!-- ══ TABS ══ -->
+  <div class="legal-tabs">
+    <div class="legal-tabs-inner">
+      <button class="tab-btn active" onclick="showTab('terms',this)">Terms of Service</button>
+      <button class="tab-btn" onclick="showTab('privacy',this)">Privacy Policy</button>
+    </div>
+  </div>
+
+  <!-- ══ BODY ══ -->
+  <div class="legal-body">
+
+    <!-- TERMS OF SERVICE -->
+    <div class="tab-panel active" id="tab-terms">
+      <p class="updated">Last updated: July 2026</p>
+
+      <div class="callout">
+        <p><strong>Educational content only.</strong> Nothing on this site constitutes financial advice, investment advice, or a recommendation to buy or sell any financial instrument. Trading involves significant risk and you may lose more than you invest.</p>
+      </div>
+
+      <h2>1. Acceptance of Terms</h2>
+      <p>By accessing or using the Trends &amp; Trade website at snrtrades.com ("Site"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree with any part of these Terms, you must not use our Site.</p>
+
+      <h2>2. Educational Purpose Only</h2>
+      <p>All content published on this Site — including articles, videos, tutorials, market commentary, analysis, and course materials — is provided solely for educational and informational purposes.</p>
+      <ul>
+        <li>Nothing on this Site is financial advice or investment advice.</li>
+        <li>We are not a licensed financial advisor, broker, or investment firm.</li>
+        <li>Past performance of any trading strategy is not indicative of future results.</li>
+        <li>You are solely responsible for any trading or investment decisions you make.</li>
+      </ul>
+
+      <h2>3. Risk Disclaimer</h2>
+      <p>Trading financial instruments including stocks, cryptocurrencies, commodities, and foreign exchange carries a high degree of risk. You should only trade with capital you can afford to lose. Before trading, you should be aware of all the risks and seek independent financial advice if necessary.</p>
+
+      <h2>4. Intellectual Property</h2>
+      <p>All content on this Site — including text, graphics, logos, images, video, and course materials — is the property of Trends &amp; Trade and protected by applicable copyright and intellectual property laws.</p>
+      <h3>You may not:</h3>
+      <ul>
+        <li>Reproduce, distribute, or republish any content without written permission.</li>
+        <li>Use content for commercial purposes without our prior consent.</li>
+        <li>Remove any copyright or proprietary notices from downloaded materials.</li>
+      </ul>
+      <h3>You may:</h3>
+      <ul>
+        <li>Share links to our content for personal, non-commercial use.</li>
+        <li>Download PDF articles for personal study purposes only.</li>
+      </ul>
+
+      <h2>5. User Conduct</h2>
+      <p>When using any community features or interacting with our platform, you agree not to:</p>
+      <ul>
+        <li>Post false, misleading, or defamatory content.</li>
+        <li>Harass or intimidate other users or our team.</li>
+        <li>Attempt to gain unauthorized access to any part of the Site.</li>
+        <li>Use automated tools to scrape or harvest content.</li>
+        <li>Spam or promote unrelated products or services.</li>
+      </ul>
+
+      <h2>6. Third-Party Links</h2>
+      <p>Our Site may contain links to third-party websites (e.g., YouTube, Instagram, TikTok). We have no control over and accept no responsibility for the content, privacy policies, or practices of those sites.</p>
+
+      <h2>7. Limitation of Liability</h2>
+      <p>To the maximum extent permitted by law, Trends &amp; Trade shall not be liable for any direct, indirect, incidental, or consequential loss or damage arising from your use of this Site or reliance on any information provided herein, including any trading losses.</p>
+
+      <h2>8. Changes to Terms</h2>
+      <p>We reserve the right to update these Terms at any time. Continued use of the Site after changes constitutes acceptance of the revised Terms. We will update the "Last updated" date at the top of this page.</p>
+
+      <h2>9. Governing Law</h2>
+      <p>These Terms are governed by and construed in accordance with the laws of the United Arab Emirates. Any disputes shall be subject to the exclusive jurisdiction of the courts of the UAE.</p>
+
+      <h2>10. Contact</h2>
+      <p>For any questions about these Terms, please contact us via the community channels listed on our <a href="social.html">Media page</a>.</p>
+    </div>
+
+    <!-- PRIVACY POLICY -->
+    <div class="tab-panel" id="tab-privacy">
+      <p class="updated">Last updated: July 2026</p>
+
+      <h2>1. Introduction</h2>
+      <p>Trends &amp; Trade ("we", "us", or "our") operates snrtrades.com. This Privacy Policy explains how we collect, use, and protect any information you provide when using our Site.</p>
+
+      <h2>2. Information We Collect</h2>
+      <h3>Information you provide</h3>
+      <ul>
+        <li>Contact details if you reach out to us directly (e.g., email or WhatsApp).</li>
+        <li>Information submitted via any contact or sign-up forms.</li>
+      </ul>
+      <h3>Information collected automatically</h3>
+      <ul>
+        <li><strong>Browser storage (localStorage):</strong> We store your reading progress and preferences (e.g., topics you have read, cookie consent) locally in your browser. This data stays on your device and is never transmitted to our servers.</li>
+        <li><strong>Log data:</strong> Like most websites, our hosting provider may automatically log your IP address, browser type, pages visited, and time of visit for security and performance purposes.</li>
+      </ul>
+
+      <h2>3. Cookies</h2>
+      <p>We use a minimal cookie/localStorage approach:</p>
+      <ul>
+        <li><strong>tt_cookie_ok</strong> — Records your cookie consent choice (stored in localStorage).</li>
+        <li><strong>tt_read</strong> — Records which library articles you have read (stored in localStorage, on your device only).</li>
+      </ul>
+      <p>We do not use tracking cookies, advertising cookies, or third-party analytics cookies.</p>
+
+      <h2>4. Third-Party Services</h2>
+      <p>Our Site may load content from the following third-party services, which have their own privacy policies:</p>
+      <ul>
+        <li><strong>CoinGecko API</strong> — Used to display live cryptocurrency prices in the ticker bar. No personal data is sent.</li>
+        <li><strong>YouTube, Instagram, TikTok</strong> — Linked for educational video content. These platforms may set their own cookies when you visit them.</li>
+        <li><strong>pdfmake</strong> — An open-source JavaScript library used client-side to generate PDFs. No data leaves your browser.</li>
+      </ul>
+
+      <h2>5. How We Use Information</h2>
+      <ul>
+        <li>To provide and improve our educational content.</li>
+        <li>To respond to enquiries submitted directly to us.</li>
+        <li>To ensure the security and performance of the Site.</li>
+      </ul>
+      <p>We do not sell, trade, or rent your personal information to any third party.</p>
+
+      <h2>6. Data Retention</h2>
+      <p>Reading progress and preferences stored in your browser's localStorage remain there until you clear your browser data. We do not store personal data on our own servers beyond standard web server logs, which are retained for a maximum of 90 days.</p>
+
+      <h2>7. Your Rights</h2>
+      <p>You have the right to:</p>
+      <ul>
+        <li>Clear your localStorage data at any time via your browser settings.</li>
+        <li>Request deletion of any personal data we may hold — contact us and we will respond within 30 days.</li>
+      </ul>
+
+      <h2>8. Children's Privacy</h2>
+      <p>Our Site is intended for adults. We do not knowingly collect personal data from individuals under the age of 18. If you believe a minor has provided us with personal information, please contact us immediately.</p>
+
+      <h2>9. Changes to This Policy</h2>
+      <p>We may update this Privacy Policy from time to time. We will revise the "Last updated" date above when changes are made. Continued use of the Site after changes constitutes acceptance of the revised policy.</p>
+
+      <h2>10. Contact</h2>
+      <p>For any privacy-related questions, please contact us via our <a href="social.html">Media page</a> or community channels.</p>
+    </div>
+
+  </div>
+
+  <!-- ══ FOOTER ══ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-bottom">
+        <p>© 2026 Trends &amp; Trade. All rights reserved.</p>
+        <p style="color:var(--teal);font-weight:600;">S&amp;R Intelligent Trading System</p>
+      </div>
+      <p class="disclaimer">⚠️ Trading involves significant risk. Past performance is not indicative of future results. This is educational content only.</p>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+    function showTab(id, btn) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + id).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    // ── Ticker ──
+    const track = document.getElementById('ticker');
+    const COINS = ['bitcoin','ethereum','solana','binancecoin','ripple','cardano'];
+    const SYMS  = {bitcoin:'BTC',ethereum:'ETH',solana:'SOL',binancecoin:'BNB',ripple:'XRP',cardano:'ADA'};
+    function buildTicker(prices) {
+      let html = '';
+      for (const id of COINS) {
+        const p = prices[id];
+        if (!p) continue;
+        const chg = p.usd_24h_change || 0;
+        const dir = chg >= 0 ? 'up' : 'dn';
+        const arrow = chg >= 0 ? '▲' : '▼';
+        html += `<span class="ticker-item"><span class="sym">${SYMS[id]}</span> $${p.usd.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})} <span class="${dir}">${arrow} ${Math.abs(chg).toFixed(2)}%</span><span class="ticker-sep">|</span></span>`;
+      }
+      track.innerHTML = html + html;
+    }
+    async function fetchTickerPrices() {
+      try {
+        const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${COINS.join(',')}&vs_currencies=usd&include_24hr_change=true`);
+        if (!res.ok) throw new Error();
+        buildTicker(await res.json());
+      } catch(e) {
+        track.innerHTML = '<span class="ticker-item"><span class="sym">BTC</span> Live prices unavailable</span>';
+      }
+    }
+    fetchTickerPrices();
+  </script>
+
+  <!-- ── Cookie Banner ── -->
+  <div id="cookieBanner" role="dialog" aria-label="Cookie notice">
+    <p>We use browser storage (localStorage) to save your reading progress and preferences — no tracking cookies. <a href="legal.html">Learn more</a></p>
+    <button class="cookie-decline" onclick="cookieChoice(false)">Decline</button>
+    <button class="cookie-accept" onclick="cookieChoice(true)">Accept</button>
+  </div>
+  <script>
+    (function(){
+      var v = localStorage.getItem('tt_cookie_ok');
+      if (v === null) { setTimeout(function(){ var b=document.getElementById('cookieBanner'); if(b) b.classList.add('show'); }, 800); }
+    })();
+    function cookieChoice(yes) {
+      localStorage.setItem('tt_cookie_ok', yes ? '1' : '0');
+      var b = document.getElementById('cookieBanner');
+      if (b) { b.classList.remove('show'); }
+    }
+  </script>
+</body>
+</html>
