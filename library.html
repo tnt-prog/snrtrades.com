@@ -87,7 +87,7 @@
     .topic-link.no-content{cursor:default;opacity:0.45;}
     .topic-link.no-content:hover{color:var(--text-muted);background:none;}
     .topic-soon-tag{font-size:9px;font-weight:700;color:var(--text-dim);background:rgba(255,255,255,0.05);border:1px solid var(--border-dim);border-radius:4px;padding:1px 5px;margin-left:auto;flex-shrink:0;letter-spacing:0.04em;}
-    .topic-link-dot{width:7px;height:7px;border-radius:50%;background:var(--text-dim);flex-shrink:0;opacity:0.5;}
+    .topic-link-dot{width:10px;height:10px;border-radius:50%;background:var(--text-dim);flex-shrink:0;opacity:0.5;}
     .topic-link.topic-done .topic-link-dot{opacity:0.8;}
     .topic-link.topic-done{color:var(--text-muted);}
     .topic-link.topic-read .topic-link-dot::after{content:'✓';position:absolute;font-size:8px;color:#22C55E;left:-1px;top:-1px;}
@@ -1313,7 +1313,6 @@ function buildSidebar(data) {
     grp.innerHTML = `
       <div class="cat-header" onclick="selectCategory(this.parentElement, '${cat.id}')">
         <div class="cat-header-left">
-          <span class="cat-icon">${cat.icon}</span>
           <span class="cat-title">${cat.title}</span>
           <span class="cat-count">${cat.topics.length}</span>
         </div>
@@ -1360,14 +1359,19 @@ function expandCategory(id) {
   const target = document.querySelector(`.cat-group[data-catid="${id}"]`);
   if (!target) return;
   target.classList.add('open');
-  // Scroll sidebar to bring target into view
-  const sidebar = document.getElementById('libSidebar');
-  if (sidebar) {
-    const topOffset = target.offsetTop - sidebar.offsetTop;
-    sidebar.scrollTo({ top: topOffset - 56, behavior: 'smooth' });
-  }
+  // Scroll page to top so sidebar is visible
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   // Focus the clicked thumbnail
   focusThumbnail(id);
+  // Scroll sidebar after a brief delay so the DOM has expanded
+  setTimeout(() => {
+    const sidebar = document.getElementById('libSidebar');
+    if (!sidebar) return;
+    const sidebarRect = sidebar.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    const scrollTo = sidebar.scrollTop + (targetRect.top - sidebarRect.top) - 16;
+    sidebar.scrollTo({ top: scrollTo, behavior: 'smooth' });
+  }, 80);
 }
 
 function focusThumbnail(id) {
@@ -1674,6 +1678,8 @@ function toggleMenu() {
 
 // ── Initialise ────────────────────────────────────────────────────────────────
 buildSidebar(LIBRARY);
+// Capture the welcome panel (thumbnail grid) so resetThumbnails() can restore it
+welcomePanelHTML = document.getElementById('libPanel').innerHTML;
 
 // Restore read markers
 try {
