@@ -827,7 +827,7 @@ const TOPIC_SEQ = buildSeqMap();
 let logoPngDataUrl = null;
 (async function preloadLogo() {
   try {
-    const res = await fetch('images/Librarylogo.jpg');
+    const res = await fetch('logo.png');
     const blob = await res.blob();
     const objUrl = URL.createObjectURL(blob);
     await new Promise(resolve => {
@@ -846,21 +846,22 @@ let logoPngDataUrl = null;
   } catch(e) {}
 })();
 
-// ── Convert image URL to data URL via FileReader (reliable for multiple images) ─
-async function imgToDataUrl(src) {
-  try {
-    const res = await fetch(src);
-    if (res.ok) {
-      const blob = await res.blob();
-      return await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.onerror = () => resolve(null);
-        reader.readAsDataURL(blob);
-      });
-    }
-  } catch(e) {}
-  return null;
+// ── Convert image URL to data URL (Image + Canvas — reliable for same-origin) ─
+function imgToDataUrl(src) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const c = document.createElement('canvas');
+        c.width = img.naturalWidth || img.width;
+        c.height = img.naturalHeight || img.height;
+        c.getContext('2d').drawImage(img, 0, 0);
+        resolve(c.toDataURL('image/jpeg', 0.88));
+      } catch(e) { resolve(null); }
+    };
+    img.onerror = () => resolve(null);
+    img.src = src + (src.includes('?') ? '&' : '?') + '_pdf=' + Date.now();
+  });
 }
 
 // ── Convert HTML callout text to pdfmake text array ───────────────────────────
