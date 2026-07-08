@@ -1865,7 +1865,7 @@
   </style>
   <div id="cookieBanner" role="dialog" aria-label="Cookie notice">
     <p>We use browser storage (localStorage) to save your reading progress and preferences — no tracking cookies. <a href="legal.html">Learn more</a></p>
-    <button class="cookie-decline" onclick="cookieChoice(false)">Decline</button>
+    <button class="cookie-decline" onclick="    <button class="cookie-decline" onclick="cookieChoice(false)">Decline</button>
     <button class="cookie-accept" onclick="cookieChoice(true)">Accept</button>
   </div>
   <script>
@@ -1876,7 +1876,7 @@
     function cookieChoice(yes) {
       localStorage.setItem('tt_cookie_ok', yes ? '1' : '0');
       var b = document.getElementById('cookieBanner');
-      if (b) b.classList.remove('show');
+      if (b) { b.classList.remove('show'); }
     }
   </script>
 </body>
