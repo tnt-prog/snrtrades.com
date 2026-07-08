@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <link rel="icon" type="image/jpeg" href="images/logo.jpg"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Trends & Trade — Social</title>
   <meta name="description" content="Follow Trends & Trade on Instagram and TikTok for free trading lessons, chart setups, and market analysis."/>
@@ -426,6 +427,28 @@
     @keyframes shimmer { 0%,100%{opacity:0.4} 50%{opacity:0.9} }
 
   </style>
+
+  <!-- ── Cookie Banner ── -->
+  <style>
+    #cookieBanner{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#111827;border-top:1px solid rgba(45,212,191,0.2);padding:14px 24px;display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between;transform:translateY(100%);transition:transform 0.4s ease;font-family:'Segoe UI',system-ui,sans-serif;}
+    #cookieBanner.show{transform:translateY(0);}
+    #cookieBanner p{font-size:13px;color:#94A3B8;flex:1;min-width:220px;margin:0;}
+    #cookieBanner a{color:#2DD4BF;}
+    .cookie-accept{padding:9px 20px;border-radius:8px;background:#2DD4BF;color:#0A0F1E;font-size:13px;font-weight:700;border:none;cursor:pointer;white-space:nowrap;transition:opacity 0.2s;}
+    .cookie-accept:hover{opacity:0.85;}
+    .cookie-decline{padding:9px 16px;border-radius:8px;background:transparent;color:#64748B;font-size:13px;font-weight:600;border:1px solid rgba(255,255,255,0.1);cursor:pointer;white-space:nowrap;}
+    .cookie-decline:hover{color:#94A3B8;}
+  </style>
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website"/>
+  <meta property="og:url"         content="https://snrtrades.com/social.html"/>
+  <meta property="og:title"       content="Media & Social — Trends & Trade"/>
+  <meta property="og:description" content="Follow Trends & Trade on YouTube, Instagram, TikTok and Telegram for daily trading insights."/>
+  <meta property="og:image"       content="https://snrtrades.com/images/logo.jpg"/>
+  <meta name="twitter:card"       content="summary_large_image"/>
+  <meta name="twitter:title"      content="Media & Social — Trends & Trade"/>
+  <meta name="twitter:description" content="Follow Trends & Trade on YouTube, Instagram, TikTok and Telegram for daily trading insights."/>
+  <meta name="twitter:image"      content="https://snrtrades.com/images/logo.jpg"/>
 </head>
 <body>
 
@@ -754,5 +777,23 @@
   fetchTicker();
   setInterval(fetchTicker, 60000);
 </script>
+
+  <!-- ── Cookie Banner ── -->
+  <div id="cookieBanner" role="dialog" aria-label="Cookie notice">
+    <p>We use browser storage (localStorage) to save your reading progress and preferences — no tracking cookies. <a href="legal.html">Learn more</a></p>
+    <button class="cookie-decline" onclick="cookieChoice(false)">Decline</button>
+    <button class="cookie-accept" onclick="cookieChoice(true)">Accept</button>
+  </div>
+  <script>
+    (function(){
+      var v = localStorage.getItem('tt_cookie_ok');
+      if (v === null) { setTimeout(function(){ var b=document.getElementById('cookieBanner'); if(b) b.classList.add('show'); }, 800); }
+    })();
+    function cookieChoice(yes) {
+      localStorage.setItem('tt_cookie_ok', yes ? '1' : '0');
+      var b = document.getElementById('cookieBanner');
+      if (b) { b.classList.remove('show'); }
+    }
+  </script>
 </body>
 </html>
