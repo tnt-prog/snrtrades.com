@@ -1227,6 +1227,7 @@ const LIBRARY = [
       },
       { id: 'divergence-trading', title: 'Divergence in Trading: Regular and Hidden Divergence', level: 'Advanced', summary: 'Identify momentum disagreement between price and indicators to spot reversals and continuations.',
         content: [
+          { type: 'image', src: 'images/Divergence_Main.jpg', alt: 'Divergence in Trading: Regular and Hidden Divergence' },
           { type: 'heading', text: 'Executive Overview' },
           { type: 'paragraph', text: 'Divergence is an advanced technical analysis concept used to identify potential disagreement between price movement and momentum behavior. It occurs when price forms a new high or new low, but a momentum indicator does not confirm that movement. This disagreement may indicate that the current move is losing strength, preparing for a reversal, or setting up for trend continuation depending on the type of divergence.' },
           { type: 'paragraph', text: 'Divergence is commonly studied using momentum indicators such as RSI, MACD, Stochastic Oscillator, CCI, or other oscillators. Among these, RSI and MACD are widely used because they help traders evaluate changes in market momentum, strength, and exhaustion.' },
