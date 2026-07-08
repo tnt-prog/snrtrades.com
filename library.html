@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <link rel="icon" type="image/jpeg" href="images/logo.jpg"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Trading Library — Trends &amp; Trade</title>
   <meta name="description" content="Free trading education library — candlesticks, S&R, chart patterns and more."/>
@@ -86,9 +87,25 @@
     .topic-link-dot{width:7px;height:7px;border-radius:50%;background:var(--text-dim);flex-shrink:0;opacity:0.5;}
     .topic-link.topic-done .topic-link-dot{opacity:0.8;}
     .topic-link.topic-done{color:var(--text-muted);}
+    .topic-link.topic-read .topic-link-dot::after{content:'✓';position:absolute;font-size:8px;color:#22C55E;left:-1px;top:-1px;}
+    .topic-link.topic-read .topic-link-dot{position:relative;}
     .topic-link[data-level="Beginner"] .topic-link-dot{background:#22C55E !important;opacity:1 !important;box-shadow:0 0 5px rgba(34,197,94,0.4);}
     .topic-link[data-level="Intermediate"] .topic-link-dot{background:#F59E0B !important;opacity:1 !important;box-shadow:0 0 5px rgba(245,158,11,0.4);}
     .topic-link[data-level="Advanced"] .topic-link-dot{background:#EF4444 !important;opacity:1 !important;box-shadow:0 0 5px rgba(239,68,68,0.4);}
+
+    /* Related topics */
+    .related-topics{margin-top:32px;padding-top:24px;border-top:1px solid var(--border-dim);}
+    .related-topics-label{font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:12px;}
+    .related-grid{display:flex;flex-direction:column;gap:8px;}
+    .related-card{background:var(--bg-2);border:1px solid var(--border-dim);border-radius:10px;padding:10px 14px;cursor:pointer;transition:border-color 0.2s,background 0.2s;}
+    .related-card:hover{border-color:rgba(45,212,191,0.3);background:var(--bg-3);}
+    .related-card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;}
+    .related-card-meta{font-size:11px;color:var(--text-muted);}
+
+    /* Back to top */
+    #backToTop{position:fixed;bottom:28px;right:24px;z-index:300;width:40px;height:40px;border-radius:50%;background:var(--teal);color:#070F1A;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(45,212,191,0.35);transition:all 0.2s;font-size:18px;}
+    #backToTop:hover{background:var(--teal-dark);transform:translateY(-2px);}
+    #backToTop.visible{display:flex;}
 
     /* Reading panel */
     .lib-panel{background:var(--bg);overflow-y:auto;max-height:calc(100vh - 180px);}
@@ -129,12 +146,19 @@
     .level-beginner{background:rgba(34,197,94,0.12);color:#22C55E;border:1px solid rgba(34,197,94,0.25);}
     .level-intermediate{background:rgba(251,191,36,0.12);color:#FBBF24;border:1px solid rgba(251,191,36,0.25);}
     .level-advanced{background:rgba(239,68,68,0.12);color:#EF4444;border:1px solid rgba(239,68,68,0.25);}
+    .read-time-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--text-muted);background:rgba(255,255,255,0.05);border:1px solid var(--border-dim);border-radius:20px;padding:2px 10px;}
     .cat-badge{font-size:10px;font-weight:600;color:var(--text-dim);background:var(--bg-3);padding:3px 10px;border-radius:10px;}
     .topic-title-h{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:800;line-height:1.2;}
     .download-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.3);color:var(--teal);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
     .download-btn:hover{background:rgba(45,212,191,0.18);}
     .download-btn.loading{opacity:0.6;cursor:wait;}
-    .topic-divider{height:1px;background:var(--border);margin:24px 0;}
+    .share-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 16px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid var(--border-dim);color:var(--text-muted);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;position:relative;}
+    .share-btn:hover{border-color:rgba(45,212,191,0.3);color:var(--teal);}
+    .share-dropdown{display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--bg-2);border:1px solid var(--border-dim);border-radius:10px;padding:6px;min-width:160px;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,0.3);}
+    .share-btn.open .share-dropdown{display:block;}
+    .share-option{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:7px;cursor:pointer;font-size:13px;color:var(--text);transition:background 0.15s;}
+    .share-option:hover{background:var(--bg-3);}
+    .topic-divider{height:2px;background:linear-gradient(90deg,var(--teal) 0%,rgba(45,212,191,0.15) 60%,transparent 100%);margin:24px 0;border-radius:2px;}
 
     /* Content blocks */
     .content-h2{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;margin:28px 0 12px;color:var(--text);transition:font-size 0.25s ease;}
@@ -149,6 +173,18 @@
     .content-callout strong{color:var(--teal);}
 
     /* Sidebar header */
+    .lib-search-wrap{padding:10px 14px 6px;border-bottom:1px solid var(--border-dim);}
+    .lib-search-input{width:100%;background:var(--bg-3);border:1px solid var(--border-dim);border-radius:8px;padding:7px 12px 7px 32px;font-size:12px;color:var(--text);outline:none;transition:border-color 0.2s;}
+    .lib-search-input:focus{border-color:var(--teal);}
+    .lib-search-input::placeholder{color:var(--text-dim);}
+    .lib-search-wrap{position:relative;}
+    .lib-search-icon{position:absolute;left:26px;top:50%;transform:translateY(-50%);color:var(--text-dim);pointer-events:none;}
+    .search-results{padding:8px 14px;}
+    .search-result-item{padding:7px 10px;border-radius:8px;cursor:pointer;font-size:12px;color:var(--text-muted);transition:background 0.15s;display:flex;flex-direction:column;gap:2px;}
+    .search-result-item:hover{background:var(--bg-3);color:var(--text);}
+    .search-result-title{font-weight:600;color:var(--text);}
+    .search-result-cat{font-size:10px;color:var(--teal);opacity:0.8;}
+    .search-no-results{padding:12px 14px;font-size:12px;color:var(--text-dim);text-align:center;}
     .sidebar-header{
       padding:16px 18px 12px;
       border-bottom:1px solid var(--border);
@@ -430,6 +466,16 @@
     .lib-footer{text-align:center;padding:28px 0;border-top:1px solid var(--border);margin-top:40px;font-size:12px;color:var(--text-dim);line-height:1.8;}
     .lib-footer a{color:var(--teal);text-decoration:none;}
   </style>
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website"/>
+  <meta property="og:url"         content="https://snrtrades.com/library.html"/>
+  <meta property="og:title"       content="Trading Library — Trends & Trade"/>
+  <meta property="og:description" content="100+ free trading education articles covering Technical Analysis, Fundamental Analysis, Stocks, Crypto, Commodities and Forex."/>
+  <meta property="og:image"       content="https://snrtrades.com/images/logo.jpg"/>
+  <meta name="twitter:card"       content="summary_large_image"/>
+  <meta name="twitter:title"      content="Trading Library — Trends & Trade"/>
+  <meta name="twitter:description" content="100+ free trading education articles covering Technical Analysis, Fundamental Analysis, Stocks, Crypto, Commodities and Forex."/>
+  <meta name="twitter:image"      content="https://snrtrades.com/images/logo.jpg"/>
 </head>
 <body>
 
@@ -880,6 +926,45 @@ function htmlToPdfText(html) {
 }
 
 
+// ── Share ─────────────────────────────────────────────────────────────────────
+function toggleShareMenu(e) {
+  e.stopPropagation();
+  const btn = document.getElementById('shareBtn');
+  btn.classList.toggle('open');
+}
+document.addEventListener('click', () => {
+  const btn = document.getElementById('shareBtn');
+  if (btn) btn.classList.remove('open');
+});
+function shareWhatsApp(e) {
+  e.stopPropagation();
+  const panel = document.querySelector('.topic-title-h');
+  const title = panel ? panel.textContent.trim() : document.title;
+  const url = encodeURIComponent(window.location.href);
+  const text = encodeURIComponent('Check out this trading article: ' + title + ' — ' + window.location.href);
+  window.open('https://wa.me/?text=' + text, '_blank');
+  document.getElementById('shareBtn').classList.remove('open');
+}
+function shareTwitter(e) {
+  e.stopPropagation();
+  const panel = document.querySelector('.topic-title-h');
+  const title = panel ? panel.textContent.trim() : document.title;
+  const text = encodeURIComponent(title + ' — Trading education by @snrtrades');
+  const url = encodeURIComponent(window.location.href);
+  window.open('https://twitter.com/intent/tweet?text=' + text + '&url=' + url, '_blank');
+  document.getElementById('shareBtn').classList.remove('open');
+}
+function copyTopicLink(e) {
+  e.stopPropagation();
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.getElementById('shareBtn');
+    btn.classList.remove('open');
+    const orig = btn.querySelector('svg ~ *') || btn;
+    const label = [...btn.childNodes].find(n => n.nodeType === 3 && n.textContent.trim());
+    if (label) { label.textContent = ' Copied!'; setTimeout(() => { label.textContent = ' Share'; }, 2000); }
+  });
+}
+
 // ── Download PDF ──────────────────────────────────────────────────────────────
 async function downloadPDF() {
   if (!currentTopic || !currentTopic.content || !currentTopic.content.length) return;
@@ -983,8 +1068,8 @@ async function downloadPDF() {
       secHeading:   { fontSize: 14, bold: true,  color: BLACK },
       para:         { fontSize: 11, color: '#334155', lineHeight: 1.7 },
       listItem:     { fontSize: 11, color: '#334155', lineHeight: 1.55 },
-      hdrLeft:      { fontSize: 9,  color: GREY },
-      hdrRight:     { fontSize: 9,  color: GREY, alignment: 'right' },
+      hdrLeft:      { fontSize: 9,  color: TEAL },
+      hdrRight:     { fontSize: 9,  color: TEAL, alignment: 'right' },
       ftr:          { fontSize: 8.5, color: TEAL, alignment: 'center' },
       wmText:       { fontSize: 18, bold: true, color: '#CBD5E1' },
       wmSub:        { fontSize: 11, color: '#CBD5E1' },
@@ -1044,6 +1129,35 @@ function buildTotdCard() {
 // ── Welcome panel snapshot (restored when Topics & Articles is clicked) ───────
 let welcomePanelHTML = '';
 
+// ── Library search ───────────────────────────────────────────────────────────
+function searchLibrary(query) {
+  const resultsEl = document.getElementById('libSearchResults');
+  const q = query.trim().toLowerCase();
+  if (!q) {
+    resultsEl.style.display = 'none';
+    resultsEl.innerHTML = '';
+    return;
+  }
+  const matches = [];
+  LIBRARY.forEach(cat => {
+    cat.topics.forEach(t => {
+      if (t.title.toLowerCase().includes(q) || (t.summary||'').toLowerCase().includes(q)) {
+        matches.push({ topic: t, catTitle: cat.title, catId: cat.id });
+      }
+    });
+  });
+  if (!matches.length) {
+    resultsEl.innerHTML = '<div class="search-no-results">No topics found</div>';
+  } else {
+    resultsEl.innerHTML = matches.slice(0,8).map(m => `
+      <div class="search-result-item" onclick="expandCategory('${m.catId}');openTopic('${m.topic.id}');document.getElementById('libSearchInput').value='';document.getElementById('libSearchResults').style.display='none';">
+        <span class="search-result-title">${m.topic.title}</span>
+        <span class="search-result-cat">${m.catTitle}</span>
+      </div>`).join('');
+  }
+  resultsEl.style.display = 'block';
+}
+
 // ── Build sidebar ─────────────────────────────────────────────────────────────
 function buildSidebar(data) {
   const sb = document.getElementById('libSidebar');
@@ -1051,7 +1165,12 @@ function buildSidebar(data) {
     <div class="sidebar-header" onclick="resetThumbnails()" title="Click to show all categories">
       <div class="sidebar-header-label">Library</div>
       <div class="sidebar-header-title">Topics &amp; Articles</div>
-    </div>`;
+    </div>
+    <div class="lib-search-wrap">
+      <svg class="lib-search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="lib-search-input" id="libSearchInput" type="text" placeholder="Search topics..." oninput="searchLibrary(this.value)"/>
+    </div>
+    <div id="libSearchResults" style="display:none;"></div>`;
   // Display order
   const ORDER = ['technical-analysis','fundamental-analysis','stocks','commodities','crypto','forex'];
   const sorted = ORDER.map(id => data.find(c => c.id === id)).filter(Boolean);
@@ -1211,6 +1330,15 @@ function openTopic(id) {
       </div>`;
   }
 
+  // Calculate reading time
+  const wordCount = (topic.content||[]).reduce((acc, b) => {
+    if (b.type === 'paragraph') return acc + b.text.split(/\s+/).length;
+    if (b.type === 'list') return acc + b.items.join(' ').split(/\s+/).length;
+    if (b.type === 'callout') return acc + b.text.split(/\s+/).length;
+    return acc;
+  }, 0);
+  const readTime = Math.max(1, Math.ceil(wordCount / 200));
+
   panel.innerHTML = `
     <div class="topic-content">
       <div class="topic-top">
@@ -1218,6 +1346,7 @@ function openTopic(id) {
           <div class="topic-meta">
             <span class="level-badge ${levelClass}">${topic.level}</span>
             <span class="cat-badge">${catTitle}</span>
+            <span class="read-time-badge">⏱ ${readTime} min read</span>
           </div>
           <div class="topic-title-h">${topic.title} <span class="topic-id-badge" style="font-size:11px;vertical-align:middle;position:relative;top:-2px;">${TOPIC_SEQ[topic.id]||''}</span></div>
         </div>
@@ -1226,6 +1355,24 @@ function openTopic(id) {
             <button class="listen-btn" id="listenBtn" onclick="toggleListen()" ${!hasContent ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
               Listen
+            </button>
+            <button class="share-btn" id="shareBtn" onclick="toggleShareMenu(event)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              Share
+              <div class="share-dropdown" id="shareDropdown">
+                <div class="share-option" onclick="shareWhatsApp(event)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                  WhatsApp
+                </div>
+                <div class="share-option" onclick="shareTwitter(event)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#1DA1F2"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.264 5.634 5.9-5.634Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                  X (Twitter)
+                </div>
+                <div class="share-option" onclick="copyTopicLink(event)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copy Link
+                </div>
+              </div>
             </button>
             <button class="download-btn${hasContent ? '' : ' disabled'}" onclick="downloadPDF()">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -1253,10 +1400,53 @@ function openTopic(id) {
       ${blocksHTML}
     </div>`;
 
+  // Build related topics
+  let relatedHTML = '';
+  if (hasContent) {
+    const siblings = [];
+    for (const cat of LIBRARY) {
+      const found = cat.topics.find(t => t.id === topic.id);
+      if (found) {
+        cat.topics.filter(t => t.id !== topic.id && t.content && t.content.length)
+          .sort(() => 0.5 - Math.random()).slice(0,3)
+          .forEach(t => siblings.push({ t, catTitle: cat.title }));
+        break;
+      }
+    }
+    if (siblings.length) {
+      relatedHTML = `<div class="related-topics">
+        <div class="related-topics-label">Related Topics</div>
+        <div class="related-grid">
+          ${siblings.map(s => `<div class="related-card" onclick="openTopic('${s.t.id}')">
+            <div class="related-card-title">${s.t.title}</div>
+            <div class="related-card-meta">${s.t.level} · ${s.catTitle}</div>
+          </div>`).join('')}
+        </div>
+      </div>`;
+    }
+  }
+
+  // Append related topics to panel
+  const panelEl = document.getElementById('libPanel');
+  if (panelEl && relatedHTML) panelEl.querySelector('.topic-content').insertAdjacentHTML('beforeend', relatedHTML);
+
   // On mobile, scroll to top so content is immediately visible
   if (window.innerWidth <= 760) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+
+  // Mark topic as read in localStorage
+  try {
+    const readSet = JSON.parse(localStorage.getItem('tt_read') || '[]');
+    if (!readSet.includes(topic.id)) {
+      readSet.push(topic.id);
+      localStorage.setItem('tt_read', JSON.stringify(readSet));
+    }
+    // Update sidebar dot
+    document.querySelectorAll('.topic-link').forEach(el => {
+      if (readSet.includes(el.dataset.id)) el.classList.add('topic-read');
+    });
+  } catch(e) {}
 }
 
 // ── Text-to-Speech (per-sentence queue — works on mobile & desktop) ────────────
@@ -1358,126 +1548,78 @@ function toggleListen() {
     _ttsPaused = true;
     const btn = document.getElementById('listenBtn');
     if (btn) btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Resume';
-    return;
-  }
-  if (_ttsPaused) {
     _ttsPaused = false;
-    window.speechSynthesis.cancel();
+  } else if (window.speechSynthesis.paused && _ttsPaused) {
+    window.speechSynthesis.resume();
+    _ttsPaused = false;
     const btn = document.getElementById('listenBtn');
-    if (btn) btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause';
-    _speakIndex(_ttsIndex); // resume from same sentence
-    return;
-  }
-  startListening();
-}
-
-function startListening(fromIndex) {
-  window.speechSynthesis.cancel();
-  _ttsPaused = false;
-  _ttsQueue = _buildTtsQueue();
-  if (!_ttsQueue.length) return;
-
-  const btn = document.getElementById('listenBtn');
-  const bar = document.getElementById('ttsBar');
-  if (btn) { btn.classList.add('playing'); btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause'; }
-  if (bar) bar.classList.remove('tts-bar-hidden');
-
-  _ttsIndex = fromIndex || 0;
-
-  // Voices may not be loaded yet on first call — wait if needed
-  if (window.speechSynthesis.getVoices().length === 0) {
-    window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.onvoiceschanged = null; _speakIndex(_ttsIndex); };
+    if (btn) btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg> Listen';
   } else {
-    _speakIndex(_ttsIndex);
+    startListening();
   }
 }
 
 function stopListening() {
-  _ttsPaused = false;
-  _ttsIndex = 0;
-  _ttsExpectedIndex = -1;
   window.speechSynthesis.cancel();
+  _ttsPaused = false;
   _clearHighlight();
   _resetTtsUI();
 }
 
-function setTtsSpeed(val) {
-  if (!window.speechSynthesis.speaking && !_ttsPaused) return;
-  // Cancel current sentence and restart it at the new speed
-  const resumeIdx = _ttsIndex;
-  _ttsPaused = false;
-  window.speechSynthesis.cancel();
-  setTimeout(() => _speakIndex(resumeIdx), 50);
-}
+  // ── Initialization ────────────────────────────────────────────────────────
+  buildSidebar(LIBRARY);
 
-function _resetTtsUI() {
-  _ttsUtterance = null;
-  _ttsPaused = false;
-  const btn = document.getElementById('listenBtn');
-  const bar = document.getElementById('ttsBar');
-  if (btn) { btn.classList.remove('playing'); btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg> Listen'; }
-  if (bar) bar.classList.add('tts-bar-hidden');
-}
-
-// ── Search ────────────────────────────────────────────────────────────────────
-function filterTopics(q) {
-  const term = q.toLowerCase().trim();
-  document.querySelectorAll('.cat-block').forEach(block => {
-    let anyVisible = false;
-    block.querySelectorAll('.topic-item').forEach(item => {
-      const match = !term || item.textContent.toLowerCase().includes(term);
-      item.style.display = match ? '' : 'none';
-      if (match) anyVisible = true;
+  // Restore read state from localStorage
+  try {
+    const readSet = JSON.parse(localStorage.getItem('tt_read') || '[]');
+    document.querySelectorAll('.topic-link').forEach(el => {
+      if (readSet.includes(el.dataset.id)) el.classList.add('topic-read');
     });
-    block.style.display = anyVisible ? '' : 'none';
-    if (anyVisible && term) {
-      const list = block.querySelector('.topic-list');
-      if (list) list.style.display = 'block';
-    }
-  });
-}
+  } catch(e) {}
 
-// ── Image lightbox ────────────────────────────────────────────────────────────
-function openLightbox(src) {
-  const lb = document.getElementById('imgLightbox');
-  const img = document.getElementById('imgLightboxImg');
-  img.src = src;
-  lb.classList.add('open');
-}
-function closeLightbox() {
-  document.getElementById('imgLightbox').classList.remove('open');
-}
-
-// ── Nav scroll + mobile menu ──────────────────────────────────────────────────
-window.addEventListener('scroll', () => {
-  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 10);
-});
-function toggleMenu() {
-  document.getElementById('mobileMenu').classList.toggle('open');
-}
-
-// ── Initialise ───────────────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
-  if (typeof LIBRARY !== 'undefined') {
-    buildSidebar(LIBRARY);
-  } else {
-    // library-data.js loads async — wait for it
-    const wait = setInterval(() => {
-      if (typeof LIBRARY !== 'undefined') {
-        clearInterval(wait);
-        buildSidebar(LIBRARY);
+  // Open topic from URL param e.g. library.html?topic=support-resistance
+  (function() {
+    const params = new URLSearchParams(window.location.search);
+    const tid = params.get('topic');
+    if (!tid) return;
+    for (const cat of LIBRARY) {
+      const t = cat.topics.find(t => t.id === tid);
+      if (t) {
+        expandCategory(cat.id);
+        openTopic(tid);
+        break;
       }
-    }, 50);
-  }
-});
+    }
+  })();
 
-</script>
+  </script>
 
-<!-- Image lightbox -->
-<div class="img-lightbox" id="imgLightbox" onclick="closeLightbox()">
-  <span class="img-lightbox-close" onclick="closeLightbox()">&#x2715;</span>
-  <img id="imgLightboxImg" src="" alt=""/>
-</div>
-
+  <!-- ── Cookie Banner ── -->
+  <style>
+    #cookieBanner{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#111827;border-top:1px solid rgba(45,212,191,0.2);padding:14px 24px;display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between;transform:translateY(100%);transition:transform 0.4s ease;font-family:'Segoe UI',system-ui,sans-serif;}
+    #cookieBanner.show{transform:translateY(0);}
+    #cookieBanner p{font-size:13px;color:#94A3B8;flex:1;min-width:220px;margin:0;}
+    #cookieBanner a{color:#2DD4BF;}
+    .cookie-accept{padding:9px 20px;border-radius:8px;background:#2DD4BF;color:#0A0F1E;font-size:13px;font-weight:700;border:none;cursor:pointer;white-space:nowrap;transition:opacity 0.2s;}
+    .cookie-accept:hover{opacity:0.85;}
+    .cookie-decline{padding:9px 16px;border-radius:8px;background:transparent;color:#64748B;font-size:13px;font-weight:600;border:1px solid rgba(255,255,255,0.1);cursor:pointer;white-space:nowrap;}
+    .cookie-decline:hover{color:#94A3B8;}
+  </style>
+  <div id="cookieBanner" role="dialog" aria-label="Cookie notice">
+    <p>We use browser storage (localStorage) to save your reading progress and preferences — no tracking cookies. <a href="legal.html">Learn more</a></p>
+    <button class="cookie-decline" onclick="cookieChoice(false)">Decline</button>
+    <button class="cookie-accept" onclick="cookieChoice(true)">Accept</button>
+  </div>
+  <script>
+    (function(){
+      var v = localStorage.getItem('tt_cookie_ok');
+      if (v === null) { setTimeout(function(){ var b=document.getElementById('cookieBanner'); if(b) b.classList.add('show'); }, 800); }
+    })();
+    function cookieChoice(yes) {
+      localStorage.setItem('tt_cookie_ok', yes ? '1' : '0');
+      var b = document.getElementById('cookieBanner');
+      if (b) b.classList.remove('show');
+    }
+  </script>
 </body>
 </html>
