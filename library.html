@@ -84,6 +84,9 @@
     .topic-link{display:flex;align-items:center;gap:8px;padding:9px 18px 9px 42px;cursor:pointer;font-size:13px;color:var(--text-muted);transition:all 0.15s;border-left:2px solid transparent;}
     .topic-link:hover{color:var(--text);background:rgba(255,255,255,0.03);}
     .topic-link.active{color:var(--teal);border-left-color:var(--teal);background:rgba(45,212,191,0.06);font-weight:600;}
+    .topic-link.no-content{cursor:default;opacity:0.45;}
+    .topic-link.no-content:hover{color:var(--text-muted);background:none;}
+    .topic-soon-tag{font-size:9px;font-weight:700;color:var(--text-dim);background:rgba(255,255,255,0.05);border:1px solid var(--border-dim);border-radius:4px;padding:1px 5px;margin-left:auto;flex-shrink:0;letter-spacing:0.04em;}
     .topic-link-dot{width:7px;height:7px;border-radius:50%;background:var(--text-dim);flex-shrink:0;opacity:0.5;}
     .topic-link.topic-done .topic-link-dot{opacity:0.8;}
     .topic-link.topic-done{color:var(--text-muted);}
@@ -114,10 +117,10 @@
     .panel-welcome p{font-size:14px;color:var(--text-muted);line-height:1.7;max-width:380px;}
 
     /* Category thumbnail grid */
-    .cat-thumbs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px;width:100%;max-width:780px;}
+    .cat-thumbs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:14px;width:100%;max-width:600px;}
     .cat-thumb-card{
-      display:flex;flex-direction:column;align-items:center;gap:8px;
-      padding:14px 12px 12px;
+      display:flex;flex-direction:column;align-items:center;gap:10px;
+      padding:20px 16px 16px;
       background:rgba(255,255,255,0.03);
       border:1px solid rgba(45,212,191,0.14);
       border-radius:18px;cursor:pointer;
@@ -129,9 +132,9 @@
       transform:translateY(-5px);
       box-shadow:0 12px 32px rgba(45,212,191,0.18);
     }
-    .cat-thumb-img{width:185px;height:185px;object-fit:contain;border-radius:14px;display:block;}
+    .cat-thumb-img{width:280px;height:280px;object-fit:contain;border-radius:14px;display:block;}
     .cat-thumb-name{
-      font-size:13px;font-weight:700;
+      font-size:14px;font-weight:700;
       color:var(--text-muted);
       text-align:center;line-height:1.4;
       letter-spacing:0.2px;
@@ -555,6 +558,10 @@
             <img src="images/Forex.jpg" alt="Forex" class="cat-thumb-img"/>
             <div class="cat-thumb-name">Forex</div>
           </div>
+          <div class="cat-thumb-card" data-catid="general-info" onclick="expandCategory('general-info')">
+            <img src="images/GI.jpg" alt="General Information" class="cat-thumb-img"/>
+            <div class="cat-thumb-name">General Information</div>
+          </div>
         </div>
       </div>
     </div>
@@ -846,7 +853,7 @@ const track = document.getElementById('ticker');
     fetchTickerPrices();
 
 // ── Build sequence number map with category-prefixed IDs ──────────────────────
-const DISPLAY_ORDER = ['technical-analysis','fundamental-analysis','stocks','commodities','crypto','forex'];
+const DISPLAY_ORDER = ['technical-analysis','fundamental-analysis','stocks','commodities','crypto','forex','general-info'];
 const CAT_PREFIX = {
   'technical-analysis':  'SNR-TA',
   'fundamental-analysis':'SNR-FA',
@@ -854,6 +861,7 @@ const CAT_PREFIX = {
   'commodities':         'SNR-COM',
   'crypto':              'SNR-CR',
   'forex':               'SNR-FX',
+  'general-info':        'SNR-GI',
 };
 function buildSeqMap() {
   const map = {};
@@ -1296,7 +1304,7 @@ function buildSidebar(data) {
     </div>
     <div id="libSearchResults" style="display:none;"></div>`;
   // Display order
-  const ORDER = ['technical-analysis','fundamental-analysis','stocks','commodities','crypto','forex'];
+  const ORDER = ['technical-analysis','fundamental-analysis','stocks','commodities','crypto','forex','general-info'];
   const sorted = ORDER.map(id => data.find(c => c.id === id)).filter(Boolean);
   sorted.forEach((cat) => {
     const grp = document.createElement('div');
@@ -1312,10 +1320,10 @@ function buildSidebar(data) {
         <span class="cat-chevron">&#x25BE;</span>
       </div>
       <div class="cat-topics">
-        ${cat.topics.map(t => `
-          <div class="topic-link${t.content && t.content.length ? ' topic-done' : ''}" data-id="${t.id}" data-level="${t.level||''}" onclick="openTopic('${t.id}')">
-            <span class="topic-link-dot"></span>${t.title}<span class="topic-seq-tag" style="margin-left:6px;margin-right:0;">${TOPIC_SEQ[t.id]||''}</span>
-          </div>`).join('')}
+        ${cat.topics.map(t => { const hasContent = !!(t.content && t.content.length); return `
+          <div class="topic-link${hasContent ? ' topic-done' : ' no-content'}" data-id="${t.id}" data-level="${t.level||''}" ${hasContent ? `onclick="openTopic('${t.id}')"` : ''}>
+            <span class="topic-link-dot"></span>${t.title}<span class="topic-seq-tag" style="margin-left:6px;margin-right:0;">${TOPIC_SEQ[t.id]||''}</span>${!hasContent ? '<span class="topic-soon-tag">SOON</span>' : ''}
+          </div>`; }).join('')}
       </div>`;
     sb.appendChild(grp);
   });
@@ -1585,168 +1593,105 @@ function _buildTtsQueue() {
   const panel = document.getElementById('libPanel');
   if (!panel) return [];
   const queue = [];
-
   const addEl = (rawText, el) => {
     const sentences = rawText.match(/[^.!?]+[.!?]*/g) || [rawText];
     sentences.forEach(s => {
-      const t = s.trim();
-      if (t.length > 1) queue.push({ text: t, element: el });
+      const trimmed = s.trim();
+      if (trimmed) queue.push({ text: trimmed, el });
     });
   };
-
-  const title = panel.querySelector('.topic-title-h');
-  if (title) addEl(title.textContent.trim().replace(/SNR-\S+/g, '').trim(), title);
-  panel.querySelectorAll('.content-h2, .content-p, .content-callout, .content-list li').forEach(el => {
-    const t = el.textContent.trim();
-    if (t) addEl(t, el);
+  panel.querySelectorAll('p, h2, h3, li, .callout-box').forEach(el => {
+    if (el.innerText && el.innerText.trim()) addEl(el.innerText.trim(), el);
   });
   return queue;
 }
 
-function _getBestVoice() {
-  const voices = window.speechSynthesis.getVoices();
-  // Priority: neural/premium first, then well-known smooth voices, then any en-US
-  return voices.find(v => /natural|neural|premium|enhanced/i.test(v.name) && v.lang.startsWith('en'))
-    || voices.find(v => /microsoft.*david|microsoft.*mark|microsoft.*guy|microsoft.*aria|microsoft.*jenny/i.test(v.name))
-    || voices.find(v => /google.*us.*english|google.*uk.*english/i.test(v.name))
-    || voices.find(v => v.lang === 'en-US' && v.localService === false) // cloud voices are smoother
-    || voices.find(v => v.lang === 'en-US')
-    || voices.find(v => v.lang.startsWith('en'))
-    || voices[0];
-}
-
-function _highlightEl(el) {
-  if (_ttsActiveEl === el) return;
-  if (_ttsActiveEl) _ttsActiveEl.classList.remove('tts-active');
-  _ttsActiveEl = el;
-  if (!el) return;
-  el.classList.add('tts-active');
-  // Auto-scroll: works on both desktop panel and mobile full page
-  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-function _clearHighlight() {
-  if (_ttsActiveEl) { _ttsActiveEl.classList.remove('tts-active'); _ttsActiveEl = null; }
-}
-
-// Speak one sentence from the queue at index i
-let _ttsExpectedIndex = -1; // guard against double-firing
-
-function _speakIndex(i) {
-  if (_ttsPaused || i >= _ttsQueue.length) {
-    if (i >= _ttsQueue.length) { _clearHighlight(); _resetTtsUI(); }
+function _speakNext() {
+  if (_ttsIndex >= _ttsQueue.length) {
+    stopListening();
     return;
   }
-  _ttsExpectedIndex = i;
-  const entry = _ttsQueue[i];
-  _ttsIndex = i;
-  _highlightEl(entry.element);
+  const item = _ttsQueue[_ttsIndex];
+  if (_ttsActiveEl) _ttsActiveEl.classList.remove('tts-active');
+  _ttsActiveEl = item.el;
+  if (_ttsActiveEl) _ttsActiveEl.classList.add('tts-active');
 
-  const utt = new SpeechSynthesisUtterance(entry.text);
-  utt.rate = parseFloat(document.getElementById('ttsSpeed')?.value || '1') * 0.95;
-  utt.pitch = 0.95;
+  const utt = new SpeechSynthesisUtterance(item.text);
+  utt.rate = 0.95;
+  utt.pitch = 1;
   utt.lang = 'en-US';
-  const voice = _getBestVoice();
-  if (voice) utt.voice = voice;
-  _ttsUtterance = utt;
-
   utt.onend = () => {
-    // Guard: only advance if this utterance is still the expected one
-    if (!_ttsPaused && _ttsExpectedIndex === i) {
-      setTimeout(() => _speakIndex(i + 1), 150);
-    }
+    _ttsIndex++;
+    if (!_ttsPaused) _speakNext();
   };
-  utt.onerror = (e) => {
-    if (e.error !== 'interrupted' && e.error !== 'canceled') {
-      _clearHighlight(); _resetTtsUI();
-    }
-  };
-
-  // Do NOT cancel here — only speak
+  _ttsUtterance = utt;
   window.speechSynthesis.speak(utt);
 }
 
 function toggleListen() {
+  const btn = document.getElementById('listenBtn');
+  const bar = document.getElementById('ttsBar');
+  if (!btn) return;
+
   if (window.speechSynthesis.speaking && !_ttsPaused) {
+    // Pause
     window.speechSynthesis.pause();
     _ttsPaused = true;
-    const btn = document.getElementById('listenBtn');
-    if (btn) btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Resume';
-    _ttsPaused = false;
-  } else if (window.speechSynthesis.paused && _ttsPaused) {
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Resume';
+  } else if (_ttsPaused) {
+    // Resume
     window.speechSynthesis.resume();
     _ttsPaused = false;
-    const btn = document.getElementById('listenBtn');
-    if (btn) btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg> Listen';
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause';
   } else {
-    startListening();
+    // Start fresh
+    window.speechSynthesis.cancel();
+    _ttsQueue = _buildTtsQueue();
+    _ttsIndex = 0;
+    _ttsPaused = false;
+    if (_ttsQueue.length === 0) return;
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause';
+    if (bar) bar.style.display = 'flex';
+    _speakNext();
   }
 }
 
 function stopListening() {
   window.speechSynthesis.cancel();
   _ttsPaused = false;
-  _clearHighlight();
-  _resetTtsUI();
+  _ttsIndex = 0;
+  _ttsQueue = [];
+  if (_ttsActiveEl) { _ttsActiveEl.classList.remove('tts-active'); _ttsActiveEl = null; }
+  const btn = document.getElementById('listenBtn');
+  if (btn) btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Listen';
+  const bar = document.getElementById('ttsBar');
+  if (bar) bar.style.display = 'none';
 }
 
-  // ── Mobile menu ───────────────────────────────────────────────────────────
-  function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('open'); }
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
 
-  // ── Initialization ────────────────────────────────────────────────────────
-  buildSidebar(LIBRARY);
+// ── Initialise ────────────────────────────────────────────────────────────────
+buildSidebar(LIBRARY);
 
-  // Restore read state from localStorage
-  try {
-    const readSet = JSON.parse(localStorage.getItem('tt_read') || '[]');
-    document.querySelectorAll('.topic-link').forEach(el => {
-      if (readSet.includes(el.dataset.id)) el.classList.add('topic-read');
-    });
-  } catch(e) {}
+// Restore read markers
+try {
+  const readSet = JSON.parse(localStorage.getItem('tt_read') || '[]');
+  document.querySelectorAll('.topic-link').forEach(el => {
+    if (readSet.includes(el.dataset.id)) el.classList.add('topic-read');
+  });
+} catch(e) {}
 
-  // Open topic from URL param e.g. library.html?topic=support-resistance
-  (function() {
-    const params = new URLSearchParams(window.location.search);
-    const tid = params.get('topic');
-    if (!tid) return;
-    for (const cat of LIBRARY) {
-      const t = cat.topics.find(t => t.id === tid);
-      if (t) {
-        expandCategory(cat.id);
-        openTopic(tid);
-        break;
-      }
-    }
-  })();
-
-  </script>
-
-  <!-- ── Cookie Banner ── -->
-  <style>
-    #cookieBanner{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#111827;border-top:1px solid rgba(45,212,191,0.2);padding:14px 24px;display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between;transform:translateY(100%);transition:transform 0.4s ease;font-family:'Segoe UI',system-ui,sans-serif;}
-    #cookieBanner.show{transform:translateY(0);}
-    #cookieBanner p{font-size:13px;color:#94A3B8;flex:1;min-width:220px;margin:0;}
-    #cookieBanner a{color:#2DD4BF;}
-    .cookie-accept{padding:9px 20px;border-radius:8px;background:#2DD4BF;color:#0A0F1E;font-size:13px;font-weight:700;border:none;cursor:pointer;white-space:nowrap;transition:opacity 0.2s;}
-    .cookie-accept:hover{opacity:0.85;}
-    .cookie-decline{padding:9px 16px;border-radius:8px;background:transparent;color:#64748B;font-size:13px;font-weight:600;border:1px solid rgba(255,255,255,0.1);cursor:pointer;white-space:nowrap;}
-    .cookie-decline:hover{color:#94A3B8;}
-  </style>
-  <div id="cookieBanner" role="dialog" aria-label="Cookie notice">
-    <p>We use browser storage (localStorage) to save your reading progress and preferences — no tracking cookies. <a href="legal.html">Learn more</a></p>
-    <button class="cookie-decline" onclick="cookieChoice(false)">Decline</button>
-    <button class="cookie-accept" onclick="cookieChoice(true)">Accept</button>
-  </div>
-  <script>
-    (function(){
-      var v = localStorage.getItem('tt_cookie_ok');
-      if (v === null) { setTimeout(function(){ var b=document.getElementById('cookieBanner'); if(b) b.classList.add('show'); }, 800); }
-    })();
-    function cookieChoice(yes) {
-      localStorage.setItem('tt_cookie_ok', yes ? '1' : '0');
-      var b = document.getElementById('cookieBanner');
-      if (b) b.classList.remove('show');
-    }
-  </script>
+// Open topic from URL param ?topic=id
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const tid = params.get('topic');
+  if (tid) {
+    const found = LIBRARY.flatMap(c => c.topics).find(t => t.id === tid);
+    if (found) openTopic(tid);
+  }
+})();
+</script>
 </body>
 </html>
