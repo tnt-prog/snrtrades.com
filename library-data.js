@@ -1236,6 +1236,7 @@ const LIBRARY = [
             'Hidden Divergence — commonly used to identify potential trend continuation after a pullback.'
           ]},
           { type: 'heading', text: 'Core Market Logic Behind Divergence' },
+          { type: 'image', src: 'images/RSI_MACD_STRCTURE.png', alt: 'RSI and MACD Structure in Divergence' },
           { type: 'paragraph', text: 'Price represents the final traded value in the market, while momentum indicators attempt to measure the strength behind that price movement. In a healthy trend, price and momentum usually confirm each other. If price makes a higher high, momentum should ideally also make a higher high. If price makes a lower low, momentum should ideally also make a lower low.' },
           { type: 'paragraph', text: 'Divergence appears when this confirmation is missing. For example, if price pushes to a new high but RSI forms a lower high, it suggests that price moved higher but with weaker momentum. This weakening momentum does not guarantee reversal. However, divergence alerts traders that the current price movement may be becoming less efficient, less supported, or more vulnerable to a structural shift.' },
           { type: 'list', items: [
@@ -1247,6 +1248,7 @@ const LIBRARY = [
             'Risk-reward planning and stop-loss placement'
           ]},
           { type: 'heading', text: 'Regular Bullish Divergence' },
+          { type: 'image', src: 'images/RSI_REG_BULL.jpg', alt: 'Regular Bullish Divergence Example' },
           { type: 'paragraph', text: 'Regular bullish divergence occurs when price forms a lower low, but the indicator forms a higher low. This means price has moved lower, but momentum has not confirmed the new low. Sellers were able to push price below the previous low, but the indicator suggests that selling pressure is weakening.' },
           { type: 'paragraph', text: 'Regular bullish divergence is usually watched near support zones, demand areas, previous lows, liquidity sweep zones, or the end of an extended downtrend. It may indicate that bearish momentum is fading and that buyers may begin to regain control.' },
           { type: 'callout', text: 'A regular bullish divergence does not mean the market must immediately reverse upward. It means the downside move may be weakening. Always wait for confirmation before acting.' },
@@ -1262,6 +1264,7 @@ const LIBRARY = [
           ]},
           { type: 'paragraph', text: 'Example: If a stock falls from 100 to 90, rebounds, then falls again to 85, price has made a lower low. If RSI on the first low was 25 and RSI on the second low is 35, RSI has made a higher low. This creates regular bullish divergence — price is weaker but momentum is improving, suggesting sellers may be losing strength.' },
           { type: 'heading', text: 'Regular Bearish Divergence' },
+          { type: 'image', src: 'images/RSI_REG_BEAR.jpg', alt: 'Regular Bearish Divergence Example' },
           { type: 'paragraph', text: 'Regular bearish divergence occurs when price forms a higher high, but the indicator forms a lower high. This means price has moved higher, but momentum has not confirmed the new high. Buyers were able to push price above the previous high, but the indicator suggests that buying pressure is weakening.' },
           { type: 'paragraph', text: 'Regular bearish divergence is usually watched near resistance zones, supply areas, previous highs, liquidity sweep zones, or the end of an extended uptrend. It may indicate that bullish momentum is fading and that sellers may begin to gain control.' },
           { type: 'callout', text: 'A regular bearish divergence is not an automatic sell signal. It is a warning that upside momentum may be weakening. Confirmation is required before taking any trade.' },
@@ -1277,6 +1280,8 @@ const LIBRARY = [
           ]},
           { type: 'paragraph', text: 'Example: If gold rises from 2,300 to 2,350, pulls back, then rises again to 2,380, price has made a higher high. If RSI was 75 on the first high and only 65 on the second high, this creates regular bearish divergence — price is higher but momentum is weaker, suggesting buyers may be becoming less aggressive.' },
           { type: 'heading', text: 'Hidden Bullish Divergence' },
+          { type: 'image', src: 'images/Hidden_Bullish.jpg', alt: 'Hidden Bullish Divergence Example' },
+          { type: 'image', src: 'images/Hidden_Regular.jpg', alt: 'Hidden Divergence Overview' },
           { type: 'paragraph', text: 'Hidden bullish divergence occurs when price forms a higher low, but the indicator forms a lower low. This usually appears during an uptrend. Price does not break the previous low, showing that buyers are defending higher levels. However, the indicator makes a lower low, showing that momentum corrected more deeply than price — suggesting the market has reset momentum while maintaining bullish structure.' },
           { type: 'list', items: [
             'Price holding above previous swing low',
@@ -1289,6 +1294,7 @@ const LIBRARY = [
           ]},
           { type: 'paragraph', text: 'Example: If Bitcoin rises from 60,000 to 66,000, pulls back to 63,000, then later pulls back again to 64,000, price has made a higher low. If RSI on the first pullback was 40 and RSI on the second pullback is 32, this creates hidden bullish divergence — price structure remains bullish while the indicator shows a deeper momentum reset, supporting uptrend continuation.' },
           { type: 'heading', text: 'Hidden Bearish Divergence' },
+          { type: 'image', src: 'images/RSI_Hidden_Bearish.jpg', alt: 'Hidden Bearish Divergence Example' },
           { type: 'paragraph', text: 'Hidden bearish divergence occurs when price forms a lower high, but the indicator forms a higher high. This usually appears during a downtrend. Price fails to break above the previous high, showing that sellers are defending lower levels. However, the indicator makes a higher high, showing momentum corrected more strongly than price — suggesting bearish structure remains intact.' },
           { type: 'list', items: [
             'Price failing below previous swing high',
@@ -1301,6 +1307,7 @@ const LIBRARY = [
           ]},
           { type: 'paragraph', text: 'Example: If a stock falls from 100 to 85, rebounds to 92, then later rebounds only to 90, price has made a lower high. If RSI on the first rebound was 55 and RSI on the second rebound is 65, this creates hidden bearish divergence — price structure remains bearish while the indicator shows stronger corrective momentum, suggesting the downtrend is still active.' },
           { type: 'heading', text: 'Regular vs Hidden Divergence' },
+          { type: 'image', src: 'images/Regular_VS_Hidden.jpg', alt: 'Regular vs Hidden Divergence Comparison' },
           { type: 'callout', text: 'Key distinction: Regular divergence questions the current trend. Hidden divergence supports the current trend. Always identify market structure first before deciding which type of divergence is relevant.' },
           { type: 'paragraph', text: 'A professional trader must first identify market structure before deciding which divergence matters. If the market is in a strong uptrend, hidden bullish divergence may be more useful than regular bearish divergence. If the market is in a mature downtrend near major support, regular bullish divergence may be more relevant.' },
           { type: 'heading', text: 'Divergence with RSI' },
@@ -1329,6 +1336,7 @@ const LIBRARY = [
             'Manage expectations — divergence indicates potential weakening or continuation, not certainty.'
           ]},
           { type: 'heading', text: 'Common Mistakes in Divergence Trading' },
+          { type: 'image', src: 'images/Divergence_Mistakes.jpg', alt: 'Common Mistakes in Divergence Trading' },
           { type: 'list', items: [
             'Trading too early — price can continue moving strongly even after divergence appears. Always wait for confirmation.',
             'Using divergence against a strong trend — strong trends can create multiple divergences before finally reversing.',
