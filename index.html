@@ -1727,11 +1727,10 @@
       });
     });
 
-    // ── Free Resources: load last 3 videos from playlist
+    // ── Free Resources: load latest 3 videos from playlist via YouTube Data API v3
     (async function loadResourceVideos() {
       const PLAYLIST_ID = 'PLD25Ba9pZ9lw';
-      const RSS_URL = 'https://api.rss2json.com/v1/api.json?rss_url=' +
-        encodeURIComponent('https://www.youtube.com/feeds/videos.xml?playlist_id=' + PLAYLIST_ID);
+      const YT_API_KEY  = 'AIzaSyBegX3I-N9ny5RRUWlUKOe0_VxHKfybGF8';
       const grid = document.getElementById('resourcesGrid');
       if (!grid) return;
 
@@ -1743,9 +1742,14 @@
         grid.innerHTML = '';
         const delays = ['', ' reveal-delay-1', ' reveal-delay-2'];
         items.slice(0, 3).forEach(function(item, i) {
-          const vid = (item.link || '').split('v=')[1]?.split('&')[0] || '';
-          const thumb = vid ? 'https://img.youtube.com/vi/' + vid + '/hqdefault.jpg' : '';
-          const url = item.link || ('https://www.youtube.com/playlist?list=' + PLAYLIST_ID);
+          const s     = item.snippet || {};
+          const vid   = s.resourceId?.videoId || '';
+          const thumb = s.thumbnails?.maxres?.url || s.thumbnails?.high?.url || s.thumbnails?.medium?.url
+                      || (vid ? 'https://img.youtube.com/vi/' + vid + '/hqdefault.jpg' : '');
+          const url   = vid ? 'https://www.youtube.com/watch?v=' + vid + '&list=' + PLAYLIST_ID
+                            : 'https://www.youtube.com/playlist?list=' + PLAYLIST_ID;
+          const title = s.title || '';
+
           const card = document.createElement('div');
           card.className = 'video-card reveal visible' + (delays[i] || '');
           card.style.cursor = 'pointer';
@@ -1756,8 +1760,7 @@
           thumbDiv.style.cssText = 'position:relative;overflow:hidden;height:150px;';
           if (thumb) {
             const img = document.createElement('img');
-            img.src = thumb;
-            img.alt = item.title || '';
+            img.src = thumb; img.alt = title;
             img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
             thumbDiv.appendChild(img);
           } else {
@@ -1773,7 +1776,7 @@
           const body = document.createElement('div');
           body.className = 'vc-body';
           body.innerHTML = '<span class="vc-tag tag-teal">Free</span>' +
-            '<div class="vc-title">' + esc(item.title || '') + '</div>' +
+            '<div class="vc-title">' + esc(title) + '</div>' +
             '<div class="vc-meta"><span>📺 YouTube</span><span>Free</span></div>';
 
           card.appendChild(thumbDiv);
@@ -1783,9 +1786,11 @@
       }
 
       try {
-        const r = await fetch(RSS_URL, { signal: AbortSignal.timeout(8000) });
+        const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=3&playlistId=${PLAYLIST_ID}&key=${YT_API_KEY}`;
+        const r = await fetch(url, { signal: AbortSignal.timeout(10000) });
         const d = await r.json();
-        const items = d.items || [];
+        if (d.error) throw new Error(d.error.message);
+        const items = (d.items || []).filter(v => v.snippet?.title !== 'Deleted video' && v.snippet?.title !== 'Private video');
         if (!items.length) throw new Error('empty');
         renderCards(items);
       } catch(e) {
