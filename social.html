@@ -628,34 +628,39 @@
     return Math.floor(diff/31536000) + 'y ago';
   }
 
-  // ── YouTube via RSS2JSON
-  const YT_RSS = 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.youtube.com%2Ffeeds%2Fvideos.xml%3Fchannel_id%3DUCXdqqgNKynhajdiUR_nMkUQ';
+  // ── YouTube via Data API v3 (channel uploads)
+  const YT_API_KEY    = 'AIzaSyBegX3I-N9ny5RRUWlUKOe0_VxHKfybGF8';
+  const YT_UPLOADS_PL = 'UUXdqqgNKynhajdiUR_nMkUQ'; // UC→UU gives uploads playlist
   async function loadYouTube() {
     const grid = document.getElementById('ytGrid');
-    // Skeleton
     grid.innerHTML = [1,2,3,4].map(()=>`<div class="yt-skeleton"><div class="skel-thumb"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line short"></div></div></div>`).join('');
     try {
-      const r = await fetch(YT_RSS, {signal: AbortSignal.timeout(8000)});
+      const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=8&playlistId=${YT_UPLOADS_PL}&key=${YT_API_KEY}`;
+      const r = await fetch(url, {signal: AbortSignal.timeout(10000)});
       const d = await r.json();
-      const items = (d.items || []).slice(0, 8);
+      if (d.error) throw new Error(d.error.message);
+      const items = (d.items || []).filter(v => v.snippet?.title !== 'Deleted video' && v.snippet?.title !== 'Private video');
       if (!items.length) throw new Error('no items');
       grid.innerHTML = '';
       items.forEach(item => {
-        const videoId = item.link.split('v=')[1]?.split('&')[0] || '';
-        const thumb = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : '';
-        const date = item.pubDate ? new Date(item.pubDate) : null;
+        const s       = item.snippet || {};
+        const videoId = s.resourceId?.videoId || '';
+        const thumb   = s.thumbnails?.maxres?.url || s.thumbnails?.high?.url || s.thumbnails?.medium?.url
+                      || (videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : '');
+        const date    = s.publishedAt ? new Date(s.publishedAt) : null;
+        const link    = `https://www.youtube.com/watch?v=${videoId}`;
         const el = document.createElement('a');
         el.className = 'yt-card';
-        el.href = item.link;
+        el.href = link;
         el.target = '_blank';
         el.rel = 'noopener';
         el.innerHTML = `
           <div class="yt-thumb">
-            ${thumb ? `<img src="${thumb}" alt="${item.title}" loading="lazy"/>` : ''}
+            ${thumb ? `<img src="${thumb}" alt="${s.title}" loading="lazy"/>` : ''}
             <div class="yt-play"><svg width="36" height="36" viewBox="0 0 60 60"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.55)"/><polygon points="24,18 44,30 24,42" fill="white"/></svg></div>
           </div>
           <div class="yt-info">
-            <div class="yt-title">${item.title}</div>
+            <div class="yt-title">${s.title}</div>
             <div class="yt-meta">
               <span class="yt-badge"><svg width="10" height="8" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><polygon points="8,3.5 14,7 8,10.5" fill="white"/></svg>YouTube</span>
               ${date ? `<span class="yt-date">${timeAgo(date)}</span>` : ''}
