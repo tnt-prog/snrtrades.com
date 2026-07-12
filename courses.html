@@ -352,6 +352,42 @@
       return Math.floor(diff/31536000) + 'y ago';
     }
 
+    function formatDesc(text) {
+      if (!text) return '<span style="color:var(--text-dim)">No description available.</span>';
+      // Escape HTML
+      let s = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      // Convert URLs to clickable links
+      s = s.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener" style="color:var(--teal);text-decoration:none;">$1</a>');
+      // Split into lines
+      const lines = s.split('\n');
+      let html = '';
+      let inList = false;
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        // Blank line
+        if (!line) {
+          if (inList) { html += '</ul>'; inList = false; }
+          html += '<br>';
+          continue;
+        }
+        // Bullet / emoji list item: lines starting with ✅ • ▪ ► ▶ – - *
+        if (/^(✅|•|▪|►|▶|–|-|\*|✔|➡|🔹|🔸|⚡|📌|🎯|💡|📊|📈|📉)\s/.test(line)) {
+          if (!inList) { html += '<ul style="margin:6px 0 6px 16px;padding:0;list-style:none;">'; inList = true; }
+          html += `<li style="margin:4px 0;display:flex;gap:8px;align-items:flex-start;"><span style="flex-shrink:0">${line.charAt(0)}</span><span>${line.slice(line.indexOf(' ')+1)}</span></li>`;
+          continue;
+        }
+        // Section heading: ALL CAPS line or ends with :
+        if (inList) { html += '</ul>'; inList = false; }
+        if (line === line.toUpperCase() && line.length > 4 && !/^https?/.test(line)) {
+          html += `<div style="font-weight:700;color:var(--teal);margin:12px 0 4px;font-size:12px;letter-spacing:0.08em;">${line}</div>`;
+        } else {
+          html += `<div style="margin:3px 0;line-height:1.6;">${line}</div>`;
+        }
+      }
+      if (inList) html += '</ul>';
+      return html;
+    }
+
     function showVideo(v) {
       const iframe = document.getElementById('mainPlayer');
       const piTitle = document.getElementById('piTitle');
@@ -359,7 +395,7 @@
       const piLink  = document.getElementById('piLink');
       if (iframe)  iframe.src = `https://www.youtube.com/embed/${v.id}?autoplay=1&rel=0&modestbranding=1&list=${PLAYLIST_ID}`;
       if (piTitle) piTitle.textContent = v.title;
-      if (piDesc)  piDesc.textContent  = v.desc || 'No description available.';
+      if (piDesc)  piDesc.innerHTML    = formatDesc(v.desc);
       if (piLink)  piLink.href = v.link;
     }
 
