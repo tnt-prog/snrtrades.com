@@ -342,7 +342,7 @@
 
   <script>
     const PLAYLIST_ID = 'PLD25Ba9pZ9lw';
-    const RSS_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://www.youtube.com/feeds/videos.xml?playlist_id=' + PLAYLIST_ID)}`;
+    const YT_API_KEY  = 'AIzaSyBegX3I-N9ny5RRUWlUKOe0_VxHKfybGF8';
 
     function timeAgo(date) {
       const diff = Math.floor((Date.now() - date) / 1000);
@@ -363,72 +363,45 @@
       if (piLink)  piLink.href = v.link;
     }
 
+    async function fetchAllPlaylistItems() {
+      const items = [];
+      let pageToken = '';
+      do {
+        const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${PLAYLIST_ID}&key=${YT_API_KEY}${pageToken ? '&pageToken=' + pageToken : ''}`;
+        const r = await fetch(url, { signal: AbortSignal.timeout(10000) });
+        const d = await r.json();
+        if (d.error) throw new Error(d.error.message);
+        (d.items || []).forEach(item => items.push(item));
+        pageToken = d.nextPageToken || '';
+      } while (pageToken);
+      return items;
+    }
+
     async function loadVideos() {
       const grid = document.getElementById('videoGrid');
       try {
-        // Load titles + thumbnails via RSS2JSON
-        const r = await fetch(RSS_URL, { signal: AbortSignal.timeout(8000) });
-        const d = await r.json();
-        const items = (d.items || []).slice(0, 12);
-        if (!items.length) throw new Error('empty');
+        const rawItems = await fetchAllPlaylistItems();
+        if (!rawItems.length) throw new Error('empty');
 
-        // Video descriptions (YouTube RSS blocks browser CORS; stored here for reliability)
-        const descMap = {
-          'ce9MqJV_8ws': `Welcome to The Era of Learning with Trends & Trade — a complete trading education journey designed to help beginners, intermediate learners and serious market students understand trading in a structured and professional way.
-
-In this upcoming learning series, we will cover everything from basic market understanding to advanced trading concepts across Stocks, Crypto, Forex, Commodities, Gold, Silver and Oil.
-
-You will learn step by step about:
-• TradingView functionality & PSX Portal guide
-• Types of trading: Spot, Margin, Futures, Leverage, Long, Short and Arbitrage
-• Candlestick patterns & Support and Resistance
-• Fibonacci retracement, extension and time zones
-• RSI, MACD, EMA, SMA and Volume indicators
-• RSI divergence and hidden divergence
-• Bollinger Bands, Ichimoku Cloud, Volume Profile
-• Dow Theory and market structure
-• Chart patterns, harmonic patterns (ABCD, BAT, CRAB, Butterfly)
-• Smart Money Concepts: Liquidity, Order Blocks, FVG, Imbalance
-• Crypto market analysis: RSI Heatmap, Fear & Greed Index, USDT Dominance
-• Fundamental analysis, company financials, valuation
-• Risk management, position sizing and trading psychology
-
-At Trends & Trade, our goal is simple: Learn. Analyze. Trade. Grow.`,
-
-          '7_BqVH3iOJc': `Welcome to Lecture 1 of our beginner trading course: Introduction to Trading.
-
-In this lecture, we explain the basic language of trading in a simple and practical way. This session is designed for beginners who want to understand what trading is, how financial markets work, why prices move, and why risk management must come before profit.
-
-In this video, you will learn:
-✅ What trading really means
-✅ Trading vs investing
-✅ What stocks and shares are
-✅ How stock markets work
-✅ Why prices move up and down
-✅ How people earn in stocks
-✅ Basic risk management concepts
-✅ How to build a simple trade plan
-✅ Introduction to markets: stocks, forex, commodities, crypto, indices and ETFs
-✅ Difference between fundamental and technical analysis
-✅ What TradingView is and how beginners can use it
-
-Remember: Trading is not guessing. A professional trader follows a plan, manages risk and keeps learning.`
-        };
-
-        // Build video objects
-        const videos = items.map(item => {
-          const id = item.link?.split('v=')[1]?.split('&')[0] || '';
+        // Build video objects directly from YouTube API — no hardcoded descriptions needed
+        const videos = rawItems.map(item => {
+          const s     = item.snippet || {};
+          const id    = s.resourceId?.videoId || '';
+          const thumb = s.thumbnails?.maxres?.url
+                     || s.thumbnails?.high?.url
+                     || s.thumbnails?.medium?.url
+                     || (id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : '');
           return {
             id,
-            title: item.title || '',
-            thumb: id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : '',
-            link:  item.link || `https://www.youtube.com/watch?v=${id}&list=${PLAYLIST_ID}`,
-            desc:  descMap[id] || '',
-            date:  item.pubDate ? new Date(item.pubDate) : null,
+            title: s.title || '',
+            thumb,
+            link:  `https://www.youtube.com/watch?v=${id}&list=${PLAYLIST_ID}`,
+            desc:  s.description || '',
+            date:  s.publishedAt ? new Date(s.publishedAt) : null,
           };
-        });
+        }).filter(v => v.id && v.title !== 'Deleted video' && v.title !== 'Private video');
 
-        // Show first video info immediately
+                // Show first video info immediately
         if (videos.length) showVideo(videos[0]);
 
         // Render clickable grid
