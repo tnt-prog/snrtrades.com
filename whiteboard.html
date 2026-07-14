@@ -429,7 +429,6 @@ function renderGrid(){
     const tiles = items.map(n=>makeTile(n, visibleNotes.indexOf(n))).join('');
     return `<div class="wb-section ${cat.cls}">
       <div class="wb-section-header">
-        <div class="wb-section-icon">${cat.icon}</div>
         <div class="wb-section-title">${cat.label}</div>
         <span class="wb-section-count">${items.length} notes</span>
         <div class="wb-section-line"></div>
