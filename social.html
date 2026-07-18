@@ -160,6 +160,13 @@
       display: flex; flex-direction: column;
       justify-content: space-between; padding: 7px;
     }
+    .reel-skeleton {
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, var(--bg-3) 25%, rgba(45,212,191,0.05) 50%, var(--bg-3) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
     .reel-platform {
       display: flex; justify-content: flex-end;
     }
@@ -680,15 +687,6 @@
   // ── Instagram: fetch from Behold public feed (with hardcoded fallback)
   const IG_FEED = 'https://feeds.behold.so/8kmkjx8i0FtHoqBCY9kD';
   const IG_ICON = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" style="opacity:.85"><rect x="2" y="2" width="20" height="20" rx="6"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1.2" fill="white" stroke="none"/></svg>`;
-  // Last synced from Behold feed: 2026-07-03
-  const IG_FALLBACK = [
-    { permalink:"https://www.instagram.com/reel/DZx8Y8Jo2Nq/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxODA4MzA5NTIwMjE3MTkzNSIsImgiOiIxNmtrZGVuIn0.jpg?class=originalSmall", caption:"Trainings and Workshops coming soon ....", likes:3, comments:0 },
-    { permalink:"https://www.instagram.com/reel/DZInUyKI1aX/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxODE1MDkxODg1OTQ5MTUwMSIsImgiOiIxOWlpMGc1In0.jpg?class=originalSmall", caption:"Growth In Trading, Potential Future", likes:4, comments:0 },
-    { permalink:"https://www.instagram.com/reel/DZIm8WAougv/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxODA4MzU3MjIzODQwNzgzMSIsImgiOiIxeWxtZ3JlIn0.jpg?class=originalSmall", caption:"Misconceptions about trading", likes:5, comments:0 },
-    { permalink:"https://www.instagram.com/reel/DZImz3DIfL4/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxODA0NTQxNTY5MTU2ODUzMSIsImgiOiJyYmpyeHoifQ.jpg?class=originalSmall", caption:"Patience vs Impulse: The Real Key to Smart Trading", likes:4, comments:0 },
-    { permalink:"https://www.instagram.com/reel/DZImvDuIhWJ/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxODM1Mjk5MjIxMTI0NjAzMCIsImgiOiJrMnU3bmoifQ.jpg?class=originalSmall", caption:"Risk and Reward Discipline", likes:4, comments:0 },
-    { permalink:"https://www.instagram.com/reel/DZImZCmo_-o/", thumb:"https://hop.behold.pictures/eyJ1IjoiSURsc1pNcFZtTk9oVk42a1lDcWhCQ2NNcGRvMiIsImYiOiI4a21rang4aTBGdEhvcUJDWTlrRCIsInAiOiIxNzg3OTYxMjY4MjU5OTM5MyIsImgiOiIxc2s2ZmJnIn0.jpg?class=originalSmall", caption:"Time and effort is required to learn Trading", likes:5, comments:0 }
-  ];
 
   function renderIgPosts(posts) {
     const grid = document.getElementById('igGrid');
@@ -707,10 +705,29 @@
     });
   }
 
+  function renderIgSkeletons(count) {
+    const grid = document.getElementById('igGrid');
+    grid.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+      const card = document.createElement('div');
+      card.className = 'reel-card';
+      card.innerHTML = '<div class="reel-skeleton"></div>';
+      grid.appendChild(card);
+    }
+  }
+
+  function renderIgError() {
+    const grid = document.getElementById('igGrid');
+    grid.innerHTML = `<div style="grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:40px;color:var(--text-muted);font-size:14px;">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".4"><rect x="2" y="2" width="20" height="20" rx="6"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+      <span>Could not load reels.</span>
+      <a href="https://www.instagram.com/snrtrades" target="_blank" rel="noopener" style="color:var(--teal);font-weight:700;text-decoration:none;">View on Instagram ↗</a>
+    </div>`;
+  }
+
   function loadInstagram() {
-    // Render hardcoded posts immediately — always visible
-    renderIgPosts(IG_FALLBACK);
-    // Upgrade with live Behold data
+    // Show shimmer skeletons while loading
+    renderIgSkeletons(6);
     fetch(IG_FEED, {
       method: 'GET',
       mode: 'cors',
@@ -732,12 +749,14 @@
             comments: p.commentsCount ?? 0
           }));
         if (posts.length) {
-          console.log('Behold: loaded ' + posts.length + ' reels');
           renderIgPosts(posts);
+        } else {
+          renderIgError();
         }
       })
       .catch(err => {
-        console.warn('Behold fetch failed (' + err.message + ') — showing cached posts');
+        console.warn('Behold fetch failed (' + err.message + ')');
+        renderIgError();
       });
   }
 
