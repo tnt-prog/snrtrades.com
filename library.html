@@ -1425,6 +1425,9 @@ function openTopic(id) {
   if (!topic) return;
   currentTopic = topic;
 
+  // Update URL so share links point to this topic
+  history.pushState({topicId: id}, '', 'library.html?topic=' + encodeURIComponent(id));
+
   // Sidebar highlight
   document.querySelectorAll('.topic-link').forEach(el => {
     el.classList.toggle('active', el.dataset.id === id);
