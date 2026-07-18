@@ -601,6 +601,18 @@ window.addEventListener('scroll',()=>{
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
 renderGrid();
+
+// Auto-open note from shared URL e.g. whiteboard.html?note=SMC_1
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const noteId = params.get('note');
+  if(!noteId) return;
+  const fileName = noteId + '.jpg';
+  const idx = visibleNotes.findIndex(n => n.file === fileName);
+  if(idx !== -1){
+    openLB(idx);
+  }
+})();
 </script>
 </body>
 </html>
