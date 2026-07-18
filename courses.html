@@ -286,7 +286,7 @@
     <div class="player-section">
       <div class="player-wrap">
         <iframe id="mainPlayer"
-          src="https://www.youtube.com/embed/videoseries?list=PLD25Ba9pZ9lw&rel=0&modestbranding=1"
+          src="https://www.youtube.com/embed/ce9MqJV_8ws?list=PLD25Ba9pZ9lw&rel=0&modestbranding=1"
           title="SNR Trades — Free Courses Playlist"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen>
@@ -391,11 +391,10 @@
     }
 
     function showVideo(v) {
-      const iframe = document.getElementById('mainPlayer');
+      // Player is fixed — only update the text info, not the iframe src
       const piTitle = document.getElementById('piTitle');
       const piDesc  = document.getElementById('piDesc');
       const piLink  = document.getElementById('piLink');
-      if (iframe)  iframe.src = `https://www.youtube.com/embed/${v.id}?autoplay=1&rel=0&modestbranding=1&list=${PLAYLIST_ID}`;
       if (piTitle) piTitle.textContent = v.title;
       if (piDesc)  piDesc.innerHTML    = formatDesc(v.desc);
       if (piLink)  piLink.href = v.link;
