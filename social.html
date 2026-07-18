@@ -722,15 +722,17 @@
         return r.json();
       })
       .then(data => {
-        const posts = (data.posts || []).map(p => ({
-          permalink: p.permalink,
-          thumb: p.sizes?.small?.mediaUrl || p.thumbnailUrl || '',
-          caption: p.prunedCaption || p.caption || '',
-          likes: p.likeCount ?? 0,
-          comments: p.commentsCount ?? 0
-        }));
+        const posts = (data.posts || [])
+          .filter(p => p.permalink && p.permalink.includes('/reel/'))
+          .map(p => ({
+            permalink: p.permalink,
+            thumb: p.sizes?.small?.mediaUrl || p.thumbnailUrl || '',
+            caption: p.prunedCaption || p.caption || '',
+            likes: p.likeCount ?? 0,
+            comments: p.commentsCount ?? 0
+          }));
         if (posts.length) {
-          console.log('Behold: loaded ' + posts.length + ' live posts');
+          console.log('Behold: loaded ' + posts.length + ' reels');
           renderIgPosts(posts);
         }
       })
