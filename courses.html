@@ -458,20 +458,10 @@
             </div>
             <div class="video-info">
               <div class="video-title">${v.title}</div>
-              <div class="video-meta" style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-                <span>${v.date ? timeAgo(v.date) : ''}</span>
-                <a href="${v.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()"
-                   style="font-size:10px;font-weight:700;color:#FF0000;text-decoration:none;white-space:nowrap;flex-shrink:0;">
-                  ▶ YouTube
-                </a>
-              </div>
+              <div class="video-meta">${v.date ? timeAgo(v.date) : ''}</div>
             </div>`;
           card.onclick = () => {
-            showVideo(v);
-            grid.querySelectorAll('.video-card').forEach(c => c.classList.remove('active'));
-            card.classList.add('active');
-            // Scroll to player so user sees the video load
-            document.querySelector('.player-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            window.open(v.link, '_blank', 'noopener');
           };
           grid.appendChild(card);
         });
