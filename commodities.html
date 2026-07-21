@@ -327,12 +327,12 @@
 
   /* ── Live Price Cards ── */
   const COMMS = [
-    {id:'gold',      sym:'XAU', name:'Gold',        yf:'GC=F', dec:2},
-    {id:'silver',    sym:'XAG', name:'Silver',      yf:'SI=F', dec:3},
-    {id:'platinum',  sym:'XPT', name:'Platinum',    yf:'PL=F', dec:2},
-    {id:'palladium', sym:'XPD', name:'Palladium',   yf:'PA=F', dec:2},
-    {id:'wti',       sym:'WTI', name:'WTI Crude',   yf:'CL=F', dec:2},
-    {id:'brent',     sym:'BRT', name:'Brent Crude', yf:'BZ=F', dec:2},
+    {id:'gold',      stooq:'xauusd', dec:2},
+    {id:'silver',    stooq:'xagusd', dec:3},
+    {id:'platinum',  stooq:'xptusd', dec:2},
+    {id:'palladium', stooq:'xpdusd', dec:2},
+    {id:'wti',       stooq:'cl.f',   dec:2},
+    {id:'brent',     stooq:'lco.f',  dec:2},
   ];
 
   function fmt(n, d){ return Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}); }
@@ -343,7 +343,8 @@
     const arr = change >= 0 ? '▲' : '▼';
     const el  = document.getElementById('pch-'+id);
     el.className = 'pc-change ' + dir;
-    el.textContent = arr + ' ' + (change>=0?'+':'') + fmt(Math.abs(change),dec) + '  (' + (pct>=0?'+':'') + fmt(pct,2) + '%)';
+    el.textContent = arr + ' ' + (change>=0?'+':'') + fmt(Math.abs(change),dec)
+                   + '  (' + (pct>=0?'+':'') + fmt(pct,2) + '%)';
     document.getElementById('pt-'+id).textContent = 'Updated ' + time;
   }
 
@@ -354,65 +355,45 @@
     el.textContent = 'Unavailable';
   }
 
-  /* CORS proxy — routes requests through corsproxy.io to bypass browser CORS blocks */
-  const PROXY = 'https://corsproxy.io/?';
-
-  /* Primary source: metals.live → Gold, Silver, Platinum, Palladium */
-  async function fetchMetalsLive(){
-    const r = await fetch(PROXY + encodeURIComponent('https://metals.live/api/v1/latest'), {cache:'no-store'});
-    if(!r.ok) throw new Error('metals.live HTTP '+r.status);
-    return await r.json(); // [{symbol:'XAU',price:2341,change:5.2,changePercent:0.22,...},...]
-  }
-
-  /* Secondary source: Yahoo Finance v8 chart → Oil (+ metals fallback) */
-  async function fetchYF(symbol){
-    const inner = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=1d&includePrePost=false`;
-    const r = await fetch(PROXY + encodeURIComponent(inner), {cache:'no-store'});
-    if(!r.ok) throw new Error('YF HTTP '+r.status);
-    const d = await r.json();
-    const meta = d.chart.result[0].meta;
-    const price = meta.regularMarketPrice;
-    const prev  = meta.chartPreviousClose ?? meta.previousClose ?? price;
-    return {price, change: price - prev, pct: ((price - prev) / prev) * 100};
+  /* Fetch one commodity from Stooq via allorigins CORS proxy */
+  async function fetchStooq(symbol){
+    const inner = `https://stooq.com/q/l/?s=${symbol}&f=sd2t2ohlcvn&h&e=json`;
+    const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(inner), {cache:'no-store'});
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    const outer = await r.json();
+    const data  = typeof outer.contents === 'string' ? JSON.parse(outer.contents) : outer.contents;
+    if(!data?.symbols?.[0]) throw new Error('No data');
+    const s = data.symbols[0];
+    const price = parseFloat(s.close);
+    const open  = parseFloat(s.open) || price;
+    if(!price || price === 0) throw new Error('Zero price');
+    const change = price - open;
+    const pct    = open ? (change / open) * 100 : 0;
+    return {price, change, pct};
   }
 
   async function refreshPrices(){
     const badge = document.getElementById('priceBadge');
-    if(badge){ badge.textContent = 'Updating…'; badge.style.opacity='0.6'; }
+    if(badge){ badge.textContent='Updating…'; badge.style.opacity='0.6'; }
     const now = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
 
-    /* Try metals.live for the 4 metals */
-    const metalIds = {XAU:'gold', XAG:'silver', XPT:'platinum', XPD:'palladium'};
-    const fetched  = new Set();
-    try {
-      const list = await fetchMetalsLive();
-      for(const m of list){
-        const id = metalIds[m.symbol];
-        if(!id) continue;
-        const c = COMMS.find(x=>x.id===id);
-        const change = m.change ?? 0;
-        const pct    = m.changePercent ?? m.change_pct ?? 0;
-        setCard(id, m.price, change, pct, c.dec, now);
-        fetched.add(id);
-      }
-    } catch(e){ console.warn('metals.live failed:', e.message); }
-
-    /* Yahoo Finance for oil (and any metals that metals.live missed) */
-    const oilComms  = COMMS.filter(c => c.id==='wti' || c.id==='brent');
-    const metalMiss = COMMS.filter(c => metalIds[c.sym] && !fetched.has(c.id));
-    for(const c of [...metalMiss, ...oilComms]){
-      try {
-        const {price, change, pct} = await fetchYF(c.yf);
+    /* Fetch all 6 in parallel */
+    const results = await Promise.allSettled(COMMS.map(c => fetchStooq(c.stooq)));
+    let ok = 0;
+    results.forEach((res, i) => {
+      const c = COMMS[i];
+      if(res.status === 'fulfilled'){
+        const {price, change, pct} = res.value;
         setCard(c.id, price, change, pct, c.dec, now);
-        fetched.add(c.id);
-      } catch(e){
-        console.warn(c.name+' fetch failed:', e.message);
-        if(!fetched.has(c.id)) setError(c.id);
+        ok++;
+      } else {
+        console.warn(c.id, res.reason?.message);
+        setError(c.id);
       }
-    }
+    });
 
     if(badge){
-      badge.textContent = fetched.size > 0 ? 'Live' : 'Error';
+      badge.textContent  = ok === COMMS.length ? 'Live' : ok > 0 ? 'Partial' : 'Error';
       badge.style.opacity = '1';
     }
   }
