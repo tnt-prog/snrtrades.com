@@ -59,30 +59,12 @@
     .sec-head-line{flex:1;height:1px;background:var(--border-dim);}
     .sec-head-badge{padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(45,212,191,0.1);color:var(--teal);white-space:nowrap;}
 
-    /* Live price cards */
-    .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px;}
-    .price-card{background:var(--bg-2);border:1px solid var(--border-dim);border-radius:16px;padding:22px 24px;transition:border-color 0.2s,transform 0.2s;}
-    .price-card:hover{border-color:var(--border);transform:translateY(-2px);}
-    .pc-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
-    .pc-sym{background:rgba(45,212,191,0.12);color:var(--teal);font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:800;padding:4px 10px;border-radius:8px;letter-spacing:0.5px;}
-    .pc-name{font-size:13px;font-weight:600;color:var(--text-muted);}
-    .pc-price{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:800;color:var(--text);line-height:1.1;margin-bottom:3px;}
-    .pc-unit{font-size:11px;color:var(--text-dim);margin-bottom:12px;}
-    .pc-change{display:inline-flex;align-items:center;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;}
-    .pc-change.up{background:rgba(34,197,94,0.1);color:var(--green);}
-    .pc-change.dn{background:rgba(239,68,68,0.1);color:var(--red);}
-    .pc-change.neu{background:rgba(148,163,184,0.08);color:var(--text-muted);}
-    .pc-time{font-size:10px;color:var(--text-dim);margin-top:8px;}
-    .price-refresh-btn{background:rgba(45,212,191,0.08);border:1px solid var(--border);color:var(--teal);font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;cursor:pointer;transition:background 0.2s;font-family:inherit;}
-    .price-refresh-btn:hover{background:rgba(45,212,191,0.18);}
-    @media(max-width:860px){.price-grid{grid-template-columns:repeat(2,1fr);}}
-    @media(max-width:480px){.price-grid{grid-template-columns:1fr;}}
 
     /* Full table */
     .quotes-wrap{height:560px;border-radius:20px;overflow:hidden;background:var(--bg-2);border:1px solid var(--border-dim);margin-bottom:40px;}
 
     /* Info cards */
-    .info-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:48px;}
+    .info-row{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:48px;}
     .info-card{background:var(--bg-2);border:1px solid var(--border-dim);border-radius:16px;padding:22px 20px;}
     .info-card-icon{font-size:26px;margin-bottom:12px;}
     .info-card-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;color:var(--text);margin-bottom:8px;}
@@ -166,69 +148,10 @@
     <p>Real-time prices for metals, energy and agricultural commodities — powered by TradingView.</p>
   </div>
 
-  <!-- ── Live Prices ── -->
-  <div class="sec-head" style="margin-bottom:20px;">
-    <div class="sec-head-title">📈 Live Prices</div>
-    <div class="sec-head-badge" id="priceBadge">Loading…</div>
-    <button class="price-refresh-btn" onclick="refreshPrices()">↻ Refresh</button>
-    <div class="sec-head-line"></div>
-  </div>
-  <div class="price-grid">
-
-    <div class="price-card">
-      <div class="pc-header"><span class="pc-sym">Au</span><span class="pc-name">Gold</span></div>
-      <div class="pc-price" id="pp-gold">—</div>
-      <div class="pc-unit">USD / troy oz</div>
-      <div class="pc-change neu" id="pch-gold">Loading…</div>
-      <div class="pc-time" id="pt-gold"></div>
-    </div>
-
-    <div class="price-card">
-      <div class="pc-header"><span class="pc-sym">Ag</span><span class="pc-name">Silver</span></div>
-      <div class="pc-price" id="pp-silver">—</div>
-      <div class="pc-unit">USD / troy oz</div>
-      <div class="pc-change neu" id="pch-silver">Loading…</div>
-      <div class="pc-time" id="pt-silver"></div>
-    </div>
-
-    <div class="price-card">
-      <div class="pc-header"><span class="pc-sym">Pt</span><span class="pc-name">Platinum</span></div>
-      <div class="pc-price" id="pp-platinum">—</div>
-      <div class="pc-unit">USD / troy oz</div>
-      <div class="pc-change neu" id="pch-platinum">Loading…</div>
-      <div class="pc-time" id="pt-platinum"></div>
-    </div>
-
-    <div class="price-card">
-      <div class="pc-header"><span class="pc-sym">Pd</span><span class="pc-name">Palladium</span></div>
-      <div class="pc-price" id="pp-palladium">—</div>
-      <div class="pc-unit">USD / troy oz</div>
-      <div class="pc-change neu" id="pch-palladium">Loading…</div>
-      <div class="pc-time" id="pt-palladium"></div>
-    </div>
-
-    <div class="price-card">
-      <div class="pc-header"><span class="pc-sym">WTI</span><span class="pc-name">WTI Crude</span></div>
-      <div class="pc-price" id="pp-wti">—</div>
-      <div class="pc-unit">USD / barrel</div>
-      <div class="pc-change neu" id="pch-wti">Loading…</div>
-      <div class="pc-time" id="pt-wti"></div>
-    </div>
-
-    <div class="price-card">
-      <div class="pc-header"><span class="pc-sym">BRT</span><span class="pc-name">Brent Crude</span></div>
-      <div class="pc-price" id="pp-brent">—</div>
-      <div class="pc-unit">USD / barrel</div>
-      <div class="pc-change neu" id="pch-brent">Loading…</div>
-      <div class="pc-time" id="pt-brent"></div>
-    </div>
-
-  </div>
-
   <!-- ── Full Price Table ── -->
   <div class="sec-head">
     <div class="sec-head-title">All Commodities</div>
-    <div class="sec-head-badge">Metals · Energy · Agriculture</div>
+    <div class="sec-head-badge">Metals · Energy</div>
     <div class="sec-head-line"></div>
   </div>
   <div class="quotes-wrap">
@@ -236,45 +159,33 @@
       <div class="tradingview-widget-container__widget" style="height:100%;width:100%;"></div>
       <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
       {
-        "title": "Commodities",
-        "tabs": [
-          {
-            "title": "Metals",
-            "symbols": [
-              {"s": "TVC:GOLD",      "d": "Gold"},
-              {"s": "TVC:SILVER",    "d": "Silver"},
-              {"s": "TVC:PLATINUM",  "d": "Platinum"},
-              {"s": "TVC:PALLADIUM", "d": "Palladium"}
-            ],
-            "originalTitle": "Metals"
-          },
-          {
-            "title": "Energy",
-            "symbols": [
-              {"s": "TVC:USOIL",      "d": "WTI Crude Oil"},
-              {"s": "TVC:UKOIL",      "d": "Brent Crude Oil"}
-            ],
-            "originalTitle": "Energy"
-          },
-          {
-            "title": "Agriculture",
-            "symbols": [
-              {"s": "TVC:WHEAT",    "d": "Wheat"},
-              {"s": "TVC:CORN",     "d": "Corn"},
-              {"s": "TVC:SOYBEANS", "d": "Soybeans"},
-              {"s": "TVC:COFFEE",   "d": "Coffee"},
-              {"s": "TVC:COTTON",   "d": "Cotton"},
-              {"s": "TVC:CACAO",    "d": "Cocoa"},
-              {"s": "TVC:SUGAR",    "d": "Sugar"}
-            ],
-            "originalTitle": "Agriculture"
-          }
-        ],
+        "width": "100%",
+        "height": 560,
         "showSymbolLogo": true,
         "isTransparent": true,
         "colorTheme": "dark",
         "locale": "en",
-        "backgroundColor": "rgba(10,22,40,1)"
+        "backgroundColor": "rgba(10,22,40,1)",
+        "symbolsGroups": [
+          {
+            "name": "Metals",
+            "originalName": "Metals",
+            "symbols": [
+              {"name": "TVC:GOLD",      "displayName": "Gold"},
+              {"name": "TVC:SILVER",    "displayName": "Silver"},
+              {"name": "TVC:PLATINUM",  "displayName": "Platinum"},
+              {"name": "TVC:PALLADIUM", "displayName": "Palladium"}
+            ]
+          },
+          {
+            "name": "Energy",
+            "originalName": "Energy",
+            "symbols": [
+              {"name": "TVC:USOIL", "displayName": "WTI Crude Oil"},
+              {"name": "TVC:UKOIL", "displayName": "Brent Crude Oil"}
+            ]
+          }
+        ]
       }
       </script>
     </div>
@@ -291,11 +202,6 @@
       <div class="info-card-icon">🛢️</div>
       <div class="info-card-title">Energy</div>
       <div class="info-card-text">Crude oil and natural gas drive global economies. WTI and Brent are the two primary oil benchmarks watched by traders and investors worldwide.</div>
-    </div>
-    <div class="info-card">
-      <div class="info-card-icon">🌾</div>
-      <div class="info-card-title">Agriculture</div>
-      <div class="info-card-text">Soft commodities like wheat, corn and soybeans are influenced by weather patterns, geopolitics and seasonal demand cycles across global markets.</div>
     </div>
   </div>
 
@@ -325,81 +231,6 @@
     document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 10);
   });
 
-  /* ── Live Price Cards ── */
-  const COMMS = [
-    {id:'gold',      stooq:'xauusd', dec:2},
-    {id:'silver',    stooq:'xagusd', dec:3},
-    {id:'platinum',  stooq:'xptusd', dec:2},
-    {id:'palladium', stooq:'xpdusd', dec:2},
-    {id:'wti',       stooq:'cl.f',   dec:2},
-    {id:'brent',     stooq:'lco.f',  dec:2},
-  ];
-
-  function fmt(n, d){ return Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}); }
-
-  function setCard(id, price, change, pct, dec, time){
-    document.getElementById('pp-'+id).textContent = '$' + fmt(price, dec);
-    const dir = change >= 0 ? 'up' : 'dn';
-    const arr = change >= 0 ? '▲' : '▼';
-    const el  = document.getElementById('pch-'+id);
-    el.className = 'pc-change ' + dir;
-    el.textContent = arr + ' ' + (change>=0?'+':'') + fmt(Math.abs(change),dec)
-                   + '  (' + (pct>=0?'+':'') + fmt(pct,2) + '%)';
-    document.getElementById('pt-'+id).textContent = 'Updated ' + time;
-  }
-
-  function setError(id){
-    document.getElementById('pp-'+id).textContent = '—';
-    const el = document.getElementById('pch-'+id);
-    el.className = 'pc-change neu';
-    el.textContent = 'Unavailable';
-  }
-
-  /* Fetch one commodity from Stooq via allorigins CORS proxy */
-  async function fetchStooq(symbol){
-    const inner = `https://stooq.com/q/l/?s=${symbol}&f=sd2t2ohlcvn&h&e=json`;
-    const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(inner), {cache:'no-store'});
-    if(!r.ok) throw new Error('HTTP ' + r.status);
-    const outer = await r.json();
-    const data  = typeof outer.contents === 'string' ? JSON.parse(outer.contents) : outer.contents;
-    if(!data?.symbols?.[0]) throw new Error('No data');
-    const s = data.symbols[0];
-    const price = parseFloat(s.close);
-    const open  = parseFloat(s.open) || price;
-    if(!price || price === 0) throw new Error('Zero price');
-    const change = price - open;
-    const pct    = open ? (change / open) * 100 : 0;
-    return {price, change, pct};
-  }
-
-  async function refreshPrices(){
-    const badge = document.getElementById('priceBadge');
-    if(badge){ badge.textContent='Updating…'; badge.style.opacity='0.6'; }
-    const now = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-
-    /* Fetch all 6 in parallel */
-    const results = await Promise.allSettled(COMMS.map(c => fetchStooq(c.stooq)));
-    let ok = 0;
-    results.forEach((res, i) => {
-      const c = COMMS[i];
-      if(res.status === 'fulfilled'){
-        const {price, change, pct} = res.value;
-        setCard(c.id, price, change, pct, c.dec, now);
-        ok++;
-      } else {
-        console.warn(c.id, res.reason?.message);
-        setError(c.id);
-      }
-    });
-
-    if(badge){
-      badge.textContent  = ok === COMMS.length ? 'Live' : ok > 0 ? 'Partial' : 'Error';
-      badge.style.opacity = '1';
-    }
-  }
-
-  refreshPrices();
-  setInterval(refreshPrices, 60000); // auto-refresh every 60 s
 </script>
 </body>
 </html>
