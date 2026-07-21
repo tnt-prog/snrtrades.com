@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/jpeg" href="images/logo.jpg"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Commodities Market — Trends &amp; Trade</title>
+  <meta name="description" content="Live commodities prices — Gold, Silver, Oil, Natural Gas, Agricultural commodities and more."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--bg:#070F1A;--bg-2:#0A1628;--bg-3:#0D1E34;--teal:#2DD4BF;--teal-dark:#0D9488;--border:rgba(45,212,191,0.18);--border-dim:rgba(255,255,255,0.06);--text:#F0F4F8;--text-muted:#94A3B8;--text-dim:#4A5568;--green:#22C55E;--red:#EF4444;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;background-image:linear-gradient(rgba(45,212,191,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(45,212,191,0.04) 1px,transparent 1px);background-size:52px 52px;}
+
+    /* Ticker */
+    .ticker-bar{background:var(--bg-2);border-bottom:1px solid var(--border);height:37px;display:flex;align-items:center;overflow:hidden;position:fixed;top:0;left:0;right:0;z-index:200;}
+    .ticker-track{display:flex;animation:ticker-scroll 40s linear infinite;white-space:nowrap;width:max-content;}
+    .ticker-track:hover{animation-play-state:paused;}
+    @keyframes ticker-scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+    .tick-item{display:inline-flex;align-items:center;gap:7px;padding:0 28px;font-size:12px;font-weight:600;border-right:1px solid var(--border-dim);}
+    .tick-name{color:var(--text-muted);}.tick-price{color:var(--text);font-weight:700;}
+    .tick-change{font-size:11px;font-weight:700;}.tick-change.up{color:var(--green);}.tick-change.dn{color:var(--red);}
+    .tick-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}.tick-dot.up{background:var(--green);}.tick-dot.dn{background:var(--red);}
+
+    /* Nav */
+    .nav{position:fixed;top:37px;left:0;right:0;z-index:100;padding:0 24px;transition:all 0.3s;background:rgba(7,15,26,0.94);backdrop-filter:blur(20px);}
+    .nav.scrolled{border-bottom:1px solid var(--border);}
+    .nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:flex-start;gap:40px;padding:10px 0 8px;}
+    .nav-col{display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
+    .nav-row-1{display:flex;align-items:center;gap:26px;list-style:none;flex-wrap:wrap;}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+    .logo-img{height:90px;width:auto;border-radius:6px;box-shadow:0 0 0 1px rgba(45,212,191,0.3);}
+    .logo-text{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:800;color:var(--text);}
+    .logo-text span{color:var(--teal);}
+    .nav-links a{font-size:13px;font-weight:600;color:var(--text-muted);text-decoration:none;transition:color 0.2s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--teal);}
+    .nav-hamburger{display:none;background:none;border:none;color:var(--text);font-size:22px;cursor:pointer;margin-left:auto;}
+    .mobile-menu{display:none;position:fixed;top:130px;left:0;right:0;bottom:0;background:var(--bg-2);z-index:99;padding:32px 24px;flex-direction:column;gap:24px;overflow-y:auto;}
+    .mobile-menu.open{display:flex;}
+    .mobile-menu a{font-size:18px;font-weight:600;color:var(--text);text-decoration:none;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+    @media(max-width:900px){.nav-col{display:none;}.nav-hamburger{display:block !important;}}
+
+    /* Page */
+    .page{max-width:1280px;margin:0 auto;padding:160px 24px 80px;}
+
+    /* Hero */
+    .hero{text-align:center;padding:16px 0 40px;}
+    .hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.2);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;color:var(--teal);margin-bottom:18px;}
+    .hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,4vw,46px);font-weight:800;line-height:1.1;margin-bottom:12px;}
+    .hero h1 span{color:var(--teal);}
+    .hero p{font-size:14px;color:var(--text-muted);max-width:480px;margin:0 auto;line-height:1.7;}
+
+    /* Section header */
+    .sec-head{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+    .sec-head-title{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:800;color:var(--text);white-space:nowrap;}
+    .sec-head-line{flex:1;height:1px;background:var(--border-dim);}
+    .sec-head-badge{padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(45,212,191,0.1);color:var(--teal);white-space:nowrap;}
+
+    /* Live price cards */
+    .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px;}
+    .price-card{background:var(--bg-2);border:1px solid var(--border-dim);border-radius:16px;padding:22px 24px;transition:border-color 0.2s,transform 0.2s;}
+    .price-card:hover{border-color:var(--border);transform:translateY(-2px);}
+    .pc-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+    .pc-sym{background:rgba(45,212,191,0.12);color:var(--teal);font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:800;padding:4px 10px;border-radius:8px;letter-spacing:0.5px;}
+    .pc-name{font-size:13px;font-weight:600;color:var(--text-muted);}
+    .pc-price{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:800;color:var(--text);line-height:1.1;margin-bottom:3px;}
+    .pc-unit{font-size:11px;color:var(--text-dim);margin-bottom:12px;}
+    .pc-change{display:inline-flex;align-items:center;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;}
+    .pc-change.up{background:rgba(34,197,94,0.1);color:var(--green);}
+    .pc-change.dn{background:rgba(239,68,68,0.1);color:var(--red);}
+    .pc-change.neu{background:rgba(148,163,184,0.08);color:var(--text-muted);}
+    .pc-time{font-size:10px;color:var(--text-dim);margin-top:8px;}
+    .price-refresh-btn{background:rgba(45,212,191,0.08);border:1px solid var(--border);color:var(--teal);font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;cursor:pointer;transition:background 0.2s;font-family:inherit;}
+    .price-refresh-btn:hover{background:rgba(45,212,191,0.18);}
+    @media(max-width:860px){.price-grid{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:480px){.price-grid{grid-template-columns:1fr;}}
+
+    /* Full table */
+    .quotes-wrap{height:560px;border-radius:20px;overflow:hidden;background:var(--bg-2);border:1px solid var(--border-dim);margin-bottom:40px;}
+
+    /* Info cards */
+    .info-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:48px;}
+    .info-card{background:var(--bg-2);border:1px solid var(--border-dim);border-radius:16px;padding:22px 20px;}
+    .info-card-icon{font-size:26px;margin-bottom:12px;}
+    .info-card-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;color:var(--text);margin-bottom:8px;}
+    .info-card-text{font-size:12px;color:var(--text-muted);line-height:1.7;}
+    @media(max-width:700px){.info-row{grid-template-columns:1fr;}.quotes-wrap{height:460px;}}
+
+    /* Footer */
+    .footer{text-align:center;padding-top:28px;border-top:1px solid var(--border-dim);font-size:12px;color:var(--text-dim);line-height:1.8;}
+    .footer a{color:var(--teal);text-decoration:none;}
+
+    .tradingview-widget-copyright{display:none !important;}
+  </style>
+</head>
+<body>
+
+<!-- Ticker -->
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <span class="tick-item"><span class="tick-dot up"></span><span class="tick-name">GOLD</span><span class="tick-price">XAU/USD</span><span class="tick-change up">Live ▲</span></span>
+    <span class="tick-item"><span class="tick-dot up"></span><span class="tick-name">SILVER</span><span class="tick-price">XAG/USD</span><span class="tick-change up">Live ▲</span></span>
+    <span class="tick-item"><span class="tick-dot dn"></span><span class="tick-name">WTI OIL</span><span class="tick-price">NYMEX</span><span class="tick-change dn">Live ▼</span></span>
+    <span class="tick-item"><span class="tick-dot dn"></span><span class="tick-name">BRENT</span><span class="tick-price">ICE</span><span class="tick-change dn">Live ▼</span></span>
+    <span class="tick-item"><span class="tick-dot up"></span><span class="tick-name">NAT GAS</span><span class="tick-price">NYMEX</span><span class="tick-change up">Live ▲</span></span>
+    <span class="tick-item"><span class="tick-dot up"></span><span class="tick-name">COPPER</span><span class="tick-price">COMEX</span><span class="tick-change up">Live ▲</span></span>
+    <span class="tick-item"><span class="tick-dot up"></span><span class="tick-name">WHEAT</span><span class="tick-price">CBOT</span><span class="tick-change up">Live ▲</span></span>
+    <span class="tick-item"><span class="tick-dot dn"></span><span class="tick-name">CORN</span><span class="tick-price">CBOT</span><span class="tick-change dn">Live ▼</span></span>
+    <span class="tick-item"><span class="tick-dot up"></span><span class="tick-name">GOLD</span><span class="tick-price">XAU/USD</span><span class="tick-change up">Live ▲</span></span>
+    <span class="tick-item"><span class="tick-dot up"></span><span class="tick-name">SILVER</span><span class="tick-price">XAG/USD</span><span class="tick-change up">Live ▲</span></span>
+    <span class="tick-item"><span class="tick-dot dn"></span><span class="tick-name">WTI OIL</span><span class="tick-price">NYMEX</span><span class="tick-change dn">Live ▼</span></span>
+    <span class="tick-item"><span class="tick-dot dn"></span><span class="tick-name">BRENT</span><span class="tick-price">ICE</span><span class="tick-change dn">Live ▼</span></span>
+    <span class="tick-item"><span class="tick-dot up"></span><span class="tick-name">NAT GAS</span><span class="tick-price">NYMEX</span><span class="tick-change up">Live ▲</span></span>
+    <span class="tick-item"><span class="tick-dot up"></span><span class="tick-name">COPPER</span><span class="tick-price">COMEX</span><span class="tick-change up">Live ▲</span></span>
+    <span class="tick-item"><span class="tick-dot up"></span><span class="tick-name">WHEAT</span><span class="tick-price">CBOT</span><span class="tick-change up">Live ▲</span></span>
+    <span class="tick-item"><span class="tick-dot dn"></span><span class="tick-name">CORN</span><span class="tick-price">CBOT</span><span class="tick-change dn">Live ▼</span></span>
+  </div>
+</div>
+
+<!-- Nav -->
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="logo.png" class="logo-img" alt="Trends &amp; Trade" onerror="this.style.display='none'"/>
+      <div class="logo-text">Trends <span>&amp;</span> Trade</div>
+    </a>
+    <div class="nav-col">
+      <ul class="nav-row-1 nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="library.html">Library</a></li>
+        <li><a href="courses.html">Courses</a></li>
+        <li><a href="whiteboard.html">Whiteboard</a></li>
+        <li><a href="commodities.html" class="active">Commodities</a></li>
+        <li><a href="social.html">Media</a></li>
+        <li><a href="index.html#community">Community</a></li>
+        <li><a href="team.html">Team</a></li>
+        <li><a href="about.html">About Us</a></li>
+      </ul>
+    </div>
+    <button class="nav-hamburger" onclick="toggleMenu()">&#9776;</button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html" onclick="toggleMenu()">Home</a>
+  <a href="library.html" onclick="toggleMenu()">Library</a>
+  <a href="courses.html" onclick="toggleMenu()">Courses</a>
+  <a href="whiteboard.html" onclick="toggleMenu()">Whiteboard</a>
+  <a href="commodities.html" onclick="toggleMenu()" style="color:var(--teal);">Commodities</a>
+  <a href="social.html" onclick="toggleMenu()">Media</a>
+  <a href="index.html#community" onclick="toggleMenu()">Community</a>
+  <a href="index.html#pricing" onclick="toggleMenu()">Pricing</a>
+  <a href="team.html" onclick="toggleMenu()">Team</a>
+  <a href="about.html" onclick="toggleMenu()">About Us</a>
+</div>
+
+<div class="page">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-tag">📊 Live Market Data</div>
+    <h1>Commodities <span>Market</span></h1>
+    <p>Real-time prices for metals, energy and agricultural commodities — powered by TradingView.</p>
+  </div>
+
+  <!-- ── Live Prices ── -->
+  <div class="sec-head" style="margin-bottom:20px;">
+    <div class="sec-head-title">📈 Live Prices</div>
+    <div class="sec-head-badge" id="priceBadge">Loading…</div>
+    <button class="price-refresh-btn" onclick="refreshPrices()">↻ Refresh</button>
+    <div class="sec-head-line"></div>
+  </div>
+  <div class="price-grid">
+
+    <div class="price-card">
+      <div class="pc-header"><span class="pc-sym">Au</span><span class="pc-name">Gold</span></div>
+      <div class="pc-price" id="pp-gold">—</div>
+      <div class="pc-unit">USD / troy oz</div>
+      <div class="pc-change neu" id="pch-gold">Loading…</div>
+      <div class="pc-time" id="pt-gold"></div>
+    </div>
+
+    <div class="price-card">
+      <div class="pc-header"><span class="pc-sym">Ag</span><span class="pc-name">Silver</span></div>
+      <div class="pc-price" id="pp-silver">—</div>
+      <div class="pc-unit">USD / troy oz</div>
+      <div class="pc-change neu" id="pch-silver">Loading…</div>
+      <div class="pc-time" id="pt-silver"></div>
+    </div>
+
+    <div class="price-card">
+      <div class="pc-header"><span class="pc-sym">Pt</span><span class="pc-name">Platinum</span></div>
+      <div class="pc-price" id="pp-platinum">—</div>
+      <div class="pc-unit">USD / troy oz</div>
+      <div class="pc-change neu" id="pch-platinum">Loading…</div>
+      <div class="pc-time" id="pt-platinum"></div>
+    </div>
+
+    <div class="price-card">
+      <div class="pc-header"><span class="pc-sym">Pd</span><span class="pc-name">Palladium</span></div>
+      <div class="pc-price" id="pp-palladium">—</div>
+      <div class="pc-unit">USD / troy oz</div>
+      <div class="pc-change neu" id="pch-palladium">Loading…</div>
+      <div class="pc-time" id="pt-palladium"></div>
+    </div>
+
+    <div class="price-card">
+      <div class="pc-header"><span class="pc-sym">WTI</span><span class="pc-name">WTI Crude</span></div>
+      <div class="pc-price" id="pp-wti">—</div>
+      <div class="pc-unit">USD / barrel</div>
+      <div class="pc-change neu" id="pch-wti">Loading…</div>
+      <div class="pc-time" id="pt-wti"></div>
+    </div>
+
+    <div class="price-card">
+      <div class="pc-header"><span class="pc-sym">BRT</span><span class="pc-name">Brent Crude</span></div>
+      <div class="pc-price" id="pp-brent">—</div>
+      <div class="pc-unit">USD / barrel</div>
+      <div class="pc-change neu" id="pch-brent">Loading…</div>
+      <div class="pc-time" id="pt-brent"></div>
+    </div>
+
+  </div>
+
+  <!-- ── Full Price Table ── -->
+  <div class="sec-head">
+    <div class="sec-head-title">All Commodities</div>
+    <div class="sec-head-badge">Metals · Energy · Agriculture</div>
+    <div class="sec-head-line"></div>
+  </div>
+  <div class="quotes-wrap">
+    <div class="tradingview-widget-container" style="height:100%;width:100%;">
+      <div class="tradingview-widget-container__widget" style="height:100%;width:100%;"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
+      {
+        "title": "Commodities",
+        "tabs": [
+          {
+            "title": "Metals",
+            "symbols": [
+              {"s": "TVC:GOLD",      "d": "Gold"},
+              {"s": "TVC:SILVER",    "d": "Silver"},
+              {"s": "TVC:PLATINUM",  "d": "Platinum"},
+              {"s": "TVC:PALLADIUM", "d": "Palladium"}
+            ],
+            "originalTitle": "Metals"
+          },
+          {
+            "title": "Energy",
+            "symbols": [
+              {"s": "TVC:USOIL",      "d": "WTI Crude Oil"},
+              {"s": "TVC:UKOIL",      "d": "Brent Crude Oil"}
+            ],
+            "originalTitle": "Energy"
+          },
+          {
+            "title": "Agriculture",
+            "symbols": [
+              {"s": "TVC:WHEAT",    "d": "Wheat"},
+              {"s": "TVC:CORN",     "d": "Corn"},
+              {"s": "TVC:SOYBEANS", "d": "Soybeans"},
+              {"s": "TVC:COFFEE",   "d": "Coffee"},
+              {"s": "TVC:COTTON",   "d": "Cotton"},
+              {"s": "TVC:CACAO",    "d": "Cocoa"},
+              {"s": "TVC:SUGAR",    "d": "Sugar"}
+            ],
+            "originalTitle": "Agriculture"
+          }
+        ],
+        "showSymbolLogo": true,
+        "isTransparent": true,
+        "colorTheme": "dark",
+        "locale": "en",
+        "backgroundColor": "rgba(10,22,40,1)"
+      }
+      </script>
+    </div>
+  </div>
+
+  <!-- Info cards -->
+  <div class="info-row">
+    <div class="info-card">
+      <div class="info-card-icon">🥇</div>
+      <div class="info-card-title">Precious Metals</div>
+      <div class="info-card-text">Gold and silver are the most traded safe-haven assets. They act as inflation hedges and stores of value during market uncertainty and geopolitical risk.</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-icon">🛢️</div>
+      <div class="info-card-title">Energy</div>
+      <div class="info-card-text">Crude oil and natural gas drive global economies. WTI and Brent are the two primary oil benchmarks watched by traders and investors worldwide.</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-icon">🌾</div>
+      <div class="info-card-title">Agriculture</div>
+      <div class="info-card-text">Soft commodities like wheat, corn and soybeans are influenced by weather patterns, geopolitics and seasonal demand cycles across global markets.</div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div style="margin-bottom:6px;">
+      <a href="index.html">Home</a> &nbsp;·&nbsp;
+      <a href="library.html">Library</a> &nbsp;·&nbsp;
+      <a href="courses.html">Courses</a> &nbsp;·&nbsp;
+      <a href="whiteboard.html">Whiteboard</a> &nbsp;·&nbsp;
+      <a href="social.html">Media</a> &nbsp;·&nbsp;
+      <a href="about.html">About</a>
+    </div>
+    © 2026 Trends &amp; Trade · SNR Trades · All rights reserved<br/>
+    ⚠️ Market data is for educational purposes only. Not financial advice.
+  </div>
+
+</div>
+
+<script>
+  function toggleMenu(){ document.getElementById('mobileMenu').classList.toggle('open'); }
+  document.addEventListener('click', e => {
+    if(!e.target.closest('.nav') && !e.target.closest('.mobile-menu'))
+      document.getElementById('mobileMenu').classList.remove('open');
+  });
+  window.addEventListener('scroll', () => {
+    document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 10);
+  });
+</script>
+</body>
+</html>
