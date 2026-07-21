@@ -66,7 +66,7 @@
     .quotes-wrap iframe{display:block;width:100%;}
     /* Mobile grid */
     .mobile-grid{display:none;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
-    .sq-widget{border-radius:12px;overflow:hidden;background:var(--bg-2);border:1px solid var(--border-dim);line-height:0;}
+    .sq-widget{border-radius:12px;overflow:hidden;background:var(--bg-2);border:1px solid var(--border-dim);line-height:0;min-height:300px;}
     .sq-widget .tradingview-widget-container{width:100%;}
     .sq-widget iframe{display:block;width:100%;}
     @media(max-width:768px){
@@ -92,7 +92,7 @@
     .footer{text-align:center;padding-top:28px;border-top:1px solid var(--border-dim);font-size:12px;color:var(--text-dim);line-height:1.8;}
     .footer a{color:var(--teal);text-decoration:none;}
 
-    .tradingview-widget-copyright{display:none !important;}
+    .tradingview-widget-copyright{font-size:10px;margin-top:4px;}
   </style>
 </head>
 <body>
@@ -180,10 +180,10 @@
     </div>
   </div>
   <div class="mobile-grid">
-    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"TVC:GOLD","width":"100%","height":160,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
-    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"TVC:SILVER","width":"100%","height":160,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
-    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"TVC:PLATINUM","width":"100%","height":160,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
-    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"TVC:PALLADIUM","width":"100%","height":160,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
+    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"TVC:GOLD","width":"100%","height":300,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
+    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"TVC:SILVER","width":"100%","height":300,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
+    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"TVC:PLATINUM","width":"100%","height":300,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
+    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"TVC:PALLADIUM","width":"100%","height":300,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
   </div>
 
   <!-- Energy -->
@@ -201,8 +201,8 @@
     </div>
   </div>
   <div class="mobile-grid">
-    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"TVC:USOIL","width":"100%","height":160,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
-    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"TVC:UKOIL","width":"100%","height":160,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
+    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"TVC:USOIL","width":"100%","height":300,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
+    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"TVC:UKOIL","width":"100%","height":300,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
   </div>
 
   <!-- Indices -->
@@ -220,10 +220,10 @@
     </div>
   </div>
   <div class="mobile-grid">
-    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"FOREXCOM:SPXUSD","width":"100%","height":160,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
-    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"FOREXCOM:NSXUSD","width":"100%","height":160,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
-    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"FOREXCOM:DJI","width":"100%","height":160,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
-    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"FOREXCOM:UK100","width":"100%","height":160,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
+    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"FOREXCOM:SPXUSD","width":"100%","height":300,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
+    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"FOREXCOM:NSXUSD","width":"100%","height":300,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
+    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"FOREXCOM:DJI","width":"100%","height":300,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
+    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"FOREXCOM:UK100","width":"100%","height":300,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
   </div>
 
   <!-- Forex -->
@@ -241,12 +241,12 @@
     </div>
   </div>
   <div class="mobile-grid">
-    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"FX:EURUSD","width":"100%","height":160,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
-    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"FX:GBPUSD","width":"100%","height":160,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
-    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"FX:USDJPY","width":"100%","height":160,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
-    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"FX:USDCHF","width":"100%","height":160,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
-    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"FX:AUDUSD","width":"100%","height":160,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
-    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"FX:USDCAD","width":"100%","height":160,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
+    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"FX:EURUSD","width":"100%","height":300,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
+    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"FX:GBPUSD","width":"100%","height":300,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
+    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"FX:USDJPY","width":"100%","height":300,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
+    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"FX:USDCHF","width":"100%","height":300,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
+    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"FX:AUDUSD","width":"100%","height":300,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
+    <div class="sq-widget"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>{"symbol":"FX:USDCAD","width":"100%","height":300,"locale":"en","colorTheme":"dark","isTransparent":true,"largeChartUrl":""}</script></div></div>
   </div>
 
   <!-- Info cards -->
