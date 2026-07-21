@@ -145,48 +145,80 @@
   <div class="hero">
     <div class="hero-tag">📊 Live Market Data</div>
     <h1>Commodities <span>Market</span></h1>
-    <p>Real-time prices for metals, energy and agricultural commodities — powered by TradingView.</p>
+    <p>Real-time prices for metals, energy, indices, futures and forex — powered by TradingView.</p>
   </div>
 
-  <!-- ── Full Price Table ── -->
+  <!-- Metals -->
   <div class="sec-head">
-    <div class="sec-head-title">All Commodities</div>
-    <div class="sec-head-badge">Metals · Energy</div>
+    <div class="sec-head-title">🥇 Metals</div>
+    <div class="sec-head-badge">Live</div>
     <div class="sec-head-line"></div>
   </div>
-  <div class="quotes-wrap">
+  <div class="quotes-wrap" style="height:310px;">
     <div class="tradingview-widget-container" style="height:100%;width:100%;">
       <div class="tradingview-widget-container__widget" style="height:100%;width:100%;"></div>
       <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
-      {
-        "width": "100%",
-        "height": 560,
-        "showSymbolLogo": true,
-        "isTransparent": true,
-        "colorTheme": "dark",
-        "locale": "en",
-        "backgroundColor": "rgba(10,22,40,1)",
-        "symbolsGroups": [
-          {
-            "name": "Metals",
-            "originalName": "Metals",
-            "symbols": [
-              {"name": "TVC:GOLD",      "displayName": "Gold"},
-              {"name": "TVC:SILVER",    "displayName": "Silver"},
-              {"name": "TVC:PLATINUM",  "displayName": "Platinum"},
-              {"name": "TVC:PALLADIUM", "displayName": "Palladium"}
-            ]
-          },
-          {
-            "name": "Energy",
-            "originalName": "Energy",
-            "symbols": [
-              {"name": "TVC:USOIL", "displayName": "WTI Crude Oil"},
-              {"name": "TVC:UKOIL", "displayName": "Brent Crude Oil"}
-            ]
-          }
-        ]
-      }
+      {"width":"100%","height":310,"showSymbolLogo":true,"isTransparent":true,"colorTheme":"dark","locale":"en","backgroundColor":"rgba(10,22,40,1)","symbolsGroups":[{"name":"Metals","originalName":"Metals","symbols":[{"name":"TVC:GOLD","displayName":"Gold"},{"name":"TVC:SILVER","displayName":"Silver"},{"name":"TVC:PLATINUM","displayName":"Platinum"},{"name":"TVC:PALLADIUM","displayName":"Palladium"}]}]}
+      </script>
+    </div>
+  </div>
+
+  <!-- Energy -->
+  <div class="sec-head">
+    <div class="sec-head-title">🛢️ Energy</div>
+    <div class="sec-head-badge">Live</div>
+    <div class="sec-head-line"></div>
+  </div>
+  <div class="quotes-wrap" style="height:190px;">
+    <div class="tradingview-widget-container" style="height:100%;width:100%;">
+      <div class="tradingview-widget-container__widget" style="height:100%;width:100%;"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
+      {"width":"100%","height":190,"showSymbolLogo":true,"isTransparent":true,"colorTheme":"dark","locale":"en","backgroundColor":"rgba(10,22,40,1)","symbolsGroups":[{"name":"Energy","originalName":"Energy","symbols":[{"name":"TVC:USOIL","displayName":"WTI Crude Oil"},{"name":"TVC:UKOIL","displayName":"Brent Crude Oil"}]}]}
+      </script>
+    </div>
+  </div>
+
+  <!-- Indices -->
+  <div class="sec-head">
+    <div class="sec-head-title">📊 Indices</div>
+    <div class="sec-head-badge">Live</div>
+    <div class="sec-head-line"></div>
+  </div>
+  <div class="quotes-wrap" style="height:420px;">
+    <div class="tradingview-widget-container" style="height:100%;width:100%;">
+      <div class="tradingview-widget-container__widget" style="height:100%;width:100%;"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
+      {"width":"100%","height":420,"showSymbolLogo":true,"isTransparent":true,"colorTheme":"dark","locale":"en","backgroundColor":"rgba(10,22,40,1)","symbolsGroups":[{"name":"Indices","originalName":"Indices","symbols":[{"name":"FOREXCOM:SPXUSD","displayName":"S&P 500"},{"name":"FOREXCOM:NSXUSD","displayName":"NASDAQ 100"},{"name":"FOREXCOM:DJI","displayName":"Dow Jones"},{"name":"FOREXCOM:DEU40","displayName":"DAX 40"},{"name":"FOREXCOM:UK100","displayName":"FTSE 100"},{"name":"FOREXCOM:JPN225","displayName":"Nikkei 225"}]}]}
+      </script>
+    </div>
+  </div>
+
+  <!-- Futures -->
+  <div class="sec-head">
+    <div class="sec-head-title">📈 Futures</div>
+    <div class="sec-head-badge">Live</div>
+    <div class="sec-head-line"></div>
+  </div>
+  <div class="quotes-wrap" style="height:360px;">
+    <div class="tradingview-widget-container" style="height:100%;width:100%;">
+      <div class="tradingview-widget-container__widget" style="height:100%;width:100%;"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
+      {"width":"100%","height":360,"showSymbolLogo":true,"isTransparent":true,"colorTheme":"dark","locale":"en","backgroundColor":"rgba(10,22,40,1)","symbolsGroups":[{"name":"Futures","originalName":"Futures","symbols":[{"name":"CME:ES1!","displayName":"S&P 500 Futures"},{"name":"CME:NQ1!","displayName":"NASDAQ Futures"},{"name":"CME:YM1!","displayName":"Dow Futures"},{"name":"COMEX:GC1!","displayName":"Gold Futures"},{"name":"CME:CL1!","displayName":"Crude Oil Futures"}]}]}
+      </script>
+    </div>
+  </div>
+
+  <!-- Forex -->
+  <div class="sec-head">
+    <div class="sec-head-title">💱 Forex</div>
+    <div class="sec-head-badge">Live</div>
+    <div class="sec-head-line"></div>
+  </div>
+  <div class="quotes-wrap" style="height:420px;">
+    <div class="tradingview-widget-container" style="height:100%;width:100%;">
+      <div class="tradingview-widget-container__widget" style="height:100%;width:100%;"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
+      {"width":"100%","height":420,"showSymbolLogo":true,"isTransparent":true,"colorTheme":"dark","locale":"en","backgroundColor":"rgba(10,22,40,1)","symbolsGroups":[{"name":"Forex","originalName":"Forex","symbols":[{"name":"FX:EURUSD","displayName":"EUR/USD"},{"name":"FX:GBPUSD","displayName":"GBP/USD"},{"name":"FX:USDJPY","displayName":"USD/JPY"},{"name":"FX:USDCHF","displayName":"USD/CHF"},{"name":"FX:AUDUSD","displayName":"AUD/USD"},{"name":"FX:USDCAD","displayName":"USD/CAD"}]}]}
       </script>
     </div>
   </div>
