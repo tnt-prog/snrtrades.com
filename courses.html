@@ -74,7 +74,7 @@
     .mobile-menu {
       display: none; position: fixed; top: 110px; left: 0; right: 0; bottom: 0;
       background: var(--bg-2); z-index: 99;
-      padding: 32px 24px; flex-direction: column; gap: 24px;
+      padding: 32px 24px; flex-direction: column; gap: 24px; overflow-y: auto;
     }
     .mobile-menu.open { display: flex; }
     .mobile-menu a { font-size: 18px; font-weight: 600; color: var(--text); text-decoration: none; padding: 12px 0; border-bottom: 1px solid var(--border-dim); }
@@ -239,6 +239,14 @@
   <meta name="twitter:title"      content="Courses — Trends & Trade"/>
   <meta name="twitter:description" content="Professional trading courses using the S&R Intelligent Trading System. Learn at your own pace."/>
   <meta name="twitter:image"      content="https://snrtrades.com/images/logo.jpg"/>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G1KD0N9EG8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-G1KD0N9EG8');
+  </script>
 </head>
 <body>
 
