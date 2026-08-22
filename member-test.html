@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Member Sign-In — Test Page (not linked, not indexed)</title>
+<meta name="robots" content="noindex, nofollow"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #070F1A; --bg-2: #0A1628; --bg-3: #0D1E34;
+    --teal: #2DD4BF; --teal-dark: #0D9488;
+    --border: rgba(45,212,191,0.18); --border-dim: rgba(255,255,255,0.06);
+    --text: #F0F4F8; --text-muted: #94A3B8; --text-dim: #4A5568;
+    --green: #22C55E; --red: #EF4444; --amber: #F59E0B;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif;
+    min-height: 100vh; padding: 40px 20px; display: flex; flex-direction: column; align-items: center;
+  }
+  .wrap { width: 100%; max-width: 480px; }
+  .banner {
+    background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 10px; padding: 12px 16px; font-size: 12px; color: var(--amber);
+    margin-bottom: 24px; line-height: 1.6;
+  }
+  h1 { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+  h1 span { color: var(--teal); }
+  .sub { font-size: 12px; color: var(--text-muted); margin-bottom: 24px; }
+  .card {
+    background: var(--bg-2); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px; margin-bottom: 20px;
+  }
+  .card h2 { font-size: 14px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .field-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
+  .input {
+    background: var(--bg-3); border: 1px solid var(--border);
+    border-radius: 10px; padding: 11px 14px; font-size: 14px; color: var(--text);
+    outline: none; width: 100%; margin-bottom: 12px; transition: border-color 0.2s;
+  }
+  .input:focus { border-color: var(--teal); }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    border-radius: 10px; font-weight: 700; font-size: 13px;
+    text-decoration: none; transition: all 0.2s; cursor: pointer; border: none;
+    padding: 11px 18px; width: 100%;
+  }
+  .btn-primary { background: var(--teal); color: #070F1A; }
+  .btn-primary:hover { background: var(--teal-dark); }
+  .btn-outline { background: transparent; border: 1px solid rgba(45,212,191,0.35); color: var(--teal); margin-top: 8px; }
+  .btn-outline:hover { background: rgba(45,212,191,0.08); }
+  .row-gap { display: flex; flex-direction: column; gap: 8px; }
+  .msg { font-size: 12px; margin-top: 10px; padding: 10px 12px; border-radius: 8px; display: none; line-height: 1.5; }
+  .msg.show { display: block; }
+  .msg.err { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: var(--red); }
+  .msg.ok  { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); color: var(--green); }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700;
+    padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.4px;
+  }
+  .pill.granted { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .pill.locked { background: rgba(239,68,68,0.1); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .user-email { font-size: 13px; color: var(--text-muted); word-break: break-all; }
+  .video-box {
+    aspect-ratio: 16/9; border-radius: 10px; border: 1px dashed var(--border);
+    display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px;
+    color: var(--text-dim); font-size: 12px; text-align: center; padding: 20px;
+  }
+  .hidden { display: none !important; }
+  details { font-size: 12px; color: var(--text-muted); }
+  summary { cursor: pointer; font-weight: 600; color: var(--teal); margin-bottom: 8px; }
+  pre {
+    background: #05090F; border: 1px solid var(--border-dim); border-radius: 8px;
+    padding: 12px; font-size: 11px; overflow-x: auto; color: #9be3d8; margin: 10px 0; line-height: 1.6;
+  }
+  code { color: var(--teal); }
+  .step { margin-bottom: 10px; }
+  .footer-note { font-size: 11px; color: var(--text-dim); text-align: center; margin-top: 20px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="banner">
+    🧪 Test page only — not linked from the site, not indexed by search engines. Safe to leave here while testing.
+  </div>
+
+  <h1>Member Sign-In <span>Test</span></h1>
+  <div class="sub">Trends &amp; Trade — testing sign-up, login, and access-gating before wiring it into the real site.</div>
+
+  <!-- Setup instructions (only relevant until keys below are filled in) -->
+  <div class="card" id="setupCard">
+    <h2>⚙️ One-time setup</h2>
+    <details open>
+      <summary>Show setup steps</summary>
+      <div class="step">1. Create a free project at <a href="https://supabase.com" target="_blank" style="color:var(--teal)">supabase.com</a>.</div>
+      <div class="step">2. In your Supabase project, go to <strong>SQL Editor</strong> and run:</div>
+      <pre>create table course_access (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) not null,
+  course_id text not null,
+  granted_at timestamptz default now(),
+  unique(user_id, course_id)
+);
+
+alter table course_access enable row level security;
+
+create policy "Users can view their own access"
+  on course_access for select
+  using (auth.uid() = user_id);</pre>
+      <div class="step">3. Go to <strong>Project Settings → API</strong>, copy your <strong>Project URL</strong> and <strong>anon public key</strong>.</div>
+      <div class="step">4. Paste them into <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> near the bottom of this file's &lt;script&gt; tag, then reload this page.</div>
+      <div class="step">5. To test "granting access": sign up on this page, then in Supabase go to <strong>Table Editor → course_access</strong> and manually add a row with your user's ID and <code>course_id</code> = <code>test-course</code>. Reload this page while logged in to see it unlock.</div>
+    </details>
+  </div>
+
+  <!-- Signup / Login -->
+  <div class="card" id="authCard">
+    <h2>🔐 Account</h2>
+    <div class="row-gap">
+      <div>
+        <label class="field-label">Email</label>
+        <input type="email" class="input" id="email" placeholder="you@example.com" autocomplete="email"/>
+      </div>
+      <div>
+        <label class="field-label">Password</label>
+        <input type="password" class="input" id="password" placeholder="At least 6 characters" autocomplete="current-password"/>
+      </div>
+      <button class="btn btn-primary" id="loginBtn">Log In</button>
+      <button class="btn btn-outline" id="signupBtn">Create Account</button>
+    </div>
+    <div class="msg" id="authMsg"></div>
+  </div>
+
+  <!-- Logged-in state -->
+  <div class="card hidden" id="sessionCard">
+    <h2>👤 Signed in</h2>
+    <div class="user-email" id="userEmail"></div>
+    <button class="btn btn-outline" id="logoutBtn" style="margin-top:14px;">Log Out</button>
+  </div>
+
+  <!-- Access status -->
+  <div class="card hidden" id="accessCard">
+    <h2>🎬 Course access — <code>test-course</code></h2>
+    <div id="accessPill"></div>
+    <div style="height:14px"></div>
+    <div class="video-box" id="videoBox"></div>
+  </div>
+
+  <div class="footer-note">
+    This page talks directly to Supabase from the browser using your public anon key (safe to expose) — no backend server involved yet.<br/>
+    Payment and Bunny Stream video delivery are not connected in this test; access is granted manually via the Supabase table for now.
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // ── Fill these in after creating your Supabase project (Project Settings → API) ──
+  const SUPABASE_URL = 'https://ucpjcopozlunknosugxd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjcGpjb3Bvemx1bmtub3N1Z3hkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYzNjUzNDAsImV4cCI6MjEwMTk0MTM0MH0.82r72tSsEVdJThuOtXLh2MO2WhLE42IUgIKm9bCa_Mw';
+  const TEST_COURSE_ID = 'test-course';
+
+  const configured = SUPABASE_URL.startsWith('http') && SUPABASE_ANON_KEY.length > 20;
+  const authMsg = document.getElementById('authMsg');
+
+  if (!configured) {
+    authMsg.textContent = 'Supabase is not configured yet — follow the setup steps above, then reload.';
+    authMsg.className = 'msg show err';
+    document.getElementById('loginBtn').disabled = true;
+    document.getElementById('signupBtn').disabled = true;
+  } else {
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    function showMsg(text, ok) {
+      authMsg.textContent = text;
+      authMsg.className = 'msg show ' + (ok ? 'ok' : 'err');
+    }
+
+    document.getElementById('signupBtn').addEventListener('click', async () => {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      if (!email || password.length < 6) return showMsg('Enter an email and a password of at least 6 characters.', false);
+      const { error } = await sb.auth.signUp({ email, password });
+      if (error) return showMsg(error.message, false);
+      showMsg('Account created. Check your email to confirm, then log in.', true);
+    });
+
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      if (!email || !password) return showMsg('Enter your email and password.', false);
+      const { error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) return showMsg(error.message, false);
+      await refreshUI();
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await sb.auth.signOut();
+      await refreshUI();
+    });
+
+    async function refreshUI() {
+      const { data: { session } } = await sb.auth.getSession();
+      const setupCard = document.getElementById('setupCard');
+      const authCard = document.getElementById('authCard');
+      const sessionCard = document.getElementById('sessionCard');
+      const accessCard = document.getElementById('accessCard');
+
+      if (!session) {
+        authCard.classList.remove('hidden');
+        sessionCard.classList.add('hidden');
+        accessCard.classList.add('hidden');
+        return;
+      }
+
+      setupCard.classList.add('hidden');
+      authCard.classList.add('hidden');
+      sessionCard.classList.remove('hidden');
+      accessCard.classList.remove('hidden');
+      document.getElementById('userEmail').textContent = session.user.email + '  (id: ' + session.user.id + ')';
+
+      const { data: access } = await sb
+        .from('course_access')
+        .select('*')
+        .eq('user_id', session.user.id)
+        .eq('course_id', TEST_COURSE_ID)
+        .maybeSingle();
+
+      const pill = document.getElementById('accessPill');
+      const box = document.getElementById('videoBox');
+      // ── Fill in your deployed Edge Function URL, e.g.:
+      // https://YOUR_PROJECT_REF.supabase.co/functions/v1/stream-video
+      const STREAM_FUNCTION_URL = 'https://ucpjcopozlunknosugxd.supabase.co/functions/v1/stream-video';
+      if (access) {
+        pill.innerHTML = '<span class="pill granted"><span class="dot"></span>Access granted</span>';
+        box.style.border = 'none';
+        box.style.padding = '0';
+        const videoSrc = STREAM_FUNCTION_URL + '?course_id=' + encodeURIComponent(TEST_COURSE_ID) + '&access_token=' + encodeURIComponent(session.access_token);
+        box.innerHTML = '<video controls controlsList="nodownload" disablePictureInPicture width="100%" height="100%" style="border-radius:10px;background:#000;" src="' + videoSrc + '"></video>';
+      } else {
+        pill.innerHTML = '<span class="pill locked"><span class="dot"></span>No access</span>';
+        box.style.border = '1px dashed var(--border)';
+        box.style.padding = '20px';
+        box.innerHTML = '🔒 Locked.<br/>Add a row for this user in Supabase → Table Editor → course_access with course_id = "' + TEST_COURSE_ID + '" to unlock.';
+      }
+    }
+
+    sb.auth.onAuthStateChange(() => refreshUI());
+    refreshUI();
+  }
+</script>
+</body>
+</html>

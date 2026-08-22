@@ -178,15 +178,15 @@
       box-shadow: 0 16px 48px rgba(0,0,0,0.4);
     }
     .pricing-card.featured {
-      border-color: var(--teal);
-      box-shadow: 0 0 0 1px rgba(45,212,191,0.3), 0 8px 40px rgba(45,212,191,0.1);
+      border-color: #DAA520;
+      box-shadow: 0 0 0 1px rgba(218,165,32,0.4), 0 8px 40px rgba(218,165,32,0.15);
     }
     .pricing-badge {
       position: absolute;
       top: -13px;
       left: 50%;
       transform: translateX(-50%);
-      background: var(--teal);
+      background: linear-gradient(135deg, #B8860B, #DAA520);
       color: #070F1A;
       font-size: 11px;
       font-weight: 800;
@@ -1364,26 +1364,39 @@
 
         <!-- Advanced -->
         <div class="pricing-card featured reveal reveal-delay-1">
-          <div class="pricing-badge">Most Popular</div>
-          <div class="pricing-tier">Advanced</div>
-          <div class="pricing-price"><sup>$</sup>59<span>/mo</span></div>
-          <p class="pricing-desc">For serious traders who want full access to courses, live sessions, and direct mentorship.</p>
+          <div class="pricing-badge">✦ The Treasure</div>
+          <div class="pricing-tier" style="color:#DAA520;">Advanced</div>
+          <div style="display:inline-flex;align-items:center;gap:8px;margin:4px 0 8px;padding:7px 16px;background:linear-gradient(135deg,rgba(218,165,32,0.12),rgba(255,215,0,0.06));border:1px solid rgba(218,165,32,0.35);border-radius:20px;">
+            <span style="font-size:18px;">🏛️</span>
+            <span style="font-size:13px;font-weight:700;color:#DAA520;letter-spacing:0.5px;">Premium Course Access</span>
+          </div>
           <hr class="pricing-divider"/>
-          <ul class="pricing-features">
-            <li><div class="pf-check">✓</div><span>Everything in Starter</span></li>
-            <li><div class="pf-check">✓</div><span>Full course library access</span></li>
-            <li><div class="pf-check">✓</div><span>Live trading sessions</span></li>
-            <li><div class="pf-check">✓</div><span>Private Discord channels</span></li>
-            <li><div class="pf-check">✓</div><span>Direct Q&amp;A with Ali</span></li>
-            <li><div class="pf-check">✓</div><span>Real-time trade alerts</span></li>
-            <li><div class="pf-check">✓</div><span>Gold &amp; Silver Mastery course</span></li>
-            <li><div class="pf-check">✓</div><span>Priority support</span></li>
+          <ul class="pricing-features" style="gap:8px;">
+            <li style="flex-direction:column;align-items:flex-start;gap:1px;padding:8px 10px;background:rgba(218,165,32,0.05);border:1px solid rgba(218,165,32,0.15);border-radius:8px;">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:900;color:#DAA520;letter-spacing:1.5px;">THE MAP</span>
+              <span style="font-size:11px;color:var(--text-muted);">Stocks &amp; Market Reading</span>
+            </li>
+            <li style="flex-direction:column;align-items:flex-start;gap:1px;padding:8px 10px;background:rgba(218,165,32,0.05);border:1px solid rgba(218,165,32,0.15);border-radius:8px;">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:900;color:#DAA520;letter-spacing:1.5px;">THE CORE</span>
+              <span style="font-size:11px;color:var(--text-muted);">Fundamental Analysis</span>
+            </li>
+            <li style="flex-direction:column;align-items:flex-start;gap:1px;padding:8px 10px;background:rgba(218,165,32,0.05);border:1px solid rgba(218,165,32,0.15);border-radius:8px;">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:900;color:#DAA520;letter-spacing:1.5px;">THE DIGIT</span>
+              <span style="font-size:11px;color:var(--text-muted);">Crypto Markets</span>
+            </li>
+            <li style="flex-direction:column;align-items:flex-start;gap:1px;padding:8px 10px;background:rgba(218,165,32,0.05);border:1px solid rgba(218,165,32,0.15);border-radius:8px;">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:900;color:#DAA520;letter-spacing:1.5px;">THE VAULT</span>
+              <span style="font-size:11px;color:var(--text-muted);">Gold, Silver &amp; Commodities</span>
+            </li>
+            <li style="flex-direction:column;align-items:flex-start;gap:1px;padding:8px 10px;background:rgba(218,165,32,0.05);border:1px solid rgba(218,165,32,0.15);border-radius:8px;">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:900;color:#DAA520;letter-spacing:1.5px;">THE FLOW</span>
+              <span style="font-size:11px;color:var(--text-muted);">Forex &amp; Global Currencies</span>
+            </li>
           </ul>
-          <button class="pricing-btn solid" disabled style="opacity:0.45;cursor:not-allowed;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text-muted);">Coming Soon</button>
+          <a href="treasure.html" class="pricing-btn solid" style="background:linear-gradient(135deg,#B8860B,#DAA520);color:#070F1A;font-weight:800;letter-spacing:0.3px;box-shadow:0 4px 24px rgba(218,165,32,0.35);">Explore Courses (View The Treasure)</a>
         </div>
 
       </div>
-      <p class="pricing-note reveal">🔒 Secure payments via Ko-fi &nbsp;·&nbsp; Cancel anytime &nbsp;·&nbsp; Instant Discord access after payment</p>
     </div>
   </section>
 
