@@ -163,7 +163,11 @@
     /* check list */
     .cd-checklist{display:grid;grid-template-columns:1fr 1fr;gap:8px 32px;list-style:none;padding:0;}
     .cd-checklist li{display:flex;align-items:flex-start;gap:9px;font-size:12.5px;color:var(--text-muted);line-height:1.6;padding:6px 0;}
-    .cd-checklist li .ck{color:#01D6D8;font-weight:900;font-size:12px;flex-shrink:0;margin-top:2px;}
+    .cd-checklist li .ck{display:inline-block;width:6px;height:6px;border-radius:50%;background:#01D6D8;flex-shrink:0;margin-top:5px;font-size:0;line-height:0;}
+    .theme-core .cd-checklist li .ck{background:#73D8AD;}
+    .theme-digit .cd-checklist li .ck{background:#5B8FFF;}
+    .theme-vault .cd-checklist li .ck{background:#D87700;}
+    .theme-flow .cd-checklist li .ck{background:#00A5D8;}
 
     /* single col list */
     .cd-checklist.single{grid-template-columns:1fr;}
@@ -176,6 +180,7 @@
 
     /* access grid */
     .cd-access{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+    .cd-access-inline{font-size:12.5px;font-weight:400;color:var(--text-muted);line-height:1.6;letter-spacing:0px;}
     .cd-access-item{display:flex;align-items:center;gap:8px;background:rgba(1,214,216,0.04);border:1px solid rgba(1,214,216,0.1);border-radius:8px;padding:10px 14px;font-size:12px;font-weight:600;color:var(--text-muted);}
     .cd-access-item .ck{color:#01D6D8;font-weight:900;font-size:13px;flex-shrink:0;}
 
@@ -228,6 +233,26 @@
     }
     @media(max-width:480px){.footer-top{grid-template-columns:1fr;}}
 
+
+    /* ── TOPICS SUMMARY ── */
+    .topics-summary{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
+    .ts-pill{font-size:11px;font-weight:700;letter-spacing:0.8px;padding:5px 13px;border-radius:20px;border:1px solid rgba(1,214,216,0.25);color:rgba(1,214,216,0.8);background:rgba(1,214,216,0.06);white-space:nowrap;}
+    .theme-core .ts-pill{border-color:rgba(115,216,173,0.25);color:rgba(115,216,173,0.85);background:rgba(115,216,173,0.06);}
+    .theme-digit .ts-pill{border-color:rgba(91,143,255,0.25);color:rgba(91,143,255,0.85);background:rgba(91,143,255,0.06);}
+    .theme-vault .ts-pill{border-color:rgba(216,119,0,0.25);color:rgba(216,119,0,0.85);background:rgba(216,119,0,0.06);}
+    .theme-flow .ts-pill{border-color:rgba(0,165,216,0.25);color:rgba(0,165,216,0.85);background:rgba(0,165,216,0.06);}
+    .topics-full{max-height:0;overflow:hidden;transition:max-height 0.5s ease;margin-top:0;}
+    .topics-full.open{max-height:4000px;margin-top:16px;}
+    .topics-toggle{background:rgba(1,214,216,0.08);border:1px solid rgba(1,214,216,0.3);border-radius:8px;color:rgba(1,214,216,0.9);font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;padding:9px 20px;cursor:pointer;transition:all 0.2s;text-transform:uppercase;margin-top:4px;}
+    .topics-toggle:hover{background:rgba(1,214,216,0.14);border-color:rgba(1,214,216,0.5);}
+    .theme-core .topics-toggle{background:rgba(115,216,173,0.08);border-color:rgba(115,216,173,0.3);color:rgba(115,216,173,0.9);}
+    .theme-core .topics-toggle:hover{background:rgba(115,216,173,0.14);border-color:rgba(115,216,173,0.5);}
+    .theme-digit .topics-toggle{background:rgba(91,143,255,0.08);border-color:rgba(91,143,255,0.3);color:rgba(91,143,255,0.9);}
+    .theme-digit .topics-toggle:hover{background:rgba(91,143,255,0.14);border-color:rgba(91,143,255,0.5);}
+    .theme-vault .topics-toggle{background:rgba(216,119,0,0.08);border-color:rgba(216,119,0,0.3);color:rgba(216,119,0,0.9);}
+    .theme-vault .topics-toggle:hover{background:rgba(216,119,0,0.14);border-color:rgba(216,119,0,0.5);}
+    .theme-flow .topics-toggle{background:rgba(0,165,216,0.08);border-color:rgba(0,165,216,0.3);color:rgba(0,165,216,0.9);}
+    .theme-flow .topics-toggle:hover{background:rgba(0,165,216,0.14);border-color:rgba(0,165,216,0.5);}
     /* ── CHEVRON ARROW ── */
     .cd-arrow{display:inline-block;transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);font-style:normal;}
     .cd-toggle.open .cd-arrow{transform:rotate(180deg);}
@@ -388,12 +413,11 @@
                   <div class="cd-section-title">What's Included</div>
                 </div>
                 <ul class="cd-checklist single">
-                  <li><span class="ck">✓</span>Introduction to Trading — foundational concepts every trader must understand.</li>
+                  <li><span class="ck">✓</span>Introduction to Trading — Foundational concepts every trader must understand.</li>
                   <li><span class="ck">✓</span>TradingView Training + 2 Advanced Functionality Lectures.</li>
-                  <li><span class="ck">✓</span>Core Technical Analysis — candlesticks, S&amp;R, trends, market structure, patterns, indicators, Fibonacci &amp; volume.</li>
-                  <li><span class="ck">✓</span>Advanced Analysis — harmonics, divergence, liquidity, Smart Money Concepts &amp; top-down analysis.</li>
-                  <li><span class="ck">✓</span>Trade Planning &amp; Risk Management — structured entries, stops, targets &amp; capital protection.</li>
-                  <li><span class="ck">✓</span>Monthly 1-Hour Live Online Q&amp;A with the instructor.</li>
+                  <li><span class="ck">✓</span>Core Technical Analysis — Market Structure, Candlestick Charts, Support &amp; Resistance, Fibonacci, Indicators &amp; Volume Analysis.</li>
+                  <li><span class="ck">✓</span>Advanced Analysis — Divergence Types, Chart Patterns, Harmonics, Liquidity Concepts, Smart Money Concepts &amp; Top-Down Analysis.</li>
+                  <li><span class="ck">✓</span>Trade Planning &amp; Risk Management — Structured Entries, Stops, Targets &amp; Capital Protection.</li>
                 </ul>
               </div>
 
@@ -404,13 +428,14 @@
                 </div>
                 <ul class="cd-checklist">
                   <li><span class="ck">✓</span>Price Action &amp; Market Structure</li>
-                  <li><span class="ck">✓</span>Support, Resistance &amp; Trend Analysis</li>
-                  <li><span class="ck">✓</span>Chart Patterns — Reversal &amp; Continuation</li>
-                  <li><span class="ck">✓</span>Fibonacci Tools &amp; Harmonic Patterns</li>
+                  <li><span class="ck">✓</span>Support &amp; Resistance Analysis</li>
+                  <li><span class="ck">✓</span>Fibonacci Tools &amp; Retracement Levels</li>
                   <li><span class="ck">✓</span>RSI, MACD, Bollinger Bands &amp; Volume</li>
                   <li><span class="ck">✓</span>Divergence — Regular &amp; Hidden</li>
+                  <li><span class="ck">✓</span>Chart Patterns — Reversal &amp; Continuation</li>
                   <li><span class="ck">✓</span>Liquidity, Order Blocks &amp; Fair Value Gaps</li>
                   <li><span class="ck">✓</span>Smart Money Concepts &amp; Multi-Timeframe Analysis</li>
+                  <li><span class="ck">✓</span>Harmonic Patterns</li>
                 </ul>
               </div>
 
@@ -432,14 +457,7 @@
                   <div class="cd-section-icon">✅</div>
                   <div class="cd-section-title">Program Access</div>
                 </div>
-                <div class="cd-access">
-                  <div class="cd-access-item"><span class="ck">✓</span>Online Video Program</div>
-                  <div class="cd-access-item"><span class="ck">✓</span>Beginner to Advanced Path</div>
-                  <div class="cd-access-item"><span class="ck">✓</span>Real-Market Examples</div>
-                  <div class="cd-access-item"><span class="ck">✓</span>Live Q&amp;A Every Month</div>
-                  <div class="cd-access-item"><span class="ck">✓</span>Student Portal Access</div>
-                  <div class="cd-access-item"><span class="ck">✓</span>4 Months Access · Learn at Your Pace</div>
-                </div>
+                <p class="cd-access-inline">Online Video Program &nbsp;·&nbsp; Beginner to Advanced Path &nbsp;·&nbsp; Real-Market Examples &nbsp;·&nbsp; Live Q&amp;A Every Month &nbsp;·&nbsp; Student Portal Access &nbsp;·&nbsp; 4 Months Access</p>
               </div>
 
               <div class="cd-section">
@@ -447,7 +465,21 @@
                   <div class="cd-section-icon">🔍</div>
                   <div class="cd-section-title">Topics Covered</div>
                 </div>
-                <div class="cd-topics">
+                <div class="topics-summary">
+                  <span class="ts-pill">Foundations</span>
+                  <span class="ts-pill">Candlesticks &amp; Price Action</span>
+                  <span class="ts-pill">Structure &amp; Trend</span>
+                  <span class="ts-pill">Chart Patterns</span>
+                  <span class="ts-pill">Harmonic Patterns</span>
+                  <span class="ts-pill">Fibonacci &amp; Advanced Tools</span>
+                  <span class="ts-pill">Indicators</span>
+                  <span class="ts-pill">Divergence</span>
+                  <span class="ts-pill">Smart Money Concepts</span>
+                  <span class="ts-pill">Analysis &amp; Risk Management</span>
+                </div>
+                <button class="topics-toggle" onclick="toggleTopics(this,'map-topics')">▼  View All Topics</button>
+                <div class="topics-full" id="map-topics">
+                  <div class="cd-topics">
                   <div class="cd-topic-group">
                     <div class="cd-topic-label">Foundations</div>
                     <div class="cd-topic-pills">
@@ -508,6 +540,7 @@
                       <span>Multi-Timeframe Analysis</span><span>Top-Down Analysis</span><span>Trade Planning</span><span>Risk-to-Reward</span><span>Position Sizing</span><span>Stop-Loss Placement</span>
                     </div>
                   </div>
+                </div>
                 </div>
               </div>
 
@@ -598,14 +631,7 @@
                   <div class="cd-section-icon" style="background:rgba(115,216,173,0.08);border-color:rgba(115,216,173,0.2);">✅</div>
                   <div class="cd-section-title" style="color:#73D8AD;">Program Access</div>
                 </div>
-                <div class="cd-access">
-                  <div class="cd-access-item" style="border-color:rgba(115,216,173,0.12);"><span class="ck" style="color:#73D8AD;">✓</span>Online Video Program</div>
-                  <div class="cd-access-item" style="border-color:rgba(115,216,173,0.12);"><span class="ck" style="color:#73D8AD;">✓</span>Beginner to Advanced Path</div>
-                  <div class="cd-access-item" style="border-color:rgba(115,216,173,0.12);"><span class="ck" style="color:#73D8AD;">✓</span>Real Company Analysis Examples</div>
-                  <div class="cd-access-item" style="border-color:rgba(115,216,173,0.12);"><span class="ck" style="color:#73D8AD;">✓</span>Student Portal Access</div>
-                  <div class="cd-access-item" style="border-color:rgba(115,216,173,0.12);"><span class="ck" style="color:#73D8AD;">✓</span>4 Months Access</div>
-                  <div class="cd-access-item" style="border-color:rgba(115,216,173,0.12);"><span class="ck" style="color:#73D8AD;">✓</span>Learn at Your Own Pace</div>
-                </div>
+                <p class="cd-access-inline">Online Video Program &nbsp;·&nbsp; Beginner to Advanced Path &nbsp;·&nbsp; Real Company Analysis Examples &nbsp;·&nbsp; Student Portal Access &nbsp;·&nbsp; 4 Months Access &nbsp;·&nbsp; Learn at Your Own Pace</p>
               </div>
 
               <div class="cd-section">
@@ -613,7 +639,23 @@
                   <div class="cd-section-icon" style="background:rgba(115,216,173,0.08);border-color:rgba(115,216,173,0.2);">🔍</div>
                   <div class="cd-section-title" style="color:#73D8AD;">Topics Covered</div>
                 </div>
-                <div class="cd-topics">
+                <div class="topics-summary">
+                  <span class="ts-pill">Foundations</span>
+                  <span class="ts-pill">Business &amp; Industry Analysis</span>
+                  <span class="ts-pill">Income Statement</span>
+                  <span class="ts-pill">Balance Sheet</span>
+                  <span class="ts-pill">Cash Flow Statement</span>
+                  <span class="ts-pill">Financial Ratios</span>
+                  <span class="ts-pill">Valuation</span>
+                  <span class="ts-pill">Management &amp; Governance</span>
+                  <span class="ts-pill">Dividends &amp; Corporate Actions</span>
+                  <span class="ts-pill">Earnings &amp; Reports</span>
+                  <span class="ts-pill">Macro, Cycles &amp; Sector Rotation</span>
+                  <span class="ts-pill">Investment Strategy &amp; Risk</span>
+                </div>
+                <button class="topics-toggle" onclick="toggleTopics(this,'core-topics')">▼  View All Topics</button>
+                <div class="topics-full" id="core-topics">
+                  <div class="cd-topics">
                   <div class="cd-topic-group">
                     <div class="cd-topic-label">Foundations</div>
                     <div class="cd-topic-pills">
@@ -686,6 +728,7 @@
                       <span style="color:rgba(115,216,173,0.9);background:rgba(115,216,173,0.06);border-color:rgba(115,216,173,0.18);">Growth Investing</span><span style="color:rgba(115,216,173,0.9);background:rgba(115,216,173,0.06);border-color:rgba(115,216,173,0.18);">Value Investing</span><span style="color:rgba(115,216,173,0.9);background:rgba(115,216,173,0.06);border-color:rgba(115,216,173,0.18);">Dividend Investing</span><span style="color:rgba(115,216,173,0.9);background:rgba(115,216,173,0.06);border-color:rgba(115,216,173,0.18);">Quality Investing</span><span style="color:rgba(115,216,173,0.9);background:rgba(115,216,173,0.06);border-color:rgba(115,216,173,0.18);">Fundamental Screening</span><span style="color:rgba(115,216,173,0.9);background:rgba(115,216,173,0.06);border-color:rgba(115,216,173,0.18);">Red Flag Identification</span><span style="color:rgba(115,216,173,0.9);background:rgba(115,216,173,0.06);border-color:rgba(115,216,173,0.18);">Catalyst Analysis</span><span style="color:rgba(115,216,173,0.9);background:rgba(115,216,173,0.06);border-color:rgba(115,216,173,0.18);">Risk Identification</span><span style="color:rgba(115,216,173,0.9);background:rgba(115,216,173,0.06);border-color:rgba(115,216,173,0.18);">Investment Thesis</span><span style="color:rgba(115,216,173,0.9);background:rgba(115,216,173,0.06);border-color:rgba(115,216,173,0.18);">Portfolio Allocation</span><span style="color:rgba(115,216,173,0.9);background:rgba(115,216,173,0.06);border-color:rgba(115,216,173,0.18);">Diversification</span><span style="color:rgba(115,216,173,0.9);background:rgba(115,216,173,0.06);border-color:rgba(115,216,173,0.18);">Position Sizing</span>
                     </div>
                   </div>
+                </div>
                 </div>
               </div>
 
@@ -797,14 +840,7 @@
                   <div class="cd-section-icon" style="background:rgba(91,143,255,0.08);border-color:rgba(91,143,255,0.2);">✅</div>
                   <div class="cd-section-title" style="color:#5B8FFF;">Program Access</div>
                 </div>
-                <div class="cd-access">
-                  <div class="cd-access-item" style="border-color:rgba(91,143,255,0.12);"><span class="ck" style="color:#5B8FFF;">✓</span>Online Video Program</div>
-                  <div class="cd-access-item" style="border-color:rgba(91,143,255,0.12);"><span class="ck" style="color:#5B8FFF;">✓</span>Beginner to Advanced Path</div>
-                  <div class="cd-access-item" style="border-color:rgba(91,143,255,0.12);"><span class="ck" style="color:#5B8FFF;">✓</span>Real-Market Crypto Examples</div>
-                  <div class="cd-access-item" style="border-color:rgba(91,143,255,0.12);"><span class="ck" style="color:#5B8FFF;">✓</span>Student Portal Access</div>
-                  <div class="cd-access-item" style="border-color:rgba(91,143,255,0.12);"><span class="ck" style="color:#5B8FFF;">✓</span>4 Months Access</div>
-                  <div class="cd-access-item" style="border-color:rgba(91,143,255,0.12);"><span class="ck" style="color:#5B8FFF;">✓</span>Learn at Your Own Pace</div>
-                </div>
+                <p class="cd-access-inline">Online Video Program &nbsp;·&nbsp; Beginner to Advanced Path &nbsp;·&nbsp; Real-Market Crypto Examples &nbsp;·&nbsp; Student Portal Access &nbsp;·&nbsp; 4 Months Access &nbsp;·&nbsp; Learn at Your Own Pace</p>
               </div>
 
               <div class="cd-section">
@@ -812,7 +848,25 @@
                   <div class="cd-section-icon" style="background:rgba(91,143,255,0.08);border-color:rgba(91,143,255,0.2);">🔍</div>
                   <div class="cd-section-title" style="color:#5B8FFF;">Topics Covered</div>
                 </div>
-                <div class="cd-topics">
+                <div class="topics-summary">
+                  <span class="ts-pill">Crypto Foundations</span>
+                  <span class="ts-pill">Exchanges &amp; Infrastructure</span>
+                  <span class="ts-pill">Trading Types</span>
+                  <span class="ts-pill">Trading Styles</span>
+                  <span class="ts-pill">Order Types &amp; Execution</span>
+                  <span class="ts-pill">Leverage, Margin &amp; Liquidation</span>
+                  <span class="ts-pill">Technical Analysis</span>
+                  <span class="ts-pill">Smart Money Concepts</span>
+                  <span class="ts-pill">Derivatives &amp; Market Data</span>
+                  <span class="ts-pill">On-Chain Analysis</span>
+                  <span class="ts-pill">Fundamental Analysis &amp; DeFi</span>
+                  <span class="ts-pill">Market Cycles &amp; Correlations</span>
+                  <span class="ts-pill">Trading Mathematics &amp; Risk</span>
+                  <span class="ts-pill">Security &amp; Operational Risk</span>
+                </div>
+                <button class="topics-toggle" onclick="toggleTopics(this,'digit-topics')">▼  View All Topics</button>
+                <div class="topics-full" id="digit-topics">
+                  <div class="cd-topics">
                   <div class="cd-topic-group">
                     <div class="cd-topic-label">Crypto Foundations</div>
                     <div class="cd-topic-pills">
@@ -897,6 +951,7 @@
                       <span style="color:rgba(91,143,255,0.9);background:rgba(91,143,255,0.06);border-color:rgba(91,143,255,0.18);">Exchange Risk</span><span style="color:rgba(91,143,255,0.9);background:rgba(91,143,255,0.06);border-color:rgba(91,143,255,0.18);">Wallet Security</span><span style="color:rgba(91,143,255,0.9);background:rgba(91,143,255,0.06);border-color:rgba(91,143,255,0.18);">Seed Phrase Protection</span><span style="color:rgba(91,143,255,0.9);background:rgba(91,143,255,0.06);border-color:rgba(91,143,255,0.18);">Phishing</span><span style="color:rgba(91,143,255,0.9);background:rgba(91,143,255,0.06);border-color:rgba(91,143,255,0.18);">Scam Projects</span><span style="color:rgba(91,143,255,0.9);background:rgba(91,143,255,0.06);border-color:rgba(91,143,255,0.18);">Rug-Pull Awareness</span><span style="color:rgba(91,143,255,0.9);background:rgba(91,143,255,0.06);border-color:rgba(91,143,255,0.18);">Smart-Contract Risk</span><span style="color:rgba(91,143,255,0.9);background:rgba(91,143,255,0.06);border-color:rgba(91,143,255,0.18);">Network-Selection Errors</span><span style="color:rgba(91,143,255,0.9);background:rgba(91,143,255,0.06);border-color:rgba(91,143,255,0.18);">Stablecoin Risk</span><span style="color:rgba(91,143,255,0.9);background:rgba(91,143,255,0.06);border-color:rgba(91,143,255,0.18);">Counterparty Risk</span>
                     </div>
                   </div>
+                </div>
                 </div>
               </div>
 
@@ -1004,14 +1059,7 @@
                   <div class="cd-section-icon" style="background:rgba(216,119,0,0.08);border-color:rgba(216,119,0,0.2);">✅</div>
                   <div class="cd-section-title" style="color:#D87700;">Program Access</div>
                 </div>
-                <div class="cd-access">
-                  <div class="cd-access-item" style="border-color:rgba(216,119,0,0.12);"><span class="ck" style="color:#D87700;">✓</span>Online Video Program</div>
-                  <div class="cd-access-item" style="border-color:rgba(216,119,0,0.12);"><span class="ck" style="color:#D87700;">✓</span>Beginner to Advanced Path</div>
-                  <div class="cd-access-item" style="border-color:rgba(216,119,0,0.12);"><span class="ck" style="color:#D87700;">✓</span>Real-Market Gold Examples</div>
-                  <div class="cd-access-item" style="border-color:rgba(216,119,0,0.12);"><span class="ck" style="color:#D87700;">✓</span>Student Portal Access</div>
-                  <div class="cd-access-item" style="border-color:rgba(216,119,0,0.12);"><span class="ck" style="color:#D87700;">✓</span>4 Months Access</div>
-                  <div class="cd-access-item" style="border-color:rgba(216,119,0,0.12);"><span class="ck" style="color:#D87700;">✓</span>Learn at Your Own Pace</div>
-                </div>
+                <p class="cd-access-inline">Online Video Program &nbsp;·&nbsp; Beginner to Advanced Path &nbsp;·&nbsp; Real-Market Gold Examples &nbsp;·&nbsp; Student Portal Access &nbsp;·&nbsp; 4 Months Access &nbsp;·&nbsp; Learn at Your Own Pace</p>
               </div>
 
               <div class="cd-section">
@@ -1019,7 +1067,21 @@
                   <div class="cd-section-icon" style="background:rgba(216,119,0,0.08);border-color:rgba(216,119,0,0.2);">🔍</div>
                   <div class="cd-section-title" style="color:#D87700;">Topics Covered</div>
                 </div>
-                <div class="cd-topics">
+                <div class="topics-summary">
+                  <span class="ts-pill">Foundations</span>
+                  <span class="ts-pill">Futures &amp; Contract Mechanics</span>
+                  <span class="ts-pill">Macroeconomic &amp; Fundamental Drivers</span>
+                  <span class="ts-pill">Economic Data</span>
+                  <span class="ts-pill">Technical Analysis</span>
+                  <span class="ts-pill">Smart Money Concepts</span>
+                  <span class="ts-pill">Intermarket Relationships</span>
+                  <span class="ts-pill">Trading Sessions &amp; Event Risk</span>
+                  <span class="ts-pill">Gold Trading Mathematics</span>
+                  <span class="ts-pill">Markets Covered</span>
+                </div>
+                <button class="topics-toggle" onclick="toggleTopics(this,'vault-topics')">▼  View All Topics</button>
+                <div class="topics-full" id="vault-topics">
+                  <div class="cd-topics">
                   <div class="cd-topic-group">
                     <div class="cd-topic-label">Foundations</div>
                     <div class="cd-topic-pills">
@@ -1080,6 +1142,7 @@
                       <span style="color:rgba(216,119,0,0.85);background:rgba(216,119,0,0.06);border-color:rgba(216,119,0,0.18);">Gold (XAU/USD)</span><span style="color:rgba(216,119,0,0.85);background:rgba(216,119,0,0.06);border-color:rgba(216,119,0,0.18);">Silver</span><span style="color:rgba(216,119,0,0.85);background:rgba(216,119,0,0.06);border-color:rgba(216,119,0,0.18);">Crude Oil</span><span style="color:rgba(216,119,0,0.85);background:rgba(216,119,0,0.06);border-color:rgba(216,119,0,0.18);">Natural Gas</span><span style="color:rgba(216,119,0,0.85);background:rgba(216,119,0,0.06);border-color:rgba(216,119,0,0.18);">Copper</span><span style="color:rgba(216,119,0,0.85);background:rgba(216,119,0,0.06);border-color:rgba(216,119,0,0.18);">Platinum</span><span style="color:rgba(216,119,0,0.85);background:rgba(216,119,0,0.06);border-color:rgba(216,119,0,0.18);">Precious Metals</span><span style="color:rgba(216,119,0,0.85);background:rgba(216,119,0,0.06);border-color:rgba(216,119,0,0.18);">Energy Markets</span><span style="color:rgba(216,119,0,0.85);background:rgba(216,119,0,0.06);border-color:rgba(216,119,0,0.18);">Industrial Metals</span>
                     </div>
                   </div>
+                </div>
                 </div>
               </div>
 
@@ -1189,14 +1252,7 @@
                   <div class="cd-section-icon" style="background:rgba(0,165,216,0.08);border-color:rgba(0,165,216,0.2);">✅</div>
                   <div class="cd-section-title" style="color:#00A5D8;">Program Access</div>
                 </div>
-                <div class="cd-access">
-                  <div class="cd-access-item" style="border-color:rgba(0,165,216,0.12);"><span class="ck" style="color:#00A5D8;">✓</span>Online Video Program</div>
-                  <div class="cd-access-item" style="border-color:rgba(0,165,216,0.12);"><span class="ck" style="color:#00A5D8;">✓</span>Beginner to Advanced Path</div>
-                  <div class="cd-access-item" style="border-color:rgba(0,165,216,0.12);"><span class="ck" style="color:#00A5D8;">✓</span>Real-Market Forex Examples</div>
-                  <div class="cd-access-item" style="border-color:rgba(0,165,216,0.12);"><span class="ck" style="color:#00A5D8;">✓</span>Student Portal Access</div>
-                  <div class="cd-access-item" style="border-color:rgba(0,165,216,0.12);"><span class="ck" style="color:#00A5D8;">✓</span>4 Months Access</div>
-                  <div class="cd-access-item" style="border-color:rgba(0,165,216,0.12);"><span class="ck" style="color:#00A5D8;">✓</span>Learn at Your Own Pace</div>
-                </div>
+                <p class="cd-access-inline">Online Video Program &nbsp;·&nbsp; Beginner to Advanced Path &nbsp;·&nbsp; Real-Market Forex Examples &nbsp;·&nbsp; Student Portal Access &nbsp;·&nbsp; 4 Months Access &nbsp;·&nbsp; Learn at Your Own Pace</p>
               </div>
 
               <div class="cd-section">
@@ -1204,7 +1260,24 @@
                   <div class="cd-section-icon" style="background:rgba(0,165,216,0.08);border-color:rgba(0,165,216,0.2);">🔍</div>
                   <div class="cd-section-title" style="color:#00A5D8;">Topics Covered</div>
                 </div>
-                <div class="cd-topics">
+                <div class="topics-summary">
+                  <span class="ts-pill">Forex Foundations</span>
+                  <span class="ts-pill">Trading Instruments</span>
+                  <span class="ts-pill">Trading Styles</span>
+                  <span class="ts-pill">Major Currencies</span>
+                  <span class="ts-pill">Central Banks &amp; Monetary Policy</span>
+                  <span class="ts-pill">Interest Rates &amp; Yield Differentials</span>
+                  <span class="ts-pill">Fundamental &amp; Economic Data</span>
+                  <span class="ts-pill">Technical Analysis</span>
+                  <span class="ts-pill">Smart Money Concepts</span>
+                  <span class="ts-pill">Trading Sessions &amp; Event Risk</span>
+                  <span class="ts-pill">Currency Correlations</span>
+                  <span class="ts-pill">Carry Trade &amp; Costs</span>
+                  <span class="ts-pill">Forex Mathematics &amp; Risk Management</span>
+                </div>
+                <button class="topics-toggle" onclick="toggleTopics(this,'flow-topics')">▼  View All Topics</button>
+                <div class="topics-full" id="flow-topics">
+                  <div class="cd-topics">
                   <div class="cd-topic-group">
                     <div class="cd-topic-label">Forex Foundations</div>
                     <div class="cd-topic-pills">
@@ -1284,6 +1357,7 @@
                     </div>
                   </div>
                 </div>
+                </div>
               </div>
 
               <div class="cd-closing" style="border-color:rgba(0,165,216,0.15);">THE FLOW is designed to move beyond simply trading currency pairs. It teaches students <strong style="color:#00A5D8;">how the global currency system functions, why currencies strengthen and weaken, and how macroeconomic, fundamental, technical, intermarket, execution, and risk analysis can be combined into one structured framework.</strong></div>
@@ -1347,6 +1421,21 @@
   </footer>
 
   <script>
+
+    function toggleTopics(btn, id) {
+      const panel = document.getElementById(id);
+      const isOpen = panel.classList.contains('open');
+      panel.classList.toggle('open');
+      // Force parent course-detail to unconstrained height so topics can show
+      const parent = panel.closest('.course-detail');
+      if (parent) parent.style.maxHeight = 'none';
+      if (isOpen) {
+        btn.innerHTML = '&#9660;&nbsp;&nbsp;View All Topics';
+      } else {
+        btn.innerHTML = '&#9650;&nbsp;&nbsp;Hide Topics';
+        setTimeout(() => panel.scrollIntoView({behavior:'smooth', block:'nearest'}), 520);
+      }
+    }
     // Mobile menu
     function toggleMenu() {
       document.getElementById('mobileMenu').classList.toggle('open');
