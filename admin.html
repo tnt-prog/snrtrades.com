@@ -349,7 +349,7 @@
          <button class="btn-action btn-destroy" onclick="regHardDelete('${r.id}')">🗑 Delete Forever</button>`
       : `<button class="btn-action btn-approve" ${!isPending?'disabled':''} onclick="regApprove('${r.id}')">✓ Approve</button>
          <button class="btn-action btn-reject"  ${!isPending?'disabled':''} onclick="regStatus('${r.id}','rejected')">✕ Reject</button>
-         <button class="btn-action btn-delete"  onclick="regSoftDelete('${r.id}')">🗑</button>`;
+         <button class="btn-action btn-delete"  onclick="regSoftDelete('${r.id}')">🗑 Delete</button>`;
     return `<div class="card" id="rc-${r.id}">
       <div class="card-header">
         <div><div class="card-name">${esc(r.name)}</div><div class="card-ref">Ref: ${r.id.slice(0,8).toUpperCase()} · ${date}</div></div>
