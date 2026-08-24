@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Admin — Students</title>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:    #070F1A; --bg2: #0C1624; --bg3: #111E30;
+      --gold:  #DAA520; --gold-d: #B8860B;
+      --teal:  #2DD4BF;
+      --border:rgba(255,255,255,0.08);
+      --text:  #E8EEF4; --muted: #8A9BB0;
+      --green: #22C55E; --red: #EF4444; --amber: #F59E0B;
+    }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; }
+
+    /* LOGIN */
+    #loginScreen { min-height:100vh; display:flex; align-items:center; justify-content:center; }
+    .login-box { background:var(--bg2); border:1px solid var(--border); border-radius:20px; padding:40px; width:100%; max-width:360px; text-align:center; }
+    .login-box h1 { font-family:'Space Grotesk',sans-serif; font-size:22px; font-weight:800; color:var(--gold); margin-bottom:6px; }
+    .login-box p { font-size:13px; color:var(--muted); margin-bottom:28px; }
+    .inp { width:100%; background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:12px 14px; font-size:14px; color:var(--text); outline:none; margin-bottom:14px; }
+    .inp:focus { border-color:var(--gold); }
+    .btn-gold { width:100%; padding:13px; border-radius:10px; border:none; cursor:pointer; background:linear-gradient(135deg,var(--gold-d),var(--gold)); color:#070F1A; font-weight:700; font-size:14px; }
+    .btn-gold:hover { opacity:0.9; }
+    .login-err { color:var(--red); font-size:12px; margin-top:10px; display:none; }
+
+    /* APP */
+    #adminApp { display:none; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; padding:16px 28px; border-bottom:1px solid var(--border); background:rgba(7,15,26,0.97); position:sticky; top:0; z-index:100; flex-wrap:wrap; gap:10px; }
+    .topbar-title { font-family:'Space Grotesk',sans-serif; font-size:18px; font-weight:800; color:var(--gold); }
+    .topbar-right { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .badge-count { background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.3); color:var(--green); font-size:12px; font-weight:700; padding:4px 12px; border-radius:20px; }
+    .nav-link { font-size:12px; color:var(--teal); text-decoration:none; padding:6px 12px; border:1px solid rgba(45,212,191,0.3); border-radius:8px; }
+    .nav-link:hover { background:rgba(45,212,191,0.08); }
+    .btn-logout { background:transparent; border:1px solid var(--border); color:var(--muted); font-size:12px; padding:6px 14px; border-radius:8px; cursor:pointer; }
+    .btn-logout:hover { border-color:var(--red); color:var(--red); }
+
+    /* SEARCH + FILTER */
+    .toolbar { display:flex; gap:10px; padding:20px 28px 0; flex-wrap:wrap; align-items:center; }
+    .search-inp { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:9px 14px; font-size:13px; color:var(--text); outline:none; width:240px; }
+    .search-inp:focus { border-color:var(--gold); }
+    .filter-btn { padding:7px 16px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--muted); font-size:13px; cursor:pointer; transition:all 0.2s; }
+    .filter-btn.active { background:var(--gold); color:#070F1A; border-color:var(--gold); font-weight:700; }
+    .filter-btn:hover:not(.active) { border-color:var(--gold); color:var(--gold); }
+
+    /* TABLE */
+    .table-wrap { padding:20px 28px 40px; overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; min-width:800px; }
+    thead th { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; padding:10px 14px; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; }
+    tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
+    tbody tr:hover { background:rgba(255,255,255,0.02); }
+    tbody td { padding:13px 14px; font-size:13px; vertical-align:middle; }
+    .td-name { font-weight:600; }
+    .td-user { font-family:monospace; font-size:12px; color:var(--teal); background:rgba(45,212,191,0.08); padding:3px 8px; border-radius:6px; display:inline-block; }
+    .td-pwd  { font-family:monospace; font-size:12px; color:var(--muted); cursor:pointer; position:relative; }
+    .td-pwd .pwd-hidden { letter-spacing:2px; }
+    .td-pwd .pwd-shown  { display:none; color:var(--text); }
+    .td-pwd.revealed .pwd-hidden { display:none; }
+    .td-pwd.revealed .pwd-shown  { display:inline; }
+    .status-pill { font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; text-transform:uppercase; letter-spacing:0.4px; }
+    .pill-active   { background:rgba(34,197,94,0.1); color:var(--green); border:1px solid rgba(34,197,94,0.3); }
+    .pill-suspended{ background:rgba(239,68,68,0.1); color:var(--red); border:1px solid rgba(239,68,68,0.3); }
+    .actions { display:flex; gap:6px; flex-wrap:wrap; }
+    .btn-sm { padding:5px 11px; border-radius:7px; border:none; cursor:pointer; font-size:11px; font-weight:700; transition:all 0.2s; white-space:nowrap; }
+    .btn-suspend  { background:rgba(245,158,11,0.1); color:var(--amber); border:1px solid rgba(245,158,11,0.3); }
+    .btn-suspend:hover  { background:var(--amber); color:#000; }
+    .btn-activate { background:rgba(34,197,94,0.1); color:var(--green); border:1px solid rgba(34,197,94,0.3); }
+    .btn-activate:hover { background:var(--green); color:#fff; }
+    .btn-reset    { background:rgba(45,212,191,0.1); color:var(--teal); border:1px solid rgba(45,212,191,0.3); }
+    .btn-reset:hover    { background:var(--teal); color:#070F1A; }
+    .btn-del      { background:rgba(239,68,68,0.08); color:var(--red); border:1px solid rgba(239,68,68,0.2); }
+    .btn-del:hover      { background:var(--red); color:#fff; }
+
+    .state-msg { text-align:center; padding:60px 20px; color:var(--muted); font-size:14px; }
+    .spinner-ring { width:32px; height:32px; border:3px solid var(--border); border-top-color:var(--gold); border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 16px; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    @media(max-width:600px) { .table-wrap { padding:16px; } .toolbar { padding:16px 16px 0; } .topbar { padding:14px 16px; } }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <h1>👨‍🎓 Students</h1>
+    <p>Trends & Trade — Student Accounts</p>
+    <input class="inp" type="password" id="pwdInput" placeholder="Admin password" autocomplete="current-password"/>
+    <button class="btn-gold" onclick="checkLogin()">Sign In</button>
+    <div class="login-err" id="loginErr">Incorrect password.</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="adminApp">
+  <div class="topbar">
+    <div class="topbar-title">Student Accounts</div>
+    <div class="topbar-right">
+      <span class="badge-count" id="activeCount">0 active</span>
+      <a class="nav-link" href="admin-registrations.html">← Registrations</a>
+      <button class="btn-logout" onclick="logout()">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <input class="search-inp" type="text" id="searchInp" placeholder="Search name, email, username…" oninput="renderTable()"/>
+    <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setFilter('active',this)">Active</button>
+    <button class="filter-btn" onclick="setFilter('suspended',this)">Suspended</button>
+  </div>
+
+  <div class="table-wrap">
+    <table id="studentsTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>WhatsApp</th>
+          <th>Username</th>
+          <th>Password</th>
+          <th>Courses</th>
+          <th>Status</th>
+          <th>Joined</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr><td colspan="10"><div class="state-msg"><div class="spinner-ring"></div>Loading…</div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  const SUPABASE_URL      = 'https://ucpjcopozlunknosugxd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjcGpjb3Bvemx1bmtub3N1Z3hkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYzNjUzNDAsImV4cCI6MjEwMTk0MTM0MH0.82r72tSsEVdJThuOtXLh2MO2WhLE42IUgIKm9bCa_Mw';
+  const ADMIN_PASSWORD    = 'snradmin2025';
+  const EMAILJS_PUBLIC_KEY        = '3NuU-eUqGg06cjv1i';
+  const EMAILJS_SERVICE_ID        = 'service_xmm4jck';
+  const EMAILJS_CREDS_TEMPLATE_ID = 'template_k4spvuc';
+
+  emailjs.init(EMAILJS_PUBLIC_KEY);
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let allStudents = [];
+  let currentFilter = 'all';
+
+  /* LOGIN */
+  document.getElementById('pwdInput').addEventListener('keydown', e => { if (e.key==='Enter') checkLogin(); });
+  function checkLogin() {
+    if (document.getElementById('pwdInput').value === ADMIN_PASSWORD) {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminApp').style.display = 'block';
+      loadStudents();
+    } else {
+      document.getElementById('loginErr').style.display = 'block';
+    }
+  }
+  function logout() {
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('adminApp').style.display = 'none';
+    document.getElementById('pwdInput').value = '';
+  }
+
+  /* LOAD */
+  async function loadStudents() {
+    const { data, error } = await sb
+      .from('student_accounts')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) {
+      document.getElementById('tableBody').innerHTML =
+        `<tr><td colspan="10"><div class="state-msg">Error: ${error.message}</div></td></tr>`;
+      return;
+    }
+    allStudents = data || [];
+    updateCount();
+    renderTable();
+  }
+
+  function updateCount() {
+    const n = allStudents.filter(s => s.status === 'active').length;
+    document.getElementById('activeCount').textContent = n + ' active';
+  }
+
+  /* FILTER + SEARCH */
+  function setFilter(f, btn) {
+    currentFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTable();
+  }
+
+  function renderTable() {
+    const q = document.getElementById('searchInp').value.toLowerCase();
+    let rows = currentFilter === 'all' ? allStudents : allStudents.filter(s => s.status === currentFilter);
+    if (q) rows = rows.filter(s =>
+      (s.name||'').toLowerCase().includes(q) ||
+      (s.email||'').toLowerCase().includes(q) ||
+      (s.username||'').toLowerCase().includes(q)
+    );
+
+    const tbody = document.getElementById('tableBody');
+    if (!rows.length) {
+      tbody.innerHTML = `<tr><td colspan="10"><div class="state-msg">No students found.</div></td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = rows.map((s, i) => {
+      const date = new Date(s.created_at).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+      const isActive = s.status === 'active';
+      return `<tr>
+        <td style="color:var(--muted)">${i+1}</td>
+        <td class="td-name">${esc(s.name)}</td>
+        <td><a href="mailto:${esc(s.email)}" style="color:var(--teal);text-decoration:none">${esc(s.email)}</a></td>
+        <td style="color:var(--muted)">${esc(s.whatsapp||'—')}</td>
+        <td><span class="td-user">${esc(s.username)}</span></td>
+        <td class="td-pwd" onclick="this.classList.toggle('revealed')" title="Click to reveal">
+          <span class="pwd-hidden">••••••••••</span>
+          <span class="pwd-shown">${esc(s.password)}</span>
+        </td>
+        <td style="font-size:12px;color:var(--muted)">${esc(s.courses||'—')}</td>
+        <td><span class="status-pill ${isActive?'pill-active':'pill-suspended'}">${s.status}</span></td>
+        <td style="color:var(--muted);font-size:12px;white-space:nowrap">${date}</td>
+        <td>
+          <div class="actions">
+            ${isActive
+              ? `<button class="btn-sm btn-suspend" onclick="toggleStatus('${s.id}','suspended')">Suspend</button>`
+              : `<button class="btn-sm btn-activate" onclick="toggleStatus('${s.id}','active')">Activate</button>`}
+            <button class="btn-sm btn-reset" onclick="resetPassword('${s.id}')">Reset Pwd</button>
+            <button class="btn-sm btn-del" onclick="deleteStudent('${s.id}')">Delete</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  function esc(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  /* TOGGLE STATUS */
+  async function toggleStatus(id, newStatus) {
+    const { error } = await sb.from('student_accounts').update({ status: newStatus }).eq('id', id);
+    if (error) { alert('Failed: ' + error.message); return; }
+    const s = allStudents.find(s => s.id === id);
+    if (s) s.status = newStatus;
+    updateCount();
+    renderTable();
+  }
+
+  /* RESET PASSWORD */
+  async function resetPassword(id) {
+    const s = allStudents.find(s => s.id === id);
+    if (!s) return;
+    if (!confirm(`Reset password for ${s.name} and send new credentials to ${s.email}?`)) return;
+
+    const newPwd = generatePassword();
+    const { error } = await sb.from('student_accounts').update({ password: newPwd }).eq('id', id);
+    if (error) { alert('Failed: ' + error.message); return; }
+
+    s.password = newPwd;
+    renderTable();
+
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_CREDS_TEMPLATE_ID, {
+        student_name:  s.name,
+        student_email: s.email,
+        username:      s.username,
+        password:      newPwd,
+        courses:       s.courses
+      });
+      alert(`✅ Password reset and sent to ${s.email}`);
+    } catch(e) {
+      alert(`Password updated but email failed.\nNew password: ${newPwd}\nSend manually to ${s.email}`);
+    }
+  }
+
+  /* DELETE */
+  async function deleteStudent(id) {
+    const s = allStudents.find(s => s.id === id);
+    if (!confirm(`Permanently delete account for ${s?.name}? This cannot be undone.`)) return;
+    const { error } = await sb.from('student_accounts').delete().eq('id', id);
+    if (error) { alert('Delete failed: ' + error.message); return; }
+    allStudents = allStudents.filter(s => s.id !== id);
+    updateCount();
+    renderTable();
+  }
+
+  /* HELPERS */
+  function generatePassword(len = 10) {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#!';
+    let pwd = '';
+    for (let i = 0; i < len; i++) pwd += chars[Math.floor(Math.random() * chars.length)];
+    return pwd;
+  }
+</script>
+</body>
+</html>

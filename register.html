@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Register — Trends & Trade</title>
+  <link rel="icon" href="images/favicon.png" type="image/png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:          #070F1A;
+      --bg2:         #0C1624;
+      --bg3:         #111E30;
+      --border:      rgba(255,255,255,0.08);
+      --border-gold: rgba(218,165,32,0.35);
+      --teal:        #2DD4BF;
+      --gold:        #DAA520;
+      --gold-dark:   #B8860B;
+      --text:        #E8EEF4;
+      --text-muted:  #8A9BB0;
+      --red:         #EF4444;
+      --green:       #22C55E;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    .nav-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(7,15,26,0.95);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px; font-weight: 800;
+      color: var(--gold); letter-spacing: 0.5px;
+      text-decoration: none;
+    }
+    .nav-back {
+      font-size: 13px; color: var(--text-muted);
+      text-decoration: none; display: flex; align-items: center; gap: 6px;
+      transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--text); }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 48px 24px 32px;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px;
+      background: rgba(218,165,32,0.08);
+      border: 1px solid var(--border-gold);
+      border-radius: 20px;
+      font-size: 12px; font-weight: 700;
+      color: var(--gold); letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(24px, 5vw, 36px);
+      font-weight: 800; color: #fff;
+      margin-bottom: 10px;
+    }
+    .hero p {
+      font-size: 15px; color: var(--text-muted);
+      max-width: 480px; margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── STEPS ── */
+    .steps {
+      display: flex; justify-content: center; gap: 0;
+      max-width: 560px; margin: 32px auto 0;
+      padding: 0 24px;
+    }
+    .step-item {
+      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;
+      position: relative;
+    }
+    .step-item:not(:last-child)::after {
+      content: '';
+      position: absolute; top: 16px; left: 60%;
+      width: 80%; height: 1px;
+      background: var(--border);
+    }
+    .step-item.active:not(:last-child)::after,
+    .step-item.done:not(:last-child)::after { background: var(--gold-dark); }
+    .step-num {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700;
+      border: 2px solid var(--border);
+      color: var(--text-muted);
+      background: var(--bg2);
+      transition: all 0.3s;
+    }
+    .step-item.active .step-num {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(218,165,32,0.1);
+    }
+    .step-item.done .step-num {
+      border-color: var(--green);
+      background: rgba(34,197,94,0.1);
+      color: var(--green);
+    }
+    .step-label {
+      font-size: 11px; color: var(--text-muted); text-align: center;
+    }
+    .step-item.active .step-label { color: var(--gold); }
+
+    /* ── FORM CARD ── */
+    .form-wrap {
+      max-width: 640px; margin: 40px auto 60px;
+      padding: 0 20px;
+    }
+    .form-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px 32px;
+    }
+    @media (max-width: 600px) {
+      .form-card { padding: 24px 18px; }
+    }
+
+    /* Step panels */
+    .step-panel { display: none; }
+    .step-panel.active { display: block; }
+
+    .step-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px; font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .step-desc {
+      font-size: 13px; color: var(--text-muted);
+      margin-bottom: 28px; line-height: 1.5;
+    }
+
+    /* ── FORM ELEMENTS ── */
+    .field-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 520px) {
+      .field-row { grid-template-columns: 1fr; }
+    }
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block;
+      font-size: 12px; font-weight: 600;
+      color: var(--text-muted); letter-spacing: 0.5px;
+      text-transform: uppercase; margin-bottom: 8px;
+    }
+    .field label span.req { color: var(--gold); margin-left: 3px; }
+    .field input, .field select, .field textarea {
+      width: 100%; padding: 12px 14px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: rgba(218,165,32,0.5);
+    }
+    .field input::placeholder, .field textarea::placeholder {
+      color: var(--text-muted);
+    }
+    .field select option { background: var(--bg3); }
+    .field textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+
+    /* Radio pills */
+    .radio-group {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .radio-group input[type="radio"] { display: none; }
+    .radio-group label {
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 13px; font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: none; letter-spacing: 0;
+    }
+    .radio-group input[type="radio"]:checked + label {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(218,165,32,0.08);
+    }
+
+    /* Checkbox pills */
+    .check-group {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .check-group input[type="checkbox"] { display: none; }
+    .check-group label {
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 13px; font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: none; letter-spacing: 0;
+    }
+    .check-group input[type="checkbox"]:checked + label {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(218,165,32,0.08);
+    }
+
+    /* Upload area */
+    .upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 32px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+    .upload-area:hover, .upload-area.drag-over {
+      border-color: var(--gold-dark);
+      background: rgba(218,165,32,0.03);
+    }
+    .upload-area.has-file {
+      border-color: var(--green);
+      background: rgba(34,197,94,0.04);
+    }
+    .upload-area input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%;
+    }
+    .upload-icon { font-size: 32px; margin-bottom: 10px; }
+    .upload-title {
+      font-size: 14px; font-weight: 600; margin-bottom: 4px;
+    }
+    .upload-sub { font-size: 12px; color: var(--text-muted); }
+    .upload-filename {
+      margin-top: 10px; font-size: 13px;
+      color: var(--green); font-weight: 600;
+    }
+
+    /* Info box */
+    .info-box {
+      background: rgba(218,165,32,0.06);
+      border: 1px solid var(--border-gold);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 13px; color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .info-box strong { color: var(--gold); }
+
+    /* Buttons */
+    .btn-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 28px; gap: 12px;
+    }
+    .btn {
+      padding: 13px 28px; border-radius: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px; font-weight: 700;
+      cursor: pointer; border: none; transition: all 0.2s;
+      letter-spacing: 0.3px;
+    }
+    .btn-back {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .btn-back:hover { border-color: var(--text-muted); color: var(--text); }
+    .btn-next {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      color: #070F1A;
+      flex: 1; text-align: center;
+    }
+    .btn-next:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-next:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-submit {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      color: #070F1A;
+      flex: 1; text-align: center;
+    }
+    .btn-submit:hover { opacity: 0.9; }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Error */
+    .field-error {
+      font-size: 12px; color: var(--red); margin-top: 5px; display: none;
+    }
+    .field.has-error input, .field.has-error select, .field.has-error textarea {
+      border-color: var(--red);
+    }
+    .field.has-error .field-error { display: block; }
+
+    /* ── SUCCESS SCREEN ── */
+    .success-screen {
+      display: none; text-align: center; padding: 20px 0;
+    }
+    .success-screen.active { display: block; }
+    .success-icon {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: rgba(34,197,94,0.12);
+      border: 2px solid rgba(34,197,94,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px; margin: 0 auto 20px;
+    }
+    .success-screen h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 24px; font-weight: 800; margin-bottom: 10px;
+    }
+    .success-screen p {
+      font-size: 14px; color: var(--text-muted);
+      line-height: 1.7; max-width: 400px; margin: 0 auto 20px;
+    }
+    .success-ref {
+      display: inline-block;
+      padding: 8px 20px;
+      background: rgba(218,165,32,0.08);
+      border: 1px solid var(--border-gold);
+      border-radius: 8px;
+      font-size: 13px; color: var(--gold);
+      font-weight: 600; margin-bottom: 24px;
+    }
+
+    /* Loading spinner */
+    .spinner {
+      display: inline-block; width: 18px; height: 18px;
+      border: 2px solid rgba(7,15,26,0.3);
+      border-top-color: #070F1A;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle; margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Progress bar */
+    .progress-bar {
+      height: 3px; background: var(--border);
+      border-radius: 2px; margin-bottom: 32px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav-bar">
+  <a href="index.html" class="nav-logo">Trends&Trade</a>
+  <a href="index.html" class="nav-back">← Back to Home</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">✦ Student Registration</div>
+  <h1>Join The Treasure</h1>
+  <p>Complete the form below and submit your payment proof. We'll activate your account within 24 hours.</p>
+</div>
+
+<!-- STEP INDICATORS -->
+<div class="steps" id="stepNav">
+  <div class="step-item active" id="stepNav1">
+    <div class="step-num">1</div>
+    <div class="step-label">Your Details</div>
+  </div>
+  <div class="step-item" id="stepNav2">
+    <div class="step-num">2</div>
+    <div class="step-label">Background</div>
+  </div>
+  <div class="step-item" id="stepNav3">
+    <div class="step-num">3</div>
+    <div class="step-label">Payment</div>
+  </div>
+</div>
+
+<!-- FORM -->
+<div class="form-wrap">
+  <div class="form-card" id="formCard">
+
+    <!-- Progress bar -->
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:33%"></div></div>
+
+    <!-- STEP 1: Personal Details -->
+    <div class="step-panel active" id="panel1">
+      <div class="step-title">Your Details</div>
+      <div class="step-desc">Tell us a little about yourself so we can set up your account.</div>
+
+      <div class="field-row">
+        <div class="field" id="f-name">
+          <label>Full Name <span class="req">*</span></label>
+          <input type="text" id="inp-name" placeholder="Ali Safwan" autocomplete="name"/>
+          <div class="field-error">Please enter your full name.</div>
+        </div>
+        <div class="field" id="f-age">
+          <label>Age <span class="req">*</span></label>
+          <input type="number" id="inp-age" placeholder="25" min="13" max="99"/>
+          <div class="field-error">Please enter a valid age.</div>
+        </div>
+      </div>
+
+      <div class="field" id="f-email">
+        <label>Email Address <span class="req">*</span></label>
+        <input type="email" id="inp-email" placeholder="you@example.com" autocomplete="email"/>
+        <div class="field-error">Please enter a valid email address.</div>
+      </div>
+
+      <div class="field-row">
+        <div class="field" id="f-whatsapp">
+          <label>WhatsApp Number <span class="req">*</span></label>
+          <input type="tel" id="inp-whatsapp" placeholder="+92 300 1234567"/>
+          <div class="field-error">Please enter your WhatsApp number.</div>
+        </div>
+        <div class="field" id="f-country">
+          <label>Country <span class="req">*</span></label>
+          <select id="inp-country">
+            <option value="">— Select Country —</option>
+            <option>Pakistan</option>
+            <option>United Arab Emirates</option>
+            <option>Saudi Arabia</option>
+            <option>United Kingdom</option>
+            <option>United States</option>
+            <option>Canada</option>
+            <option>India</option>
+            <option>Bangladesh</option>
+            <option>Nigeria</option>
+            <option>Kenya</option>
+            <option>South Africa</option>
+            <option>Egypt</option>
+            <option>Qatar</option>
+            <option>Kuwait</option>
+            <option>Bahrain</option>
+            <option>Oman</option>
+            <option>Jordan</option>
+            <option>Malaysia</option>
+            <option>Singapore</option>
+            <option>Australia</option>
+            <option>Other</option>
+          </select>
+          <div class="field-error">Please select your country.</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-next" onclick="goStep(2)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Trading Background -->
+    <div class="step-panel" id="panel2">
+      <div class="step-title">Trading Background</div>
+      <div class="step-desc">Help us understand your experience level and what you want to learn.</div>
+
+      <div class="field" id="f-exp">
+        <label>Trading Experience <span class="req">*</span></label>
+        <div class="radio-group">
+          <input type="radio" name="experience" id="exp-none" value="None — Complete Beginner"/>
+          <label for="exp-none">Complete Beginner</label>
+          <input type="radio" name="experience" id="exp-basic" value="Basic — Some Knowledge"/>
+          <label for="exp-basic">Some Knowledge</label>
+          <input type="radio" name="experience" id="exp-inter" value="Intermediate — 1–2 Years"/>
+          <label for="exp-inter">1–2 Years</label>
+          <input type="radio" name="experience" id="exp-adv" value="Advanced — 3+ Years"/>
+          <label for="exp-adv">3+ Years</label>
+        </div>
+        <div class="field-error" id="exp-error" style="display:none;">Please select your experience level.</div>
+      </div>
+
+      <div class="field">
+        <label>Courses You're Interested In <span class="req">*</span></label>
+        <div class="check-group" id="courseGroup">
+          <input type="checkbox" id="c-map" value="THE MAP"/>
+          <label for="c-map">THE MAP</label>
+          <input type="checkbox" id="c-digit" value="THE DIGIT"/>
+          <label for="c-digit">THE DIGIT</label>
+          <input type="checkbox" id="c-core" value="THE CORE"/>
+          <label for="c-core">THE CORE</label>
+          <input type="checkbox" id="c-vault" value="THE VAULT"/>
+          <label for="c-vault">THE VAULT</label>
+          <input type="checkbox" id="c-flow" value="THE FLOW"/>
+          <label for="c-flow">THE FLOW</label>
+          <input type="checkbox" id="c-all" value="All Courses"/>
+          <label for="c-all">All Courses</label>
+        </div>
+        <div class="field-error" id="course-error" style="display:none;">Please select at least one course.</div>
+      </div>
+
+      <div class="field">
+        <label>Previous Courses or Mentors (Optional)</label>
+        <textarea id="inp-prev" placeholder="e.g. Watched YouTube, took a free course, self-taught…"></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-back" onclick="goStep(1)">← Back</button>
+        <button class="btn btn-next" onclick="goStep(3)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Payment -->
+    <div class="step-panel" id="panel3">
+      <div class="step-title">Payment Proof</div>
+      <div class="step-desc">Select your payment method and upload your receipt or transfer screenshot.</div>
+
+      <div class="info-box">
+        <strong>Payment Details</strong><br/>
+        Bank Transfer: <strong>SNR Trades — Account details sent via WhatsApp</strong><br/>
+        Crypto (USDT TRC-20): <strong>Address sent via WhatsApp</strong><br/>
+        Contact us on WhatsApp first to confirm the amount and account details before transferring.
+      </div>
+
+      <div class="field" id="f-paymethod">
+        <label>Payment Method <span class="req">*</span></label>
+        <div class="radio-group">
+          <input type="radio" name="paymethod" id="pay-bank" value="Bank Transfer"/>
+          <label for="pay-bank">Bank Transfer</label>
+          <input type="radio" name="paymethod" id="pay-crypto" value="Crypto (USDT)"/>
+          <label for="pay-crypto">Crypto (USDT)</label>
+          <input type="radio" name="paymethod" id="pay-other" value="Other"/>
+          <label for="pay-other">Other</label>
+        </div>
+        <div class="field-error" id="pay-error" style="display:none;">Please select a payment method.</div>
+      </div>
+
+      <div class="field" id="f-receipt">
+        <label>Payment Receipt / Screenshot <span class="req">*</span></label>
+        <div class="upload-area" id="uploadArea">
+          <input type="file" id="inp-receipt" accept="image/*,.pdf" onchange="handleFile(this)"/>
+          <div class="upload-icon">📎</div>
+          <div class="upload-title">Click to upload or drag & drop</div>
+          <div class="upload-sub">JPG, PNG, or PDF — max 5 MB</div>
+          <div class="upload-filename" id="uploadFilename"></div>
+        </div>
+        <div class="field-error" id="receipt-error" style="display:none;">Please upload your payment receipt.</div>
+      </div>
+
+      <div class="field">
+        <label>Additional Notes (Optional)</label>
+        <textarea id="inp-notes" placeholder="Any message for the admin…"></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-back" onclick="goStep(2)">← Back</button>
+        <button class="btn btn-submit" id="submitBtn" onclick="submitForm()">Submit Registration</button>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">✓</div>
+      <h2>Registration Submitted!</h2>
+      <p>Thank you! Your registration has been received. Our team will review your payment and activate your account within <strong style="color:var(--gold)">24 hours</strong>. You'll receive your login details by email.</p>
+      <div class="success-ref" id="successRef"></div>
+      <br/>
+      <a href="index.html" style="color:var(--text-muted);font-size:13px;text-decoration:none;">← Return to Home</a>
+    </div>
+
+  </div><!-- /form-card -->
+</div><!-- /form-wrap -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  /* ── CONFIG ── */
+  const SUPABASE_URL      = 'https://ucpjcopozlunknosugxd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjcGpjb3Bvemx1bmtub3N1Z3hkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYzNjUzNDAsImV4cCI6MjEwMTk0MTM0MH0.82r72tSsEVdJThuOtXLh2MO2WhLE42IUgIKm9bCa_Mw';
+
+  const EMAILJS_PUBLIC_KEY  = '3NuU-eUqGg06cjv1i';
+  const EMAILJS_SERVICE_ID  = 'service_xmm4jck';
+  const EMAILJS_TEMPLATE_ID = 'template_1wp2abs';
+
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  emailjs.init(EMAILJS_PUBLIC_KEY);
+
+  let currentStep = 1;
+  let selectedFile = null;
+
+  /* ── STEP NAVIGATION ── */
+  function goStep(step) {
+    if (step > currentStep && !validateStep(currentStep)) return;
+    currentStep = step;
+    document.querySelectorAll('.step-panel').forEach((p, i) => {
+      p.classList.toggle('active', i + 1 === step);
+    });
+    [1,2,3].forEach(i => {
+      const nav = document.getElementById('stepNav' + i);
+      nav.className = 'step-item' + (i < step ? ' done' : i === step ? ' active' : '');
+      const num = nav.querySelector('.step-num');
+      num.textContent = i < step ? '✓' : i;
+    });
+    document.getElementById('progressFill').style.width = (step / 3 * 100) + '%';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ── VALIDATION ── */
+  function validateStep(step) {
+    let ok = true;
+    if (step === 1) {
+      ok = validateField('f-name', 'inp-name', v => v.trim().length > 1) && ok;
+      ok = validateField('f-age', 'inp-age', v => v >= 13 && v <= 99) && ok;
+      ok = validateField('f-email', 'inp-email', v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) && ok;
+      ok = validateField('f-whatsapp', 'inp-whatsapp', v => v.trim().length > 5) && ok;
+      ok = validateField('f-country', 'inp-country', v => v !== '') && ok;
+    }
+    if (step === 2) {
+      const expOk = !!document.querySelector('input[name="experience"]:checked');
+      document.getElementById('exp-error').style.display = expOk ? 'none' : 'block';
+      if (!expOk) ok = false;
+      const courseOk = !!document.querySelector('#courseGroup input:checked');
+      document.getElementById('course-error').style.display = courseOk ? 'none' : 'block';
+      if (!courseOk) ok = false;
+    }
+    if (step === 3) {
+      const payOk = !!document.querySelector('input[name="paymethod"]:checked');
+      document.getElementById('pay-error').style.display = payOk ? 'none' : 'block';
+      if (!payOk) ok = false;
+      const recOk = !!selectedFile;
+      document.getElementById('receipt-error').style.display = recOk ? 'none' : 'block';
+      if (!recOk) ok = false;
+    }
+    return ok;
+  }
+
+  function validateField(fieldId, inputId, check) {
+    const field = document.getElementById(fieldId);
+    const val   = document.getElementById(inputId).value;
+    const valid = check(val);
+    field.classList.toggle('has-error', !valid);
+    return valid;
+  }
+
+  /* ── FILE UPLOAD HANDLER ── */
+  function handleFile(input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File too large. Maximum size is 5 MB.');
+      input.value = '';
+      return;
+    }
+    selectedFile = file;
+    const area = document.getElementById('uploadArea');
+    area.classList.add('has-file');
+    area.querySelector('.upload-icon').textContent = '✅';
+    area.querySelector('.upload-title').textContent = 'File selected';
+    document.getElementById('uploadFilename').textContent = file.name;
+    document.getElementById('receipt-error').style.display = 'none';
+  }
+
+  // Drag & drop
+  const uploadArea = document.getElementById('uploadArea');
+  uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('drag-over'); });
+  uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('drag-over'));
+  uploadArea.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadArea.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      document.getElementById('inp-receipt').files = e.dataTransfer.files;
+      handleFile(document.getElementById('inp-receipt'));
+    }
+  });
+
+  /* ── COMPRESS IMAGE TO BASE64 ── */
+  function compressToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = e => {
+        // For non-image files (PDF), just base64-encode directly
+        if (!file.type.startsWith('image/')) {
+          resolve(e.target.result); // already data URL
+          return;
+        }
+        const img = new Image();
+        img.onerror = reject;
+        img.onload = () => {
+          const MAX = 1200;
+          let w = img.width, h = img.height;
+          if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+          if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; }
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', 0.75));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  /* ── SUBMIT ── */
+  async function submitForm() {
+    if (!validateStep(3)) return;
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Submitting…';
+
+    try {
+      // 1. Encode receipt as compressed base64 (stored in DB — no storage bucket needed)
+      btn.innerHTML = '<span class="spinner"></span>Processing receipt…';
+      let receiptData = null;
+      try {
+        receiptData = await compressToBase64(selectedFile);
+      } catch (e) {
+        console.warn('Receipt encode failed (non-fatal):', e);
+      }
+      btn.innerHTML = '<span class="spinner"></span>Saving registration…';
+
+      // 2. Collect form data
+      const courses = [...document.querySelectorAll('#courseGroup input:checked')].map(c => c.value).join(', ');
+      const formData = {
+        name:              document.getElementById('inp-name').value.trim(),
+        age:               parseInt(document.getElementById('inp-age').value),
+        email:             document.getElementById('inp-email').value.trim(),
+        whatsapp:          document.getElementById('inp-whatsapp').value.trim(),
+        country:           document.getElementById('inp-country').value,
+        trading_experience: document.querySelector('input[name="experience"]:checked').value,
+        courses_interested: courses,
+        previous_courses:  document.getElementById('inp-prev').value.trim(),
+        payment_method:    document.querySelector('input[name="paymethod"]:checked').value,
+        receipt_url:       null,
+        receipt_data:      receiptData,
+        notes:             document.getElementById('inp-notes').value.trim(),
+        status:            'pending'
+      };
+
+      // 3. Insert into Supabase
+      const { data: reg, error: dbErr } = await sb
+        .from('registrations')
+        .insert([formData])
+        .select()
+        .single();
+      if (dbErr) throw dbErr;
+
+      // 4. Send email to admin via EmailJS
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email:    'snrtrades.admin@gmail.com',
+        student_name: formData.name,
+        student_email: formData.email,
+        student_whatsapp: formData.whatsapp,
+        student_country: formData.country,
+        student_age: formData.age,
+        experience:  formData.trading_experience,
+        courses:     formData.courses_interested,
+        prev_courses: formData.previous_courses || 'None',
+        pay_method:  formData.payment_method,
+        receipt_url: 'Stored in database — view via admin panel',
+        notes:       formData.notes || 'None',
+        reg_id:      reg.id
+      });
+
+      // 5. Show success
+      document.getElementById('formCard').querySelector('.progress-bar').style.display = 'none';
+      document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('stepNav').style.display = 'none';
+      document.getElementById('successScreen').classList.add('active');
+      document.getElementById('successRef').textContent = 'Reference ID: ' + reg.id.slice(0,8).toUpperCase();
+
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong: ' + (err.message || err));
+      btn.disabled = false;
+      btn.innerHTML = 'Submit Registration';
+    }
+  }
+
+  // "All Courses" toggle
+  document.getElementById('c-all').addEventListener('change', function() {
+    const others = document.querySelectorAll('#courseGroup input:not(#c-all)');
+    others.forEach(c => { c.checked = false; c.disabled = this.checked; });
+  });
+</script>
+</body>
+</html>
