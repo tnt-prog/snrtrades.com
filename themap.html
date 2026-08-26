@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>The MAP — Trends & Trade</title>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link rel="icon" type="image/jpeg" href="images/logo.jpg"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --teal:       #2DD4BF; --teal-dark:#0D9488; --teal-glow:rgba(45,212,191,0.18);
+      --bg:         #070F1A; --bg-2:#0A1628; --bg-3:#0D1E34; --bg-4:#111E30;
+      --text:       #E8F4F2; --text-muted:#7A9E9B; --text-dim:#3D6660;
+      --border:     rgba(45,212,191,0.18); --border-dim:rgba(255,255,255,0.06);
+      --red:        #EF4444; --green:#22C55E;
+      --sidebar-w:  320px;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; }
+    a { color:inherit; text-decoration:none; }
+    button { cursor:pointer; font-family:inherit; }
+
+    /* ══ SITE NAVBAR ══ */
+    .site-nav {
+      position:fixed; top:0; left:0; right:0; z-index:300;
+      padding:0 24px; transition:all 0.3s;
+    }
+    .site-nav.scrolled {
+      background:rgba(7,15,26,0.97); backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--border); box-shadow:0 4px 32px rgba(0,0,0,0.5);
+    }
+    .nav-inner {
+      max-width:1400px; margin:0 auto;
+      display:flex; align-items:flex-start; gap:40px; padding:10px 0 8px;
+    }
+    .nav-col { display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
+    .nav-row-1 { display:flex; align-items:center; gap:30px; list-style:none; }
+    .nav-logo  { display:flex; align-items:center; gap:10px; }
+    .logo-img  { height:80px; width:auto; border-radius:6px; box-shadow:0 0 0 1px rgba(45,212,191,0.3); }
+    .logo-text { font-family:'Space Grotesk',sans-serif; font-size:24px; font-weight:800; }
+    .logo-text span { color:var(--teal); }
+    .nav-links { display:flex; gap:30px; list-style:none; }
+    .nav-links a { font-size:13px; font-weight:600; color:var(--text-muted); transition:color 0.2s; }
+    .nav-links a:hover { color:var(--teal); }
+    .nav-hamburger { display:none; background:none; border:none; color:var(--text); font-size:22px; }
+    .mobile-menu {
+      display:none; position:fixed; top:100px; left:0; right:0; bottom:0;
+      background:var(--bg-2); z-index:299; padding:32px 24px; flex-direction:column; gap:0; overflow-y:auto;
+    }
+    .mobile-menu.open { display:flex; }
+    .mobile-menu a { font-size:16px; font-weight:600; padding:14px 0; border-bottom:1px solid var(--border-dim); }
+    .mob-label { font-size:10px; font-weight:700; color:var(--teal); letter-spacing:1.5px; padding:18px 0 6px; opacity:0.7; }
+    .nav-dd { position:relative; list-style:none; }
+    .nav-dd-btn { font-size:13px; font-weight:600; color:var(--text-muted); background:none; border:none; font-family:inherit; cursor:pointer; display:flex; align-items:center; gap:4px; }
+    .nav-dd-btn:hover { color:var(--teal); }
+    .nav-dd-menu { display:none; position:absolute; top:calc(100%+8px); left:-12px; background:#0A1628; border:1px solid var(--border); border-radius:10px; padding:12px 0 8px; min-width:160px; z-index:400; box-shadow:0 8px 24px rgba(0,0,0,0.5); }
+    .nav-dd:hover .nav-dd-menu { display:block; }
+    .nav-dd-menu a { display:block; padding:9px 16px; font-size:12px; font-weight:600; color:var(--text-muted); }
+    .nav-dd-menu a:hover { color:var(--teal); }
+
+    /* ══ LOGIN ══ */
+    #loginScreen {
+      min-height:100vh; display:flex; align-items:center; justify-content:center;
+      padding:120px 20px 40px;
+      background:radial-gradient(ellipse at 50% 35%, rgba(45,212,191,0.05) 0%, transparent 65%);
+    }
+    .login-box {
+      background:var(--bg-2); border:1px solid var(--border);
+      border-radius:20px; padding:44px 40px; width:100%; max-width:400px; text-align:center;
+      box-shadow:0 24px 60px rgba(0,0,0,0.4);
+    }
+    .login-badge {
+      display:inline-flex; align-items:center; gap:6px;
+      background:rgba(45,212,191,0.08); border:1px solid var(--border);
+      color:var(--teal); font-size:11px; font-weight:700; padding:5px 14px;
+      border-radius:20px; letter-spacing:0.8px; text-transform:uppercase; margin-bottom:16px;
+    }
+    .login-box h1 { font-family:'Space Grotesk',sans-serif; font-size:28px; font-weight:900; margin-bottom:6px; }
+    .login-box h1 span { background:linear-gradient(135deg,var(--teal),#67e8f9); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .login-box p  { font-size:13px; color:var(--text-muted); margin-bottom:28px; line-height:1.6; }
+    .field-label  { font-size:11px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; display:block; text-align:left; margin-bottom:6px; }
+    .inp {
+      width:100%; background:var(--bg-3); border:1px solid var(--border-dim);
+      border-radius:10px; padding:13px 14px; font-size:14px; color:var(--text);
+      outline:none; margin-bottom:14px; transition:border-color 0.2s;
+    }
+    .inp:focus { border-color:var(--teal); }
+    .btn-primary {
+      width:100%; padding:14px; border-radius:10px; border:none;
+      background:linear-gradient(135deg,var(--teal-dark),var(--teal));
+      color:#070F1A; font-weight:700; font-size:15px; transition:opacity 0.2s;
+    }
+    .btn-primary:hover { opacity:0.88; }
+    .form-msg { font-size:12px; margin-top:12px; display:none; padding:10px; border-radius:8px; }
+    .form-msg.err { color:var(--red); background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); }
+    .form-msg.ok  { color:var(--green); background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.2); }
+
+    /* ══ COURSE PAGE ══ */
+    #coursePage { display:none; padding-top:100px; min-height:100vh; }
+
+    /* top bar */
+    .course-topbar {
+      background:var(--bg-3); border-bottom:1px solid var(--border-dim);
+      padding:10px 24px; display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+    }
+    .course-topbar-title { font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:800; flex:1; }
+    .progress-wrap { display:flex; align-items:center; gap:10px; }
+    .progress-bar-outer { width:160px; height:6px; background:var(--border-dim); border-radius:3px; overflow:hidden; }
+    .progress-bar-inner { height:100%; background:linear-gradient(90deg,var(--teal-dark),var(--teal)); border-radius:3px; transition:width 0.4s; }
+    .progress-label { font-size:12px; color:var(--text-muted); white-space:nowrap; }
+    .topbar-actions { display:flex; align-items:center; gap:8px; }
+    .btn-topbar {
+      background:transparent; border:1px solid rgba(45,212,191,0.2); color:var(--teal);
+      font-size:12px; padding:6px 14px; border-radius:8px; transition:all 0.15s; white-space:nowrap;
+    }
+    .btn-topbar:hover { background:rgba(45,212,191,0.08); }
+    .btn-topbar-logout {
+      background:transparent; border:1px solid var(--border-dim); color:var(--text-muted);
+      font-size:12px; padding:6px 14px; border-radius:8px; transition:all 0.15s;
+    }
+    .btn-topbar-logout:hover { border-color:var(--red); color:var(--red); }
+    .btn-sidebar-toggle {
+      display:none; background:none; border:none; color:var(--text-muted); font-size:20px; padding:2px 4px;
+    }
+
+    /* ══ LAYOUT ══ */
+    .course-layout { display:flex; min-height:calc(100vh - 100px); }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width:var(--sidebar-w); flex-shrink:0;
+      background:var(--bg-2); border-right:1px solid var(--border-dim);
+      position:sticky; top:100px; height:calc(100vh - 100px); overflow-y:auto;
+    }
+    .sidebar::-webkit-scrollbar { width:4px; }
+    .sidebar::-webkit-scrollbar-track { background:transparent; }
+    .sidebar::-webkit-scrollbar-thumb { background:var(--border-dim); border-radius:2px; }
+    .sidebar-header { padding:18px 18px 12px; border-bottom:1px solid var(--border-dim); }
+    .sidebar-header h3 { font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:0.8px; color:var(--text-muted); }
+    .sidebar-header p  { font-size:12px; color:var(--text-dim); margin-top:3px; }
+
+    .sidebar-section-label {
+      padding:14px 16px 6px; font-size:10px; font-weight:800;
+      text-transform:uppercase; letter-spacing:1.2px; color:var(--teal);
+      border-top:1px solid var(--border-dim); margin-top:4px;
+    }
+    .sidebar-section-label:first-child { border-top:none; margin-top:0; }
+
+    .topic-item {
+      display:flex; align-items:center; gap:12px;
+      padding:12px 16px; cursor:pointer;
+      border-left:3px solid transparent;
+      transition:background 0.15s, border-color 0.15s;
+    }
+    .topic-item:hover    { background:rgba(45,212,191,0.04); }
+    .topic-item.active   { background:rgba(45,212,191,0.08); border-left-color:var(--teal); }
+    .topic-item.watched:not(.active) { opacity:0.7; }
+
+    .topic-check {
+      width:22px; height:22px; border-radius:50%; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center;
+      font-size:11px; font-weight:700;
+    }
+    .topic-check.done    { background:var(--teal); color:#070F1A; }
+    .topic-check.current { background:rgba(45,212,191,0.15); border:2px solid var(--teal); color:var(--teal); font-size:10px; }
+    .topic-check.empty   { background:var(--bg-4); border:1px solid var(--border-dim); color:var(--text-dim); font-size:10px; }
+
+    .topic-info { flex:1; min-width:0; }
+    .topic-name { font-size:12.5px; font-weight:600; line-height:1.35; color:var(--text); white-space:normal; }
+    .topic-item.watched .topic-name { color:var(--text-muted); }
+    .topic-item.active  .topic-name { color:var(--teal); }
+    .topic-num-label { font-size:10px; color:var(--text-dim); margin-top:2px; }
+
+    /* ── MAIN VIDEO AREA ── */
+    .course-main { flex:1; min-width:0; display:flex; flex-direction:column; }
+
+    /* placeholder when no topic selected */
+    .course-welcome {
+      flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      text-align:center; padding:60px 40px;
+    }
+    .welcome-icon { font-size:56px; margin-bottom:16px; }
+    .course-welcome h2 { font-family:'Space Grotesk',sans-serif; font-size:24px; font-weight:800; margin-bottom:8px; }
+    .course-welcome p  { font-size:14px; color:var(--text-muted); max-width:400px; line-height:1.7; }
+
+    /* video view */
+    #videoView { display:none; flex-direction:column; }
+    .video-player-wrap { width:100%; max-width:800px; aspect-ratio:16/9; background:#000; margin:20px auto 0; border-radius:10px; overflow:hidden; box-shadow:0 8px 40px rgba(0,0,0,0.5); }
+    .video-player-wrap iframe { width:100%; height:100%; border:none; display:block; }
+
+    .video-info { padding:20px 28px; border-bottom:1px solid var(--border-dim); }
+    .video-breadcrumb { font-size:11px; color:var(--text-dim); margin-bottom:8px; }
+    .video-title { font-family:'Space Grotesk',sans-serif; font-size:22px; font-weight:800; margin-bottom:12px; }
+    .video-actions { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+
+    .btn-watched {
+      display:flex; align-items:center; gap:7px;
+      padding:9px 18px; border-radius:10px; font-size:13px; font-weight:700; border:none;
+      background:rgba(45,212,191,0.1); color:var(--teal); border:1px solid var(--border);
+      transition:all 0.2s;
+    }
+    .btn-watched.done { background:var(--teal); color:#070F1A; border-color:var(--teal); }
+    .btn-watched:hover:not(.done) { background:rgba(45,212,191,0.2); }
+
+    .btn-prev-next {
+      display:flex; align-items:center; gap:6px;
+      padding:9px 16px; border-radius:10px; font-size:13px; font-weight:600;
+      background:transparent; border:1px solid var(--border-dim); color:var(--text-muted);
+      transition:all 0.15s;
+    }
+    .btn-prev-next:hover:not(:disabled) { border-color:var(--teal); color:var(--teal); }
+    .btn-prev-next:disabled { opacity:0.3; cursor:not-allowed; }
+
+    .video-meta { padding:20px 28px 40px; }
+    .video-meta h3 { font-size:14px; font-weight:700; margin-bottom:8px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; }
+    .video-meta p  { font-size:14px; color:var(--text-muted); line-height:1.7; }
+
+    /* ══ CHANGE PASSWORD MODAL ══ */
+    #pwdModal {
+      display:none; position:fixed; inset:0; z-index:600;
+      background:rgba(0,0,0,0.82); backdrop-filter:blur(6px);
+      align-items:center; justify-content:center; padding:20px;
+    }
+    #pwdModal.open { display:flex; }
+    .pwd-box {
+      background:var(--bg-2); border:1px solid var(--border);
+      border-radius:18px; padding:32px 30px; width:100%; max-width:380px;
+      animation:popIn 0.2s ease;
+    }
+    @keyframes popIn { from{transform:scale(0.95);opacity:0} to{transform:scale(1);opacity:1} }
+    .pwd-box h2 { font-family:'Space Grotesk',sans-serif; font-size:20px; font-weight:800; margin-bottom:6px; }
+    .pwd-box p  { font-size:13px; color:var(--text-muted); margin-bottom:22px; }
+    .btn-cancel { width:100%; padding:11px; border-radius:10px; border:1px solid var(--border-dim); background:transparent; color:var(--text-muted); font-size:14px; font-weight:600; margin-top:8px; transition:all 0.15s; }
+    .btn-cancel:hover { border-color:var(--red); color:var(--red); }
+    .pwd-field-wrap { position:relative; margin-bottom:14px; }
+    .pwd-field-wrap .inp { margin-bottom:0; padding-right:42px; }
+    .eye-btn { position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--text-muted); font-size:17px; cursor:pointer; padding:2px; line-height:1; }
+    .eye-btn:hover { color:var(--teal); }
+
+    /* ══ FOOTER ══ */
+    .footer {
+      background:var(--bg-2); border-top:1px solid var(--border);
+      padding:56px 24px 28px; position:relative; overflow:hidden;
+    }
+    .footer::before {
+      content:''; position:absolute; inset:0;
+      background-image:
+        linear-gradient(rgba(45,212,191,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(45,212,191,0.025) 1px, transparent 1px);
+      background-size:52px 52px;
+    }
+    .footer-inner { max-width:1100px; margin:0 auto; position:relative; z-index:1; }
+    .footer-top { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:40px; margin-bottom:44px; }
+    .footer-brand p { font-size:13px; color:var(--text-muted); line-height:1.7; max-width:280px; margin-top:14px; }
+    .footer-col h4 { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--teal); margin-bottom:16px; }
+    .footer-col ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+    .footer-col ul li a { font-size:13px; color:var(--text-muted); transition:color 0.2s; }
+    .footer-col ul li a:hover { color:var(--teal); }
+    .footer-bottom { display:flex; justify-content:space-between; align-items:center; padding-top:22px; border-top:1px solid var(--border-dim); flex-wrap:wrap; gap:10px; }
+    .footer-bottom p { font-size:12px; color:var(--text-dim); }
+    .disclaimer { font-size:11px; color:var(--text-dim); text-align:center; margin-top:12px; }
+    /* WhatsApp */
+    .wa-float {
+      position:fixed; bottom:28px; right:24px; z-index:400;
+      display:flex; align-items:center; gap:10px; padding:12px 20px;
+      background:linear-gradient(135deg,#075E54,#25D366); border-radius:50px;
+      box-shadow:0 6px 24px rgba(37,211,102,0.4); cursor:pointer; transition:all 0.25s;
+      color:white; font-size:13px; font-weight:700; text-decoration:none;
+      animation:wa-bounce 2.5s ease-in-out infinite;
+    }
+    .wa-float:hover { transform:translateY(-3px) scale(1.04); box-shadow:0 10px 32px rgba(37,211,102,0.5); }
+    @keyframes wa-bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+    .wa-icon { font-size:20px; }
+
+    /* ══ RESPONSIVE ══ */
+    @media(max-width:900px) {
+      :root { --sidebar-w: 280px; }
+    }
+    @media(max-width:768px) {
+      .nav-col { display:none; }
+      .nav-inner > .nav-hamburger { display:block !important; }
+      .btn-sidebar-toggle { display:block; }
+      .sidebar {
+        position:fixed; top:100px; left:0; bottom:0; z-index:200;
+        transform:translateX(-100%); transition:transform 0.3s;
+        width:min(var(--sidebar-w), 90vw);
+      }
+      .sidebar.open { transform:translateX(0); }
+      .course-topbar { padding:10px 16px; }
+      .progress-bar-outer { width:100px; }
+      .video-info { padding:14px 16px; }
+      .video-actions { gap:8px; }
+      .video-meta { padding:16px 16px 30px; }
+      .video-title { font-size:17px; }
+    }
+    @media(max-width:500px) {
+      .login-box { padding:30px 20px; }
+      .footer-top { grid-template-columns:1fr; }
+      .wa-float span:last-child { display:none; }
+      .wa-float { padding:12px; }
+    }
+    @media(max-width:900px) {
+      .footer-top { grid-template-columns:1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ SITE NAVBAR ══ -->
+<nav class="site-nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="logo.png" class="logo-img" alt="Trends &amp; Trade"/>
+      <div class="logo-text">Trends <span>&amp;</span> Trade</div>
+    </a>
+    <div class="nav-col">
+      <ul class="nav-row-1 nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li class="nav-dd">
+          <button class="nav-dd-btn">Learn ▾</button>
+          <div class="nav-dd-menu">
+            <a href="library.html">Library</a>
+            <a href="courses.html">Courses</a>
+            <a href="whiteboard.html">Whiteboard</a>
+          </div>
+        </li>
+        <li><a href="commodities.html">Live Markets Hub</a></li>
+        <li><a href="social.html">Media</a></li>
+        <li><a href="index.html#pricing">Pricing</a></li>
+        <li class="nav-dd">
+          <button class="nav-dd-btn">More ▾</button>
+          <div class="nav-dd-menu">
+            <a href="index.html#community">Community</a>
+            <a href="team.html">Team</a>
+            <a href="about.html">About Us</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <button class="nav-hamburger" onclick="toggleMenu()">☰</button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html" onclick="toggleMenu()">Home</a>
+  <div class="mob-label">LEARN</div>
+  <a href="library.html" onclick="toggleMenu()">Library</a>
+  <a href="courses.html" onclick="toggleMenu()">Courses</a>
+  <a href="whiteboard.html" onclick="toggleMenu()">Whiteboard</a>
+  <a href="commodities.html" onclick="toggleMenu()">Live Markets Hub</a>
+  <a href="social.html" onclick="toggleMenu()">Media</a>
+  <div class="mob-label">MORE</div>
+  <a href="index.html#community" onclick="toggleMenu()">Community</a>
+  <a href="index.html#pricing" onclick="toggleMenu()">Pricing</a>
+  <a href="team.html" onclick="toggleMenu()">Team</a>
+  <a href="about.html" onclick="toggleMenu()">About Us</a>
+</div>
+
+<!-- ══ LOGIN ══ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-badge">📍 Student Portal</div>
+    <h1>The <span>MAP</span> Course</h1>
+    <p>Sign in with your credentials to access your trading course.</p>
+    <label class="field-label">Username</label>
+    <input class="inp" type="text" id="inpUser" placeholder="SNR_NAME_12345" autocomplete="username"/>
+    <label class="field-label">Password</label>
+    <input class="inp" type="password" id="inpPwd" placeholder="Your password" autocomplete="current-password"/>
+    <button class="btn-primary" onclick="doLogin()">Access My Course →</button>
+    <div class="form-msg err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- ══ COURSE PAGE ══ -->
+<div id="coursePage">
+
+  <!-- top bar -->
+  <div class="course-topbar">
+    <button class="btn-sidebar-toggle" onclick="toggleSidebar()" title="Toggle topics">☰</button>
+    <span class="course-topbar-title" onclick="goHome()" style="cursor:pointer;" title="Back to course home">📍 THE MAP — Complete Trading Course</span>
+    <div class="progress-wrap">
+      <div class="progress-bar-outer"><div class="progress-bar-inner" id="progressBar" style="width:0%"></div></div>
+      <span class="progress-label" id="progressLabel">0 / 19 completed</span>
+    </div>
+    <div class="topbar-actions">
+      <span style="font-size:12px;color:var(--text-muted)" id="navUser"></span>
+      <button class="btn-topbar" onclick="openPwdModal()">🔑 Password</button>
+      <button class="btn-topbar-logout" onclick="doLogout()">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="course-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h3>Course Topics</h3>
+        <p id="sidebarProgress">0 of 19 lessons watched</p>
+      </div>
+      <div id="topicList"></div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="course-main">
+
+      <!-- welcome state -->
+      <div class="course-welcome" id="welcomeView">
+        <img src="PaidContent/themaptopics/1_Introduction.jpg" alt="The MAP Course" style="width:100%;max-width:680px;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,0.5);margin-bottom:24px;"/>
+        <h2>Welcome to The MAP</h2>
+        <p>Select any topic from the sidebar to start learning. Work through each lesson at your own pace and mark them complete as you go.</p>
+      </div>
+
+      <!-- video view -->
+      <div id="videoView">
+        <div class="video-player-wrap" id="videoPlayer"></div>
+        <div class="video-info">
+          <div class="video-breadcrumb">THE MAP Course</div>
+          <div class="video-title" id="videoTitle"></div>
+          <div class="video-actions">
+            <button class="btn-watched" id="btnWatched" onclick="toggleWatched()">
+              <span id="watchedIcon">○</span> <span id="watchedText">Mark as Watched</span>
+            </button>
+            <button class="btn-prev-next" id="btnPrev" onclick="navLesson(-1)">← Previous</button>
+            <button class="btn-prev-next" id="btnNext" onclick="navLesson(1)">Next Lesson →</button>
+          </div>
+        </div>
+        <div class="video-meta">
+          <h3>About This Lesson</h3>
+          <p id="videoDesc"></p>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="nav-logo">
+          <img src="logo.png" class="logo-img" alt="Trends &amp; Trade"/>
+          <div class="logo-text">Trends <span>&amp;</span> Trade</div>
+        </div>
+        <p>S&amp;R Intelligent Trading System. Learn to trade Stocks, Commodities, Crypto, and Forex with a proven, systematic approach.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="library.html">Library</a></li>
+          <li><a href="courses.html">Courses</a></li>
+          <li><a href="whiteboard.html">Whiteboard</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Markets</h4>
+        <ul>
+          <li><a href="#">Stocks</a></li>
+          <li><a href="#">Crypto</a></li>
+          <li><a href="#">Commodities</a></li>
+          <li><a href="#">Forex</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <ul>
+          <li><a href="https://www.youtube.com/channel/UCXdqqgNKynhajdiUR_nMkUQ" target="_blank">YouTube</a></li>
+          <li><a href="https://www.instagram.com/snrtrades" target="_blank">Instagram</a></li>
+          <li><a href="https://x.com/trendsandtrade" target="_blank">X (Twitter)</a></li>
+          <li><a href="https://www.tiktok.com/@trendsandtradeuae" target="_blank">TikTok</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="team.html">Our Team</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Trends &amp; Trade. All rights reserved. &nbsp;·&nbsp; <a href="legal.html" style="color:var(--text-dim);font-size:12px;">Terms &amp; Privacy</a></p>
+      <p style="color:var(--teal);font-weight:600;">S&amp;R Intelligent Trading System</p>
+    </div>
+    <p class="disclaimer">⚠️ Trading involves significant risk. Past performance is not indicative of future results. This is educational content only.</p>
+  </div>
+</footer>
+
+
+<!-- ══ CHANGE PASSWORD MODAL ══ -->
+<div id="pwdModal">
+  <div class="pwd-box">
+    <h2>Change Password</h2>
+    <p>Enter your current password, then choose a new one (min 8 characters).</p>
+    <label class="field-label">Current Password</label>
+    <div class="pwd-field-wrap">
+      <input class="inp" type="password" id="pwdCurrent" placeholder="Current password" onpaste="return true;"/>
+      <button class="eye-btn" type="button" onclick="toggleEye('pwdCurrent',this)">👁</button>
+    </div>
+    <label class="field-label">New Password</label>
+    <div class="pwd-field-wrap">
+      <input class="inp" type="password" id="pwdNew" placeholder="Min 8 characters" onpaste="return true;"/>
+      <button class="eye-btn" type="button" onclick="toggleEye('pwdNew',this)">👁</button>
+    </div>
+    <label class="field-label">Confirm New Password</label>
+    <div class="pwd-field-wrap">
+      <input class="inp" type="password" id="pwdConfirm" placeholder="Repeat new password" onpaste="return true;"/>
+      <button class="eye-btn" type="button" onclick="toggleEye('pwdConfirm',this)">👁</button>
+    </div>
+    <button class="btn-primary" onclick="doChangePassword()">Update Password</button>
+    <div class="form-msg" id="pwdMsg"></div>
+    <button class="btn-cancel" onclick="closePwdModal()">Cancel</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL      = 'https://ucpjcopozlunknosugxd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjcGpjb3Bvemx1bmtub3N1Z3hkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYzNjUzNDAsImV4cCI6MjEwMTk0MTM0MH0.82r72tSsEVdJThuOtXLh2MO2WhLE42IUgIKm9bCa_Mw';
+  const BUNNY_LIB  = '735881';
+  const BUNNY_DEF  = { type:'bunny', lib:'735881', id:'6cdb7a0b-1999-4bd6-bbf1-1e3f791a1dcd' }; // placeholder
+
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // key = stable progress ID (never changes even when topics are reordered/inserted)
+  // num = display lesson number
+  const TOPICS = [
+    { key:'1',            num:1,  prereq:true, title:'Introduction',  img:'1_Introduction.jpg',                   video:BUNNY_DEF, desc:'An overview of The MAP course — what you will learn, how the system works, and how to get the most out of each lesson.' },
+    { key:'intro-trade',  num:2,  prereq:true, title:'Introduction to Trading',          img:'1_Introduction.jpg', video:{ type:'bunny', lib:'735881', id:'0e55a9fe-e604-4a68-89de-204252b87d0e' }, desc:'A complete beginner-friendly introduction to trading — how markets work, who the participants are, and what it takes to trade successfully.' },
+    { key:'tv-part1',     num:3,  prereq:true, title:'Introduction to TradingView Part I', img:'1_Introduction.jpg', video:{ type:'bunny', lib:'735881', id:'71300073-a148-402e-b37a-46f1782d7920' },             desc:'Get started with TradingView — how to set up your workspace, navigate charts, apply indicators, and use the tools you will need throughout this course.' },
+    { key:'tv-part2',     num:4,  prereq:true, title:'Introduction to TradingView Part II',img:'1_Introduction.jpg', video:{ type:'bunny', lib:'735881', id:'1f7f8c77-cbc4-475c-8b34-c16bf134dfbf' },             desc:'Continuing the TradingView walkthrough — advanced chart settings, saving layouts, drawing tools, and getting your platform ready for live trading.' },
+    { key:'2',  num:5,  section:'Milestone 1', title:'Market Structure',          img:'2_Trends_and_Trade_MarketStructure.png', video:BUNNY_DEF, desc:'Learn to read price action by identifying higher highs, lower lows, and the overall trend direction across any market.' },
+    { key:'3',  num:6,  section:'Milestone 1', title:'Candlestick Patterns',      img:'3_Candle_stick_pattren.png',            video:BUNNY_DEF, desc:'Master the most important candlestick formations and what they reveal about buyer and seller behaviour in the market.' },
+    { key:'4',  num:7,  section:'Milestone 1', title:'Support & Resistance',      img:'4_Support_Resistance.png',              video:BUNNY_DEF, desc:'Discover how to identify key price levels where the market is likely to react, and how to trade around them.' },
+    { key:'5',  num:8,  section:'Milestone 1', title:'Channels & Breakouts',      img:'5_Channal_Breakouts.png',               video:BUNNY_DEF, desc:'Learn to draw price channels and trade breakouts with confidence — one of the most reliable setups in technical analysis.' },
+    { key:'6',  num:9,  section:'Milestone 1', title:'Fibonacci',                 img:'6_Fibibacci.jpeg',                      video:BUNNY_DEF, desc:'Apply Fibonacci retracements and extensions to locate high-probability entry and target zones in any trending market.' },
+    { key:'7',  num:10, section:'Milestone 1', title:'Dow Theory',                img:'7_Dow_theory.png',                      video:BUNNY_DEF, desc:'Understand the foundational principles of Dow Theory and how they underpin modern technical analysis.' },
+    { key:'8',  num:11, section:'Milestone 2', title:'Order Types',               img:'8_Order_Types.png',              video:BUNNY_DEF, desc:'A complete breakdown of market orders, limit orders, stop orders, and how to use each one in your trading strategy.' },
+    { key:'9',  num:12, section:'Milestone 2', title:'Entry, Stop Loss & Target', img:'9_Entry_Stoploss_Target.png',    video:BUNNY_DEF, desc:'Build a complete trade plan — where to enter, where to place your stop loss, and how to set realistic profit targets.' },
+    { key:'10', num:13, section:'Milestone 2', title:'Multi-Timeframe Analysis',  img:'10_Multitimeframe.png',          video:BUNNY_DEF, desc:'Learn how to align trades across multiple timeframes to dramatically improve your win rate and trade quality.' },
+    { key:'11', num:14, section:'Milestone 2', title:'Risk Management',           img:'11_RiskManagement.png',          video:BUNNY_DEF, desc:'The most important topic in trading. Learn position sizing, risk-per-trade, and how to protect your capital consistently.' },
+    { key:'12', num:15, section:'Milestone 2', title:'Trading Psychology',        img:'12_Trading Psychology.png',      video:BUNNY_DEF, desc:'Explore the mental side of trading — discipline, patience, handling losses, and building a consistent trader mindset.' },
+    { key:'13', num:16, section:'Milestone 3', title:'Most Powerful Indicators',  img:'13_Most_Powerful_Indicators.png',video:BUNNY_DEF, desc:'A curated guide to the indicators that actually work — how to set them up and integrate them into your strategy.' },
+    { key:'14', num:17, section:'Milestone 3', title:'Divergence',                img:'14_Divergence.png',              video:BUNNY_DEF, desc:'Learn to spot divergence between price and indicators to catch trend reversals early and enter trades at the right time.' },
+    { key:'15', num:18, section:'Milestone 3', title:'RSI & Hidden Divergence',   img:'15_RSI_Hidden_Divergence.png',   video:BUNNY_DEF, desc:'Deep dive into RSI — regular vs hidden divergence, and how to use them together for powerful continuation and reversal signals.' },
+    { key:'16', num:19, section:'Milestone 3', title:'Bollinger Bands',           img:'16_Bollinger Bands.png',         video:BUNNY_DEF, desc:'Understand how Bollinger Bands expand and contract with volatility, and how to use squeezes and breakouts in your trades.' },
+    { key:'17', num:20, section:'Milestone 3', title:'Reversal Pattern-I — Cup and Handle, Rising & Falling Wedges',       img:'17_Cup_Handle_Wedge.png',        video:BUNNY_DEF, desc:'Two of the most profitable chart patterns explained with clear entry, stop loss, and target rules.' },
+    { key:'18', num:21, section:'Milestone 3', title:'Reversal Pattern-II — Flags, Pennants & Triangles',                     img:'18_Flags.jpg',                   video:BUNNY_DEF, desc:'Learn to identify bull and bear flag patterns in trending markets and trade them for fast, reliable moves.' },
+    { key:'19',    num:22, section:'Milestone 3', title:'Reversal Pattern-III — Head and Shoulders, Double Top and Bottom', img:'19_Cup_Handle.jpg', video:BUNNY_DEF, desc:'An in-depth lesson on the Head and Shoulders, Double Top and Double Bottom patterns — powerful reversal signals used by professional traders.' },
+    { key:'smc',   num:23, section:'Milestone 5', title:'Basic SMC (Smart Money Concepts)',  img:'1_Introduction.jpg', video:BUNNY_DEF, desc:'An introduction to Smart Money Concepts — how institutional traders move markets, liquidity sweeps, order blocks, and how to trade with the smart money.' },
+    { key:'bonus', num:24, section:'Milestone 5', title:'Bonus Lecture',                img:'1_Introduction.jpg', video:BUNNY_DEF, desc:'Bonus lesson covering essential trading basics — a valuable supplement to reinforce the core concepts covered throughout the course.' },
+  ];
+
+  function getEmbedUrl(t) {
+    if (t.video.type === 'youtube') {
+      return `https://www.youtube.com/embed/${t.video.id}?autoplay=1&rel=0${t.video.start ? '&start='+t.video.start : ''}`;
+    }
+    return `https://iframe.mediadelivery.net/embed/${t.video.lib}/${t.video.id}?autoplay=true&loop=false&muted=false&preload=true&responsive=true`;
+  }
+
+  const IMG_BASE = 'PaidContent/themaptopics/';
+
+  /* ── state ── */
+  let currentUser = null;
+  let currentIdx  = -1;
+  let watched     = {};  // { "1": true, "3": true, ... }
+
+  function getWatchedKey() { return `snr_watched_${currentUser?.username || 'guest'}`; }
+  // localStorage = fast cache; Supabase = source of truth
+  function cacheWatched()  { try { localStorage.setItem(getWatchedKey(), JSON.stringify(watched)); } catch(e){} }
+  async function saveWatched() {
+    cacheWatched();
+    if (currentUser?.username) {
+      const { error } = await sb.from('student_accounts')
+        .update({ progress: watched })
+        .eq('username', currentUser.username);
+      if (error) console.error('Progress save failed:', error.message);
+    }
+  }
+
+  /* ── GO HOME ── */
+  function goHome() {
+    currentIdx = -1;
+    document.getElementById('videoPlayer').innerHTML = '';
+    document.getElementById('videoView').style.display   = 'none';
+    document.getElementById('welcomeView').style.display = 'flex';
+    document.querySelectorAll('.topic-item').forEach(el => el.classList.remove('active'));
+    buildSidebar();
+  }
+
+  /* ── NAV ── */
+  window.addEventListener('scroll', () => {
+    document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 10);
+  });
+  function toggleMenu()    { document.getElementById('mobileMenu').classList.toggle('open'); }
+  function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
+  /* ── LOGIN ── */
+  document.getElementById('inpPwd').addEventListener('keydown',  e => { if(e.key==='Enter') doLogin(); });
+  document.getElementById('inpUser').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+  async function doLogin() {
+    const username = document.getElementById('inpUser').value.trim();
+    const password = document.getElementById('inpPwd').value;
+    const errEl    = document.getElementById('loginErr');
+    errEl.style.display = 'none';
+    if (!username || !password) { showErr(errEl, 'Please enter your username and password.'); return; }
+    const { data, error } = await sb.from('student_accounts').select('*')
+      .eq('username', username).eq('password', password).eq('status','active').maybeSingle();
+    if (error || !data) { showErr(errEl, 'Incorrect username or password. Please try again.'); return; }
+    sessionStorage.setItem('snr_user', JSON.stringify({ name:data.name, username:data.username }));
+    initCourse(data);
+  }
+
+  function doLogout() {
+    sessionStorage.removeItem('snr_user');
+    currentUser = null; currentIdx = -1; watched = {};
+    document.getElementById('coursePage').style.display  = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('inpPwd').value = '';
+    document.getElementById('videoPlayer').innerHTML = '';
+  }
+
+  /* ── INIT COURSE ── */
+  async function initCourse(user) {
+    currentUser = user;
+    // Load progress from Supabase (source of truth), fall back to localStorage cache
+    try {
+      const { data: acct } = await sb.from('student_accounts').select('progress')
+        .eq('username', user.username).maybeSingle();
+      watched = acct?.progress || {};
+    } catch(e) {
+      try { watched = JSON.parse(localStorage.getItem(getWatchedKey()) || '{}'); } catch(e2){ watched={}; }
+    }
+    cacheWatched(); // sync cache with DB data
+    document.getElementById('loginScreen').style.display  = 'none';
+    document.getElementById('coursePage').style.display   = 'block';
+    document.getElementById('navUser').textContent        = '👤 ' + user.name;
+    buildSidebar();
+    updateProgress();
+  }
+
+  /* ── SIDEBAR ── */
+  const SECTION_ICONS = {
+    'prereq':      '🥇 Milestone 1',
+    'Milestone 1': '🥈 Milestone 2',
+    'Milestone 2': '🥉 Milestone 3',
+    'Milestone 3': '🏆 Milestone 4',
+    'Milestone 5': '⭐ Milestone 5',
+  };
+
+  function buildSidebar() {
+    const list = document.getElementById('topicList');
+    let html = '';
+    let lastSection = null;
+
+    TOPICS.forEach((t, i) => {
+      const sectionKey = t.prereq ? 'prereq' : (t.section || '');
+      if (sectionKey && sectionKey !== lastSection) {
+        const label = SECTION_ICONS[sectionKey] || ('📌 ' + sectionKey);
+        html += `<div class="sidebar-section-label">${label}</div>`;
+        lastSection = sectionKey;
+      }
+
+      const done    = !!watched[t.key];
+      const current = i === currentIdx;
+      const cls     = current ? 'topic-item active' : (done ? 'topic-item watched' : 'topic-item');
+      const chkCls  = done ? 'topic-check done' : (current ? 'topic-check current' : 'topic-check empty');
+      const chkIcon = done ? '✓' : t.num;
+      html += `<div class="${cls}" id="ti_${i}" onclick="selectTopic(${i})">
+        <div class="${chkCls}">${chkIcon}</div>
+        <div class="topic-info">
+          <div class="topic-name">${t.title}</div>
+          <div class="topic-num-label">Lesson ${t.num}</div>
+        </div>
+      </div>`;
+    });
+
+    list.innerHTML = html;
+  }
+
+  function updateProgress() {
+    const done  = Object.keys(watched).length;
+    const total = TOPICS.length;
+    const pct   = Math.round((done / total) * 100);
+    document.getElementById('progressBar').style.width  = pct + '%';
+    document.getElementById('progressLabel').textContent = `${done} / ${total} completed`;
+    document.getElementById('sidebarProgress').textContent = `${done} of ${total} lessons watched`;
+  }
+
+  /* ── SELECT TOPIC ── */
+  function selectTopic(idx) {
+    currentIdx = idx;
+    const t = TOPICS[idx];
+
+    // update sidebar highlight
+    document.querySelectorAll('.topic-item').forEach((el, i) => {
+      el.classList.remove('active');
+      if (i === idx) el.classList.add('active');
+      // update check icon
+      const chk = el.querySelector('.topic-check');
+      if (watched[TOPICS[i].key]) {
+        chk.className = 'topic-check done'; chk.textContent = '✓';
+      } else if (i === idx) {
+        chk.className = 'topic-check current'; chk.textContent = TOPICS[i].num;
+      } else {
+        chk.className = 'topic-check empty'; chk.textContent = TOPICS[i].num;
+      }
+      // watched class
+      if (i !== idx) {
+        el.classList.toggle('watched', !!watched[TOPICS[i].key]);
+      }
+    });
+
+    // show video view
+    document.getElementById('welcomeView').style.display = 'none';
+    const vv = document.getElementById('videoView');
+    vv.style.display = 'flex';
+
+    // load video
+    document.getElementById('videoPlayer').innerHTML =
+      `<iframe src="${getEmbedUrl(t)}" allow="accelerometer;gyroscope;autoplay;encrypted-media;clipboard-write;picture-in-picture" allowfullscreen style="width:100%;height:100%;border:none;display:block;"></iframe>`;
+
+    document.getElementById('videoTitle').textContent  = t.title;
+    document.getElementById('videoDesc').textContent   = t.desc;
+    document.getElementById('btnPrev').disabled = idx === 0;
+    document.getElementById('btnNext').disabled = idx === TOPICS.length - 1;
+    updateWatchedBtn();
+
+    // scroll sidebar item into view
+    const el = document.getElementById('ti_' + idx);
+    if (el) el.scrollIntoView({ block:'nearest', behavior:'smooth' });
+
+    // close mobile sidebar
+    if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+  }
+
+  function navLesson(dir) {
+    const next = currentIdx + dir;
+    if (next < 0 || next >= TOPICS.length) return;
+    document.getElementById('videoPlayer').innerHTML = '';
+    setTimeout(() => selectTopic(next), 50);
+  }
+
+  /* ── WATCHED ── */
+  function updateWatchedBtn() {
+    const done = !!watched[TOPICS[currentIdx]?.key];
+    const btn  = document.getElementById('btnWatched');
+    btn.classList.toggle('done', done);
+    document.getElementById('watchedIcon').textContent = done ? '✓' : '○';
+    document.getElementById('watchedText').textContent = done ? 'Watched ✓' : 'Mark as Watched';
+  }
+
+  async function toggleWatched() {
+    if (currentIdx < 0) return;
+    const key = TOPICS[currentIdx].key;
+    const num = TOPICS[currentIdx].num;
+    if (watched[key]) delete watched[key]; else watched[key] = true;
+    await saveWatched(); // saves to Supabase + localStorage
+    updateWatchedBtn();
+    buildSidebar();
+    // re-highlight current
+    const el = document.getElementById('ti_' + currentIdx);
+    if (el) { el.classList.add('active'); el.querySelector('.topic-check').className='topic-check current'; el.querySelector('.topic-check').textContent=num; }
+    updateProgress();
+  }
+
+  /* ── CHANGE PASSWORD ── */
+  function openPwdModal() {
+    ['pwdCurrent','pwdNew','pwdConfirm'].forEach(id => document.getElementById(id).value='');
+    const m = document.getElementById('pwdMsg'); m.style.display='none'; m.className='form-msg';
+    document.getElementById('pwdModal').classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+  function closePwdModal() {
+    document.getElementById('pwdModal').classList.remove('open');
+    document.body.style.overflow='';
+  }
+  async function doChangePassword() {
+    const cur = document.getElementById('pwdCurrent').value;
+    const nw  = document.getElementById('pwdNew').value;
+    const cf  = document.getElementById('pwdConfirm').value;
+    const msg = document.getElementById('pwdMsg');
+    msg.style.display='none';
+    if (!cur||!nw||!cf) { showMsg(msg,'err','Please fill in all fields.'); return; }
+    if (nw.length < 8)  { showMsg(msg,'err','New password must be at least 8 characters.'); return; }
+    if (nw !== cf)      { showMsg(msg,'err','New passwords do not match.'); return; }
+    const { data:check, error:checkErr } = await sb.from('student_accounts').select('id')
+      .eq('username', currentUser.username).eq('password', cur.trim()).maybeSingle();
+    if (checkErr || !check) { showMsg(msg,'err','Current password is incorrect.'); return; }
+    const { error } = await sb.from('student_accounts').update({password:nw}).eq('username', currentUser.username);
+    if (error) { showMsg(msg,'err','Failed to update. Please try again.'); return; }
+    showMsg(msg,'ok','✓ Password updated successfully!');
+    setTimeout(closePwdModal, 1800);
+  }
+  document.getElementById('pwdModal').addEventListener('click', function(e){ if(e.target===this) closePwdModal(); });
+
+  /* ── EYE TOGGLE ── */
+  function toggleEye(id, btn) {
+    const inp = document.getElementById(id);
+    const show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    btn.textContent = show ? '🙈' : '👁';
+  }
+
+  /* ── HELPERS ── */
+  function showErr(el, txt) { el.className='form-msg err'; el.textContent=txt; el.style.display='block'; }
+  function showMsg(el, type, txt) { el.className='form-msg '+type; el.textContent=txt; el.style.display='block'; }
+
+  /* ── AUTO-RESTORE SESSION ── */
+  const saved = sessionStorage.getItem('snr_user');
+  if (saved) {
+    try { initCourse(JSON.parse(saved)); } catch(e) { sessionStorage.removeItem('snr_user'); }
+  }
+</script>
+</body>
+</html>
