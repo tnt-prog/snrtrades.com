@@ -277,32 +277,89 @@
     /* ══ RESPONSIVE ══ */
     @media(max-width:900px) {
       :root { --sidebar-w: 280px; }
+      .footer-top { grid-template-columns:1fr 1fr; }
     }
+
+    /* ── Mobile sidebar overlay ── */
+    .sidebar-overlay {
+      display:none; position:fixed; inset:0; z-index:190;
+      background:rgba(0,0,0,0.65); backdrop-filter:blur(2px);
+    }
+    .sidebar-overlay.open { display:block; }
+
+    /* ── Mobile bottom nav bar (shown only on mobile when logged in) ── */
+    .mobile-course-bar {
+      display:none;
+    }
+
     @media(max-width:768px) {
-      .nav-col { display:none; }
-      .nav-inner > .nav-hamburger { display:block !important; }
-      .btn-sidebar-toggle { display:block; }
+      /* --- Shrink site navbar logo --- */
+      .logo-img  { height:46px !important; }
+      .logo-text { font-size:18px !important; }
+      .nav-inner { padding:8px 0 6px; gap:16px; }
+      .mobile-menu { top:62px; }
+
+      /* Course page — shift down less */
+      #coursePage { padding-top:62px; }
+      .course-layout { min-height:calc(100vh - 62px); padding-bottom:62px; }
+
+      /* --- Compact course topbar: single tight row --- */
+      .course-topbar { padding:7px 12px; gap:8px; flex-wrap:nowrap; min-height:0; }
+      .course-topbar-title {
+        font-size:13px; flex:1;
+        white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+        max-width:140px;
+      }
+      /* Hide verbose username text on mobile */
+      #navUser { display:none !important; }
+      /* Password button — icon only on mobile */
+      .btn-topbar .btn-label { display:none; }
+      .btn-topbar { padding:6px 10px; font-size:14px; }
+      .btn-topbar-logout { padding:6px 10px; font-size:12px; }
+      /* Hide sidebar toggle from topbar — bottom bar handles it */
+      .btn-sidebar-toggle { display:none; }
+
+      /* --- Sidebar: full-height overlay drawer --- */
       .sidebar {
-        position:fixed; top:100px; left:0; bottom:0; z-index:200;
+        position:fixed; top:62px; left:0; bottom:62px; z-index:200;
         transform:translateX(-100%); transition:transform 0.3s;
-        width:min(var(--sidebar-w), 90vw);
+        width:min(var(--sidebar-w), 85vw);
+        height:auto;
       }
       .sidebar.open { transform:translateX(0); }
-      .course-topbar { padding:10px 16px; }
-      .progress-bar-outer { width:100px; }
-      .video-info { padding:14px 16px; }
-      .video-actions { gap:8px; }
-      .video-meta { padding:16px 16px 30px; }
-      .video-title { font-size:17px; }
+
+      /* --- Bottom nav bar (always visible when logged in) --- */
+      .mobile-course-bar {
+        display:flex !important;
+        position:fixed; bottom:0; left:0; right:0; z-index:250;
+        background:var(--bg-3); border-top:1px solid var(--border);
+        height:58px;
+      }
+      .mob-bar-btn {
+        flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+        gap:3px; background:none; border:none; color:var(--text-muted);
+        font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;
+        cursor:pointer; padding:6px 4px; transition:color 0.15s;
+      }
+      .mob-bar-btn .mob-bar-icon { font-size:20px; line-height:1; }
+      .mob-bar-btn:active { background:rgba(255,255,255,0.04); }
+      .mob-bar-btn.active { color:var(--teal); }
+
+      /* Video & content adjustments */
+      .video-player-wrap { margin:12px 0 0; border-radius:0; }
+      .video-info  { padding:12px 14px; }
+      .video-meta  { padding:14px 14px 24px; }
+      .video-title { font-size:16px; }
+      .video-actions { gap:8px; flex-wrap:wrap; }
+      .btn-watched, .btn-prev-next { font-size:12px; padding:8px 12px; }
+      .wa-float { bottom:72px; }
     }
+
     @media(max-width:500px) {
       .login-box { padding:30px 20px; }
       .footer-top { grid-template-columns:1fr; }
       .wa-float span:last-child { display:none; }
-      .wa-float { padding:12px; }
-    }
-    @media(max-width:900px) {
-      .footer-top { grid-template-columns:1fr 1fr; }
+      .wa-float { padding:12px; bottom:72px; }
     }
   </style>
 </head>
@@ -358,6 +415,25 @@
   <a href="about.html" onclick="toggleMenu()">About Us</a>
 </div>
 
+<!-- Sidebar overlay (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- Mobile bottom course bar -->
+<div class="mobile-course-bar" id="mobileCourseBar" style="display:none;">
+  <button class="mob-bar-btn" id="mobBtnTopics" onclick="toggleSidebar()">
+    <span class="mob-bar-icon">📋</span>Topics
+  </button>
+  <button class="mob-bar-btn" onclick="goHome()">
+    <span class="mob-bar-icon">🏠</span>Home
+  </button>
+  <button class="mob-bar-btn" onclick="openPwdModal()">
+    <span class="mob-bar-icon">🔑</span>Account
+  </button>
+  <button class="mob-bar-btn" onclick="doLogout()">
+    <span class="mob-bar-icon">⏏</span>Sign Out
+  </button>
+</div>
+
 <!-- ══ LOGIN ══ -->
 <div id="loginScreen">
   <div class="login-box">
@@ -386,7 +462,7 @@
     </div>
     <div class="topbar-actions">
       <span style="font-size:12px;color:var(--text-muted)" id="navUser"></span>
-      <button class="btn-topbar" onclick="openPwdModal()">🔑 Password</button>
+      <button class="btn-topbar" onclick="openPwdModal()">🔑<span class="btn-label"> Password</span></button>
       <button class="btn-topbar-logout" onclick="doLogout()">Sign Out</button>
     </div>
   </div>
@@ -436,53 +512,6 @@
   </div>
 </div>
 
-<!-- ══ FOOTER ══ -->
-<footer class="footer">
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <div class="nav-logo">
-          <img src="logo.png" class="logo-img" alt="Trends &amp; Trade"/>
-          <div class="logo-text">Trends <span>&amp;</span> Trade</div>
-        </div>
-        <p>S&amp;R Intelligent Trading System. Learn to trade Stocks, Commodities, Crypto, and Forex with a proven, systematic approach.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Learn</h4>
-        <ul>
-          <li><a href="library.html">Library</a></li>
-          <li><a href="courses.html">Courses</a></li>
-          <li><a href="whiteboard.html">Whiteboard</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Markets</h4>
-        <ul>
-          <li><a href="#">Stocks</a></li>
-          <li><a href="#">Crypto</a></li>
-          <li><a href="#">Commodities</a></li>
-          <li><a href="#">Forex</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Connect</h4>
-        <ul>
-          <li><a href="https://www.youtube.com/channel/UCXdqqgNKynhajdiUR_nMkUQ" target="_blank">YouTube</a></li>
-          <li><a href="https://www.instagram.com/snrtrades" target="_blank">Instagram</a></li>
-          <li><a href="https://x.com/trendsandtrade" target="_blank">X (Twitter)</a></li>
-          <li><a href="https://www.tiktok.com/@trendsandtradeuae" target="_blank">TikTok</a></li>
-          <li><a href="about.html">About Us</a></li>
-          <li><a href="team.html">Our Team</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2026 Trends &amp; Trade. All rights reserved. &nbsp;·&nbsp; <a href="legal.html" style="color:var(--text-dim);font-size:12px;">Terms &amp; Privacy</a></p>
-      <p style="color:var(--teal);font-weight:600;">S&amp;R Intelligent Trading System</p>
-    </div>
-    <p class="disclaimer">⚠️ Trading involves significant risk. Past performance is not indicative of future results. This is educational content only.</p>
-  </div>
-</footer>
 
 
 <!-- ══ CHANGE PASSWORD MODAL ══ -->
@@ -591,7 +620,20 @@
     document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 10);
   });
   function toggleMenu()    { document.getElementById('mobileMenu').classList.toggle('open'); }
-  function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+  function closeSidebar()  {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('open');
+    const btn = document.getElementById('mobBtnTopics');
+    if (btn) btn.classList.remove('active');
+  }
+  function toggleSidebar() {
+    const sb  = document.getElementById('sidebar');
+    const ov  = document.getElementById('sidebarOverlay');
+    const btn = document.getElementById('mobBtnTopics');
+    const open = sb.classList.toggle('open');
+    ov.classList.toggle('open', open);
+    if (btn) btn.classList.toggle('active', open);
+  }
 
   /* ── LOGIN ── */
   document.getElementById('inpPwd').addEventListener('keydown',  e => { if(e.key==='Enter') doLogin(); });
@@ -613,8 +655,10 @@
   function doLogout() {
     sessionStorage.removeItem('snr_user');
     currentUser = null; currentIdx = -1; watched = {};
-    document.getElementById('coursePage').style.display  = 'none';
-    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('coursePage').style.display      = 'none';
+    document.getElementById('loginScreen').style.display     = 'flex';
+    document.getElementById('mobileCourseBar').style.display = 'none';
+    closeSidebar();
     document.getElementById('inpPwd').value = '';
     document.getElementById('videoPlayer').innerHTML = '';
   }
@@ -634,6 +678,7 @@
     document.getElementById('loginScreen').style.display  = 'none';
     document.getElementById('coursePage').style.display   = 'block';
     document.getElementById('navUser').textContent        = '👤 ' + user.name;
+    document.getElementById('mobileCourseBar').style.display = ''; // show bottom bar
     buildSidebar();
     updateProgress();
   }
@@ -729,8 +774,8 @@
     const el = document.getElementById('ti_' + idx);
     if (el) el.scrollIntoView({ block:'nearest', behavior:'smooth' });
 
-    // close mobile sidebar
-    if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+    // close mobile sidebar + overlay
+    if (window.innerWidth < 900) closeSidebar();
   }
 
   function navLesson(dir) {
